@@ -41,7 +41,7 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wir
 
   lazy val connector: EstatesStoreConnector = app.injector.instanceOf[EstatesStoreConnector]
 
-  lazy val url: String = "/estates-store/claim"
+  lazy val url: String = "/estates-store/lock"
 
   val utr = "1234567890"
   val internalId = "some-authenticated-internal-id"
@@ -63,7 +63,7 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wir
 
   "EstatesStoreConnector" must {
 
-    "call POST /claim" which {
+    "call POST /lock" which {
 
       "returns 201 CREATED" in {
 
@@ -82,7 +82,7 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wir
           expectedResponse = response
         )
 
-        connector.claim(request) map { response =>
+        connector.lock(request) map { response =>
           response.status mustBe CREATED
         }
 
@@ -104,7 +104,7 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wir
           expectedResponse = response
         )
 
-        recoverToSucceededIf[BadRequestException](connector.claim(request))
+        recoverToSucceededIf[BadRequestException](connector.lock(request))
 
       }
       "returns 500 INTERNAL_SERVER_ERROR" in {
@@ -123,7 +123,7 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wir
           expectedResponse = response
         )
 
-        recoverToSucceededIf[Upstream5xxResponse](connector.claim(request))
+        recoverToSucceededIf[Upstream5xxResponse](connector.lock(request))
 
       }
 

@@ -165,7 +165,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val connector = mock[EstatesStoreConnector]
 
-        when(connector.claim(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any()))
+        when(connector.lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any()))
           .thenReturn(Future.successful(HttpResponse(CREATED)))
 
         val answers = emptyUserAnswers
@@ -185,7 +185,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         contentAsString(result) must include("As you have had 3 unsuccessful tries at accessing this estate you will need to try again in 30 minutes.")
 
-        verify(connector).claim(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
+        verify(connector).lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
 
         application.stop()
       }

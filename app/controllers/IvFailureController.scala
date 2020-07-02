@@ -89,7 +89,7 @@ class IvFailureController @Inject()(
         utr <- request.userAnswers.get(UtrPage)
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingEstatePage)
       } yield {
-        connector.claim(EstatesStoreRequest(request.internalId, utr, isManagedByAgent, estateLocked = true)) map { _ =>
+        connector.lock(EstatesStoreRequest(request.internalId, utr, isManagedByAgent, estateLocked = true)) map { _ =>
           Ok(lockedView(utr))
         }
       }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))

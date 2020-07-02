@@ -27,13 +27,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EstatesStoreConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
-  val url: String = config.estatesStoreUrl + "/claim"
+  val url: String = config.estatesStoreUrl + "/lock"
 
-  def claim(request: EstatesStoreRequest)(implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[EstatesStoreRequest]): Future[HttpResponse] = {
-
-    val response = http.POST[JsValue, HttpResponse](url, Json.toJson(request))
-
-    response
+  def lock(request: EstatesStoreRequest)(implicit hc : HeaderCarrier,
+                                         ec : ExecutionContext,
+                                         writes: Writes[EstatesStoreRequest]): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](url, Json.toJson(request))
   }
 
 }
