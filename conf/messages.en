@@ -67,3 +67,8 @@ notFound.p2 = If you do not have a UTR for the estate you will need to register 
 notFound.p3 = If you need help with this service
 notFound.link1 = contact the deceased estate helpline (opens in a new window or tab)
 notFound.button=Try again
+
+isAgentManagingEstate.title = isAgentManagingEstate
+isAgentManagingEstate.heading = isAgentManagingEstate
+isAgentManagingEstate.checkYourAnswersLabel = isAgentManagingEstate
+isAgentManagingEstate.error.required = Select yes if isAgentManagingEstate

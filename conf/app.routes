@@ -23,3 +23,8 @@ GET        /check-your-answers                          controllers.CheckYourAns
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
 GET        /logout                                      controllers.LogoutController.logout()
+
+GET        /isAgentManagingEstate                        controllers.IsAgentManagingEstateController.onPageLoad(mode: Mode = NormalMode)
+POST       /isAgentManagingEstate                        controllers.IsAgentManagingEstateController.onSubmit(mode: Mode = NormalMode)
+GET        /changeIsAgentManagingEstate                  controllers.IsAgentManagingEstateController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeIsAgentManagingEstate                  controllers.IsAgentManagingEstateController.onSubmit(mode: Mode = CheckMode)

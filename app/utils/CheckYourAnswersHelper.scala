@@ -28,6 +28,15 @@ import CheckYourAnswersHelper._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def isAgentManagingEstate: Option[AnswerRow] = userAnswers.get(IsAgentManagingEstatePage) map {
+    x =>
+      AnswerRow(
+        HtmlFormat.escape(messages("isAgentManagingEstate.checkYourAnswersLabel")),
+        yesOrNo(x),
+        routes.IsAgentManagingEstateController.onPageLoad(CheckMode).url
+      )
+  }
+
   private def yesOrNo(answer: Boolean)(implicit messages: Messages): Html =
     if (answer) {
       HtmlFormat.escape(messages("site.yes"))
