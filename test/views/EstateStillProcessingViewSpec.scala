@@ -14,9 +14,28 @@
  * limitations under the License.
  */
 
-package models.requests
+package views
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+import views.behaviours.ViewBehaviours
+import views.html.EstateStillProcessing
 
-case class IdentifierRequest[A] (request: Request[A], identifier: String, credentials: Credentials) extends WrappedRequest[A](request)
+class EstateStillProcessingViewSpec extends ViewBehaviours {
+
+  val utr = "0987654321"
+
+  "EstateStillProcessing view" must {
+
+    val view = viewFor[EstateStillProcessing](Some(emptyUserAnswers))
+
+    val applyView = view.apply(utr)(fakeRequest, messages)
+
+    behave like normalPage(applyView, "stillProcessing","p2")
+
+    "display the correct subheading" in {
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("stillProcessing.subheading", utr))
+    }
+
+  }
+
+}

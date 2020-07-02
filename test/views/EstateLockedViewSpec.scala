@@ -14,9 +14,28 @@
  * limitations under the License.
  */
 
-package models.requests
+package views
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+import views.behaviours.ViewBehaviours
+import views.html.EstateLocked
 
-case class IdentifierRequest[A] (request: Request[A], identifier: String, credentials: Credentials) extends WrappedRequest[A](request)
+class EstateLockedViewSpec extends ViewBehaviours {
+
+  val utr = "0987654321"
+
+  "EstateLocked view" must {
+
+    val view = viewFor[EstateLocked](Some(emptyUserAnswers))
+
+    val applyView = view.apply(utr)(fakeRequest, messages)
+
+    behave like normalPage(applyView, "locked","p1", "p2", "p3", "p4", "link1")
+
+    "display the correct subheading" in {
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("locked.subheading", utr))
+    }
+
+  }
+
+}

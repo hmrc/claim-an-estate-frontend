@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+import play.api.libs.json.{Json, Writes}
 
-case class IdentifierRequest[A] (request: Request[A], identifier: String, credentials: Credentials) extends WrappedRequest[A](request)
+final case class EstatesStoreRequest(internalId: String, utr: String, managedByAgent: Boolean, estateLocked: Boolean)
+
+object EstatesStoreRequest {
+
+  implicit val writes: Writes[EstatesStoreRequest] = Json.writes[EstatesStoreRequest]
+
+}

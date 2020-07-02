@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package connectors
 
+import config.FrontendAppConfig
 import javax.inject.Inject
-import models.requests.IdentifierRequest
-import play.api.mvc._
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+import models.RelationshipEstablishmentStatus.RelationshipEstablishmentStatus
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers) extends IdentifierAction {
+class RelationshipEstablishmentConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
-    block(IdentifierRequest(request, "id", Credentials("providerId", "GG")))
+  def journeyId(id: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): Future[RelationshipEstablishmentStatus] = {
+    val url = s"${config.relationshipEstablishmentUrl}/journey-failure/$id"
 
-  override def parser: BodyParser[AnyContent] =
-    bodyParsers.default
-
-  override protected def executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+    http.GET[RelationshipEstablishmentStatus](url)
+  }
 }

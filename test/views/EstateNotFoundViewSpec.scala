@@ -14,9 +14,28 @@
  * limitations under the License.
  */
 
-package models.requests
+package views
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+import views.behaviours.ViewBehaviours
+import views.html.EstateNotFound
 
-case class IdentifierRequest[A] (request: Request[A], identifier: String, credentials: Credentials) extends WrappedRequest[A](request)
+class EstateNotFoundViewSpec extends ViewBehaviours {
+
+  val utr = "0987654321"
+
+  "EstateNotFound view" must {
+
+    val view = viewFor[EstateNotFound](Some(emptyUserAnswers))
+
+    val applyView = view.apply(utr)(fakeRequest, messages)
+
+    behave like normalPage(applyView, "notFound", "p1", "p2", "p3", "link1")
+
+    "display the correct heading" in {
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("notFound.heading", utr))
+    }
+
+  }
+
+}

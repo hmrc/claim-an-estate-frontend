@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package connectors
 
+import config.FrontendAppConfig
 import javax.inject.Inject
-import models.requests.IdentifierRequest
-import play.api.mvc._
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+import models.EstatesStoreRequest
+import play.api.libs.json.{JsValue, Json, Writes}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers) extends IdentifierAction {
+class EstatesStoreConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
-    block(IdentifierRequest(request, "id", Credentials("providerId", "GG")))
+  val url: String = config.estatesStoreUrl + "/lock"
 
-  override def parser: BodyParser[AnyContent] =
-    bodyParsers.default
+  def lock(request: EstatesStoreRequest)(implicit hc : HeaderCarrier,
+                                         ec : ExecutionContext,
+                                         writes: Writes[EstatesStoreRequest]): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](url, Json.toJson(request))
+  }
 
-  override protected def executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
 }

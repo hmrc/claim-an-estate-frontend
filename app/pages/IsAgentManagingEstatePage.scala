@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package models.requests
+package pages
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+import play.api.libs.json.JsPath
 
-case class IdentifierRequest[A] (request: Request[A], identifier: String, credentials: Credentials) extends WrappedRequest[A](request)
+case object IsAgentManagingEstatePage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "isAgentManagingEstate"
+}
