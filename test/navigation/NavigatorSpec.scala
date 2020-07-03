@@ -29,10 +29,9 @@ class NavigatorSpec extends SpecBase {
 
     "in Normal mode" must {
 
-      "go to Index from a page that doesn't exist in the route map" in {
+      "go to BeforeYouContinue from IsAgentManagingEstate" in {
 
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad()
+        navigator.nextPage(IsAgentManagingEstatePage, NormalMode, UserAnswers("id")) mustBe routes.BeforeYouContinueController.onPageLoad()
       }
     }
 

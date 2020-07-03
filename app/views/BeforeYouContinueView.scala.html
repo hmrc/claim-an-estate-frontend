@@ -14,34 +14,33 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
-@import models.Mode
-
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, utr: String)(implicit request: Request[_], messages: Messages)
+@(utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("isAgentManagingEstate.title")}"
+    title = messages("beforeYouContinue.title")
     ) {
 
-    @formHelper(action = IsAgentManagingEstateController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = BeforeYouContinueController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        <span class="govuk-caption-xl">@messages("beforeYouContinue.subheading", utr)</span>
+        @components.heading("beforeYouContinue.heading", headingSize = "heading-large govuk-fieldset__heading")
 
-        <span class="govuk-caption-xl">@messages("isAgentManagingEstate.subheading", utr)</span>
-
-        @components.input_yes_no(
-            field = form("value"),
-            legend = messages("isAgentManagingEstate.heading"),
-            headingIsLegend = true
-        )
+        <p>@messages("beforeYouContinue.p1")</p>
+        <p>@messages("beforeYouContinue.p2")</p>
+        <p>@messages("beforeYouContinue.p3")</p>
+        <p>
+            @messages("beforeYouContinue.p4")
+            <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("beforeYouContinue.a")</a>.
+        </p>
 
         @components.submit_button()
     }
+
 }

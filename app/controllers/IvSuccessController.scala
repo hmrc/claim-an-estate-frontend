@@ -55,12 +55,12 @@ class IvSuccessController @Inject()(
         def onRelationshipFound = {
           taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
 
-            val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingEstatePage) match {
+            val isAgentManagingEstate = request.userAnswers.get(IsAgentManagingEstatePage) match {
               case None => false
               case Some(value) => value
             }
 
-            Ok(view(isAgentManagingTrust, utr))
+            Ok(view(isAgentManagingEstate, utr))
 
           } recover {
             case _ =>

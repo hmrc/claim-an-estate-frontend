@@ -48,14 +48,14 @@ class RelationshipEstablishmentService @Inject()(
     def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
         // relationship does not exist
-        Logger.info(s"Relationship does not exist in Trust IV for user $internalId due to $msg")
+        Logger.info(s"Relationship does not exist in Estate IV for user $internalId due to $msg")
         Future.successful(RelationshipNotFound)
       case e : Throwable =>
         throw RelationshipError(e.getMessage)
     }
 
     authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
-      Logger.info(s"Relationship established in Trust IV for user $internalId")
+      Logger.info(s"Relationship established in Estate IV for user $internalId")
         Future.successful(RelationshipFound)
     } recoverWith {
       failedRelationshipPF
