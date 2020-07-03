@@ -1,7 +1,5 @@
 # microservice specific routes
 
-GET        /                                            controllers.IndexController.onPageLoad
-
 GET        /callback-failure                            controllers.IvFailureController.onEstateIvFailure
 
 GET        /locked                                      controllers.IvFailureController.estateLocked
@@ -11,6 +9,8 @@ GET        /still-processing                            controllers.IvFailureCon
 GET        /not-found                                   controllers.IvFailureController.estateNotFound
 
 GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad
+
+GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -23,3 +23,11 @@ GET        /check-your-answers                          controllers.CheckYourAns
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
 GET        /logout                                      controllers.LogoutController.logout()
+
+GET        /managed-by-agent                            controllers.IsAgentManagingEstateController.onPageLoad(mode: Mode = NormalMode)
+POST       /managed-by-agent                            controllers.IsAgentManagingEstateController.onSubmit(mode: Mode = NormalMode)
+GET        /change-managed-by-agent                     controllers.IsAgentManagingEstateController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-managed-by-agent                     controllers.IsAgentManagingEstateController.onSubmit(mode: Mode = CheckMode)
+
+GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad()
+POST       /before-you-continue                         controllers.BeforeYouContinueController.onSubmit()

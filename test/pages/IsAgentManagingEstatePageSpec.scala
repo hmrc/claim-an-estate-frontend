@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class IsAgentManagingEstatePageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryIsAgentManagingEstatePage: Arbitrary[IsAgentManagingEstatePage.type] =
-    Arbitrary(IsAgentManagingEstatePage)
+  "IsAgentManagingEstatePage" must {
+
+    beRetrievable[Boolean](IsAgentManagingEstatePage)
+
+    beSettable[Boolean](IsAgentManagingEstatePage)
+
+    beRemovable[Boolean](IsAgentManagingEstatePage)
+  }
 }

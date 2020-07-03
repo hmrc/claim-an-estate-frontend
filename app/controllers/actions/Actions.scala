@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package generators
+package controllers.actions
 
-import org.scalacheck.Arbitrary
-import pages._
+import com.google.inject.Inject
+import models.requests.{DataRequest, OptionalDataRequest}
+import play.api.mvc.{ActionBuilder, AnyContent}
 
-trait PageGenerators {
+class Actions @Inject()(
+                         identify: IdentifierAction,
+                         getData: DataRetrievalAction,
+                         requireData: DataRequiredAction
+                       ) {
 
-  implicit lazy val arbitraryIsAgentManagingEstatePage: Arbitrary[IsAgentManagingEstatePage.type] =
-    Arbitrary(IsAgentManagingEstatePage)
+  def authWithSession: ActionBuilder[OptionalDataRequest, AnyContent] =
+    identify andThen getData
+
+  def authWithData: ActionBuilder[DataRequest, AnyContent] =
+    authWithSession andThen requireData
 }

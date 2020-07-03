@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package services
 
-import org.scalacheck.Arbitrary
-import pages._
+import controllers.actions.FakeAuthConnector
+import play.api.mvc.{AnyContent, Request}
+import uk.gov.hmrc.auth.core.AuthConnector
 
-trait PageGenerators {
+import scala.concurrent.Future
 
-  implicit lazy val arbitraryIsAgentManagingEstatePage: Arbitrary[IsAgentManagingEstatePage.type] =
-    Arbitrary(IsAgentManagingEstatePage)
+class FakeRelationshipEstablishmentService(response: RelationEstablishmentStatus = RelationshipFound) extends RelationshipEstablishment {
+
+  override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful())
+
+  override def check(internalId: String, utr: String)
+                    (implicit request: Request[AnyContent]) = Future.successful(response)
+
 }

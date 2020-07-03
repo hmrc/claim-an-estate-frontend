@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import javax.inject.Inject
 
-trait PageGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  implicit lazy val arbitraryIsAgentManagingEstatePage: Arbitrary[IsAgentManagingEstatePage.type] =
-    Arbitrary(IsAgentManagingEstatePage)
+class IsAgentManagingEstateFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("isAgentManagingEstate.error.required")
+    )
 }

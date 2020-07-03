@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import play.api.libs.json.JsPath
 
-trait PageGenerators {
+case object UTRPage extends QuestionPage[String] {
 
-  implicit lazy val arbitraryIsAgentManagingEstatePage: Arbitrary[IsAgentManagingEstatePage.type] =
-    Arbitrary(IsAgentManagingEstatePage)
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "utr"
+
 }

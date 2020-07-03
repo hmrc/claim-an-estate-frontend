@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package views
 
-import javax.inject.Inject
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.IndexView
+import views.behaviours.ViewBehaviours
+import views.html.BeforeYouContinueView
 
-class IndexController @Inject()(
-                                 val controllerComponents: MessagesControllerComponents,
-                                 view: IndexView
-                               ) extends FrontendBaseController with I18nSupport {
+class BeforeYouContinueViewSpec extends ViewBehaviours {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(view())
+  "BeforeYouContinue view" must {
+
+    val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
+
+    val applyView = view("0987654321")(fakeRequest, messages)
+
+    behave like normalPage(applyView, "beforeYouContinue")
+
+    behave like pageWithBackLink(applyView)
   }
 }
