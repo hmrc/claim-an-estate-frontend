@@ -21,10 +21,11 @@ import forms.IsAgentManagingEstateFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.IsAgentManagingEstatePage
+import pages.{IsAgentManagingEstatePage, UTRPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IsAgentManagingEstateView
 
@@ -34,34 +35,48 @@ class IsAgentManagingEstateController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          sessionRepository: SessionRepository,
                                          navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
+                                         actions: Actions,
                                          formProvider: IsAgentManagingEstateFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         view: IsAgentManagingEstateView
+                                         view: IsAgentManagingEstateView,
+                                         relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = actions.authWithData.async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(IsAgentManagingEstatePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+      request.userAnswers.get(UTRPage) map { utr =>
 
-      Ok(view(preparedForm, mode))
+        lazy val body = {
+          val preparedForm = request.userAnswers.get(IsAgentManagingEstatePage) match {
+            case None => form
+            case Some(value) => form.fill(value)
+          }
+
+          Future.successful(Ok(view(preparedForm, mode, utr)))
+        }
+
+        relationship.check(request.internalId, utr) flatMap {
+          case RelationshipFound =>
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+          case RelationshipNotFound =>
+            body
+        }
+
+      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = actions.authWithData.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          request.userAnswers.get(UTRPage) map { utr =>
+            Future.successful(BadRequest(view(formWithErrors, mode, utr)))
+          } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        ,
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IsAgentManagingEstatePage, value))

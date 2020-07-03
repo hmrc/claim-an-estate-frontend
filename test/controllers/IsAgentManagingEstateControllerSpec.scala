@@ -23,13 +23,13 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.IsAgentManagingEstatePage
+import pages.{IsAgentManagingEstatePage, UTRPage}
 import play.api.inject.bind
-import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
 import views.html.IsAgentManagingEstateView
 
 import scala.concurrent.Future
@@ -40,14 +40,24 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new IsAgentManagingEstateFormProvider()
   val form = formProvider()
+  val utr = "0987654321"
 
   lazy val isAgentManagingEstateRoute = routes.IsAgentManagingEstateController.onPageLoad(NormalMode).url
+
+  val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
   "IsAgentManagingEstate Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers
+        .set(UTRPage, utr)
+        .success
+        .value
+
+      val application = applicationBuilder(
+        userAnswers = Some(userAnswers),
+        relationshipEstablishment = fakeEstablishmentServiceFailing).build()
 
       val request = FakeRequest(GET, isAgentManagingEstateRoute)
 
@@ -58,16 +68,22 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, NormalMode, utr)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(IsAgentManagingEstatePage, true).success.value
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(IsAgentManagingEstatePage, true)
+        .success.value
+        .set(UTRPage, utr)
+        .success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(
+        userAnswers = Some(userAnswers),
+        relationshipEstablishment = fakeEstablishmentServiceFailing).build()
 
       val request = FakeRequest(GET, isAgentManagingEstateRoute)
 
@@ -78,7 +94,7 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, utr)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -90,7 +106,8 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers),
+          relationshipEstablishment = fakeEstablishmentServiceFailing)
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -112,7 +129,14 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers
+        .set(UTRPage, utr)
+        .success
+        .value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers),
+        relationshipEstablishment = fakeEstablishmentServiceFailing)
+        .build()
 
       val request =
         FakeRequest(POST, isAgentManagingEstateRoute)
@@ -127,14 +151,14 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, utr)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing).build()
 
       val request = FakeRequest(GET, isAgentManagingEstateRoute)
 
@@ -149,7 +173,7 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing).build()
 
       val request =
         FakeRequest(POST, isAgentManagingEstateRoute)

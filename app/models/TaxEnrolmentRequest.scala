@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Json, Writes}
 
-case object UtrPage extends QuestionPage[String] {
+final case class TaxEnrolmentsRequest(utr: String)
 
-  override def path: JsPath = JsPath \ toString
+object TaxEnrolmentsRequest {
 
-  override def toString: String = "utr"
+  implicit val writes: Writes[TaxEnrolmentsRequest] = Writes { request =>
+    Json.obj(
+      "identifiers" -> Json.arr(
+        Json.obj(
+          "key" -> "SAUTR",
+          "value" -> request.utr
+        )),
+      "verifiers" -> Json.arr(
+        Json.obj(
+          "key" -> "SAUTR1",
+          "value" -> request.utr
+        )
+      )
+    )
+  }
 
 }

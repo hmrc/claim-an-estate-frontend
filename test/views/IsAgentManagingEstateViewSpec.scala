@@ -27,6 +27,7 @@ import views.html.IsAgentManagingEstateView
 class IsAgentManagingEstateViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "isAgentManagingEstate"
+  val utr = "0987654321"
 
   val form = new IsAgentManagingEstateFormProvider()()
 
@@ -35,7 +36,7 @@ class IsAgentManagingEstateViewSpec extends YesNoViewBehaviours {
     val view = viewFor[IsAgentManagingEstateView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, utr)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

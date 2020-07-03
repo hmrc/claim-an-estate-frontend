@@ -22,7 +22,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("isAgentManagingEstate.title")}"
@@ -33,6 +33,8 @@
         @components.back_link()
 
         @components.error_summary(form.errors)
+
+        <span class="govuk-caption-xl">@messages("isAgentManagingTrust.subheading", utr)</span>
 
         @components.input_yes_no(
             field = form("value"),

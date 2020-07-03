@@ -21,7 +21,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import javax.inject.Inject
 import models.{EstatesStoreRequest, RelationshipEstablishmentStatus}
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
-import pages.{IsAgentManagingEstatePage, UtrPage}
+import pages.{IsAgentManagingEstatePage, UTRPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -66,7 +66,7 @@ class IvFailureController @Inject()(
   def onEstateIvFailure: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage) match {
+      request.userAnswers.get(UTRPage) match {
         case Some(utr) =>
           val queryString = request.getQueryString("journeyId")
 
@@ -86,7 +86,7 @@ class IvFailureController @Inject()(
   def estateLocked : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       (for {
-        utr <- request.userAnswers.get(UtrPage)
+        utr <- request.userAnswers.get(UTRPage)
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingEstatePage)
       } yield {
         connector.lock(EstatesStoreRequest(request.internalId, utr, isManagedByAgent, estateLocked = true)) map { _ =>
@@ -97,7 +97,7 @@ class IvFailureController @Inject()(
 
   def estateNotFound : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(UtrPage) map {
+      request.userAnswers.get(UTRPage) map {
         utr =>
           Future.successful(Ok(notFoundView(utr)))
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
@@ -105,7 +105,7 @@ class IvFailureController @Inject()(
 
   def estateStillProcessing : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(UtrPage) map {
+      request.userAnswers.get(UTRPage) map {
         utr =>
           Future.successful(Ok(stillProcessingView(utr)))
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
