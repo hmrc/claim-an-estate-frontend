@@ -31,3 +31,5 @@ POST       /change-managed-by-agent                     controllers.IsAgentManag
 
 GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad()
 POST       /before-you-continue                         controllers.BeforeYouContinueController.onSubmit()
+
+GET        /save/:utr                                   controllers.SaveUTRController.save(utr: String)
