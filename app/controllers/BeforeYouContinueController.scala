@@ -32,17 +32,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class BeforeYouContinueController @Inject()(
                                        override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
                                        relationship: RelationshipEstablishment,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
+                                       actions: Actions,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: BeforeYouContinueView,
                                        connector: EstatesStoreConnector
                                      )(implicit ec: ExecutionContext,
                                        config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = actions.authWithData.async {
     implicit request =>
 
       request.userAnswers.get(UTRPage) map { utr =>
@@ -58,7 +56,7 @@ class BeforeYouContinueController @Inject()(
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
-  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit: Action[AnyContent] = actions.authWithData.async {
     implicit request =>
 
       (for {

@@ -34,9 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IvSuccessController @Inject()(
                                      override val messagesApi: MessagesApi,
-                                     identify: IdentifierAction,
-                                     getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
+                                     actions: Actions,
                                      val controllerComponents: MessagesControllerComponents,
                                      relationshipEstablishment: RelationshipEstablishment,
                                      taxEnrolmentsConnector: TaxEnrolmentsConnector,
@@ -47,7 +45,7 @@ class IvSuccessController @Inject()(
   extends FrontendBaseController with I18nSupport
                                     with AuthPartialFunctions {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = actions.authWithData.async {
     implicit request =>
 
       request.userAnswers.get(UTRPage).map { utr =>
