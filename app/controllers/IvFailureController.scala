@@ -17,7 +17,7 @@
 package controllers
 
 import connectors.{EstatesStoreConnector, RelationshipEstablishmentConnector}
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.Actions
 import javax.inject.Inject
 import models.{EstatesStoreRequest, RelationshipEstablishmentStatus}
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
@@ -36,9 +36,7 @@ class IvFailureController @Inject()(
                                      lockedView: EstateLocked,
                                      stillProcessingView: EstateStillProcessing,
                                      notFoundView: EstateNotFound,
-                                     identify: IdentifierAction,
-                                     getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
+                                     actions: Actions,
                                      relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
                                      connector: EstatesStoreConnector
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -63,7 +61,7 @@ class IvFailureController @Inject()(
     }
   }
 
-  def onEstateIvFailure: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onEstateIvFailure: Action[AnyContent] = actions.authWithData.async {
     implicit request =>
 
       request.userAnswers.get(UTRPage) match {
@@ -83,7 +81,7 @@ class IvFailureController @Inject()(
       }
   }
 
-  def estateLocked : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def estateLocked : Action[AnyContent] = actions.authWithData.async {
     implicit request =>
       (for {
         utr <- request.userAnswers.get(UTRPage)
@@ -95,7 +93,7 @@ class IvFailureController @Inject()(
       }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
-  def estateNotFound : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def estateNotFound : Action[AnyContent] = actions.authWithData.async {
     implicit request =>
       request.userAnswers.get(UTRPage) map {
         utr =>
@@ -103,7 +101,7 @@ class IvFailureController @Inject()(
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
-  def estateStillProcessing : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def estateStillProcessing : Action[AnyContent] = actions.authWithData.async {
     implicit request =>
       request.userAnswers.get(UTRPage) map {
         utr =>

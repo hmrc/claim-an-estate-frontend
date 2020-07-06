@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.Actions
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
 import pages.UTRPage
@@ -28,14 +28,13 @@ import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveUTRController @Inject()(
-                                   identify: IdentifierAction,
+                                   actions: Actions,
                                    val cc: ControllerComponents,
-                                   getData: DataRetrievalAction,
                                    sessionRepository: SessionRepository,
                                    relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends BackendController(cc) {
 
-  def save(utr: String): Action[AnyContent] = (identify andThen getData).async {
+  def save(utr: String): Action[AnyContent] = actions.authWithSession.async {
     implicit request =>
 
       lazy val body = {
