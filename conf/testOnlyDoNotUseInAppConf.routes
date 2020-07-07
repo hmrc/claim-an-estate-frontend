@@ -11,3 +11,5 @@
 
 # Add all the application routes to the prod.routes file
 ->         /                          prod.Routes
+
+GET        /claim-an-estate/test-only/check-your-identity-for-estates/relationships/:utr        controllers.testOnlyDoNotUseInAppConf.TestRelationshipEstablishmentController.check(utr: String)
