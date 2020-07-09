@@ -72,8 +72,8 @@ class BeforeYouContinueController @Inject()(
           val host = config.relationshipEstablishmentFrontendtUrl(utr)
 
           val queryString: Map[String, Seq[String]] = Map(
-            "success" -> Seq(successRedirect),
-            "failure" -> Seq(failureRedirect)
+            "successUrl" -> Seq(successRedirect),
+            "failureUrl" -> Seq(failureRedirect)
           )
 
           connector.lock(EstatesStoreRequest(request.internalId, utr, isManagedByAgent, estateLocked = false)) map { _ =>
