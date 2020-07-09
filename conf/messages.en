@@ -68,26 +68,26 @@ notFound.p3 = If you need help with this service
 notFound.link1 = contact the deceased estate helpline (opens in a new window or tab)
 notFound.button=Try again
 
-isAgentManagingEstate.title = Is an agent managing the estates’s online register?
-isAgentManagingEstate.heading = Is an agent managing the estates’s online register?
+isAgentManagingEstate.title = Is an agent managing the estate’s online register?
+isAgentManagingEstate.heading = Is an agent managing the estate’s online register?
 isAgentManagingEstate.subheading = This estate’s UTR: {0}
-isAgentManagingEstate.checkYourAnswersLabel = Is an agent managing the estates’s online register?
-isAgentManagingEstate.error.required = Select yes if an agent is managing the estates’s online register
+isAgentManagingEstate.checkYourAnswersLabel = Is an agent managing the estate’s online register?
+isAgentManagingEstate.error.required = Select yes if an agent is managing the estate’s online register
 
-ivSuccess.subheading = The estates’s UTR: {0}
+ivSuccess.subheading = The estate’s UTR: {0}
 ivSuccess.contactLink =  contact the deceased estate helpline (opens in a new window or tab)
 
 ivSuccess.agent.title = You have successfully claimed the estate
 ivSuccess.agent.heading = You have successfully claimed the estate
-ivSuccess.agent.paragraph1 = You need to tell your agent you have passed the estates’s security questions
+ivSuccess.agent.paragraph1 = You need to tell your agent you have passed the estate’s security questions
 ivSuccess.agent.paragraph2 = Your agent then needs to send you an authorisation link to approve so they can maintain the estate online.
 ivSuccess.agent.paragraph3 = The Government Gateway organisation account used to claim this estate must be used to log in and approve this link. An agent cannot access the estate’s register until you complete this step.
 ivSuccess.agent.paragraph4 = If you want to view the register,
 ivSuccess.agent.continueLink =  you can continue into the service
 ivSuccess.agent.paragraph5 = If you need help using the service
 
-ivSuccess.no.agent.title = You have successfully answered the estates’s security questions
-ivSuccess.no.agent.heading = You have successfully answered the estates’s security questions
+ivSuccess.no.agent.title = You have successfully answered the estate’s security questions
+ivSuccess.no.agent.heading = You have successfully answered the estate’s security questions
 ivSuccess.no.agent.paragraph1 = You are now able to change the information HMRC holds about the personal representative.
 ivSuccess.no.agent.paragraph2 = If you have an agent, they will neeed to send you an authorisation link for you to approve so they can maintain the estate online.
 ivSuccess.no.agent.paragraph3 = If you need help using the service
