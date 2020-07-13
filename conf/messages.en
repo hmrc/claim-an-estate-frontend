@@ -89,7 +89,7 @@ ivSuccess.agent.paragraph5 = If you need help using the service
 ivSuccess.no.agent.title = You have successfully answered the estate’s security questions
 ivSuccess.no.agent.heading = You have successfully answered the estate’s security questions
 ivSuccess.no.agent.paragraph1 = You are now able to change the information HMRC holds about the personal representative.
-ivSuccess.no.agent.paragraph2 = If you have an agent, they will neeed to send you an authorisation link for you to approve so they can maintain the estate online.
+ivSuccess.no.agent.paragraph2 = If you have an agent, they will need to send you an authorisation link for you to approve so they can maintain the estate online.
 ivSuccess.no.agent.paragraph3 = If you need help using the service
 
 beforeYouContinue.title = Before you continue
