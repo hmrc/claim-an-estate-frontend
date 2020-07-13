@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RelationshipEstablishmentConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   def journeyId(id: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): Future[RelationshipEstablishmentStatus] = {
-    val url = s"${config.relationshipEstablishmentUrl}/journey-failure/$id"
+    val url = s"${config.relationshipEstablishmentUrl}/relationship-establishment/journey-failure/$id"
 
     http.GET[RelationshipEstablishmentStatus](url)
   }
