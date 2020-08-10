@@ -16,13 +16,18 @@
 
 package models
 
+import models.auditing.AuditData
+import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 sealed trait EnrolmentResponse
 
 case object EnrolmentCreated extends EnrolmentResponse
+case class EnrolmentFailed(status: Int, body: String) extends EnrolmentResponse
 
-final case class UpstreamTaxEnrolmentsError(message : String) extends Exception(message) with EnrolmentResponse
+object EnrolmentFailed {
+  implicit val format: Format[EnrolmentFailed] = Json.format[EnrolmentFailed]
+}
 
 object EnrolmentResponse {
 
@@ -32,9 +37,8 @@ object EnrolmentResponse {
     override def read(method: String, url: String, response: HttpResponse): EnrolmentResponse = {
       response.status match {
         case NO_CONTENT => EnrolmentCreated
-        case _ => throw UpstreamTaxEnrolmentsError(s"HTTP response ${response.status} ${response.body}")
+        case _ => EnrolmentFailed(response.status, response.body)
       }
     }
   }
-
 }

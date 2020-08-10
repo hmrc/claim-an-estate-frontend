@@ -21,12 +21,14 @@ import connectors.TaxEnrolmentsConnector
 import controllers.actions._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{NormalMode, TaxEnrolmentsRequest}
+import models.requests.{DataRequest, OptionalDataRequest}
+import models.{EnrolmentCreated, EnrolmentFailed, NormalMode, TaxEnrolmentRequest}
 import pages.{IsAgentManagingEstatePage, UTRPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import services.{AuditService, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IvSuccessView
 
@@ -39,44 +41,59 @@ class IvSuccessController @Inject()(
                                      relationshipEstablishment: RelationshipEstablishment,
                                      taxEnrolmentsConnector: TaxEnrolmentsConnector,
                                      view: IvSuccessView,
-                                     errorHandler: ErrorHandler
+                                     errorHandler: ErrorHandler,
+                                     auditService: AuditService
                                    )(implicit ec: ExecutionContext,
                                      val config: FrontendAppConfig)
   extends FrontendBaseController with I18nSupport
                                     with AuthPartialFunctions {
 
-  def onPageLoad(): Action[AnyContent] = actions.authWithData.async {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = actions.authWithSession.async {
+    implicit request: OptionalDataRequest[AnyContent] =>
+      request.userAnswers match {
+        case Some(userAnswers) =>
+          userAnswers.get(UTRPage).map { utr =>
 
-      request.userAnswers.get(UTRPage).map { utr =>
+            def onRelationshipFound = {
+              taxEnrolmentsConnector.enrol(TaxEnrolmentRequest(utr)) map {
 
-        def onRelationshipFound = {
-          taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
+                case EnrolmentCreated =>
 
-            val isAgentManagingEstate = request.userAnswers.get(IsAgentManagingEstatePage) match {
-              case None => false
-              case Some(value) => value
+                  auditService.auditEstateClaimed(utr, request.internalId)
+
+                  val isAgentManagingEstate = userAnswers.get(IsAgentManagingEstatePage) match {
+                    case None => false
+                    case Some(value) => value
+                  }
+
+                  Ok(view(isAgentManagingEstate, utr))
+
+                case response: EnrolmentFailed =>
+                  auditService.auditEstateClaimFailed(utr, request.internalId, response)
+                  InternalServerError(errorHandler.internalServerErrorTemplate)
+
+              } recover {
+                case e =>
+                  Logger.error(s"[TaxEnrolments][error] failed to create enrolment for ${request.internalId} with UTR $utr: ${e.getMessage}")
+                  auditService.auditEstateClaimError(utr, request.internalId, e.getMessage)
+                  InternalServerError(errorHandler.internalServerErrorTemplate)
+              }
             }
 
-            Ok(view(isAgentManagingEstate, utr))
+            lazy val onRelationshipNotFound = Future.successful(Redirect(routes.IsAgentManagingEstateController.onPageLoad(NormalMode)))
 
-          } recover {
-            case _ =>
-              Logger.error(s"[TaxEnrolments][error] failed to create enrolment for ${request.internalId} $utr")
-              InternalServerError(errorHandler.internalServerErrorTemplate)
-          }
-        }
+            relationshipEstablishment.check(request.internalId, utr) flatMap {
+              case RelationshipFound => onRelationshipFound
+              case RelationshipNotFound => onRelationshipNotFound
+            }
+          } getOrElse noUtrOnSuccess(request)
 
-        lazy val onRelationshipNotFound = Future.successful(Redirect(routes.IsAgentManagingEstateController.onPageLoad(NormalMode)))
+        case None => noUtrOnSuccess(request)
+      }
+  }
 
-        relationshipEstablishment.check(request.internalId, utr) flatMap {
-          case RelationshipFound =>
-            onRelationshipFound
-          case RelationshipNotFound =>
-            onRelationshipNotFound
-        }
-        
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-
+  private def noUtrOnSuccess(request: OptionalDataRequest[AnyContent])(implicit hc: HeaderCarrier) = {
+    auditService.auditEstateClaimError("Unknown", request.internalId, "No UTR available on success")
+    Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 }

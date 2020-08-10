@@ -21,14 +21,17 @@ import controllers.actions._
 import models.UserAnswers
 import org.scalatest.TryValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.Mockito.reset
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import services.{FakeRelationshipEstablishmentService, RelationshipEstablishment}
+import services.{AuditService, FakeRelationshipEstablishmentService, RelationshipEstablishment}
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience {
 
@@ -44,18 +47,24 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  implicit def fakeRequest = FakeRequest("", "")
+  implicit def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
+  val mockAuditService: AuditService = mock[AuditService]
+
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
                                    relationshipEstablishment: RelationshipEstablishment = new FakeRelationshipEstablishmentService()
-                                  ): GuiceApplicationBuilder =
+                                  ): GuiceApplicationBuilder = {
+    reset(mockAuditService)
+
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
-        bind[RelationshipEstablishment].toInstance(relationshipEstablishment)
+        bind[RelationshipEstablishment].toInstance(relationshipEstablishment),
+        bind(classOf[AuditService]).toInstance(mockAuditService)
       )
+  }
 }
