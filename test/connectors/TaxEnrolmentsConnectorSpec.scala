@@ -18,7 +18,7 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
-import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError}
+import models.{EnrolmentCreated, EnrolmentFailed, TaxEnrolmentRequest}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -30,23 +30,23 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+  private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  lazy val connector: TaxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
-
-  lazy val app = new GuiceApplicationBuilder()
+  private lazy val app = new GuiceApplicationBuilder()
     .configure(Seq(
       "microservice.services.tax-enrolments.port" -> server.port(),
       "auditing.enabled" -> false): _*
     )
     .build()
 
-  lazy val url: String = s"/tax-enrolments/service/${config.serviceName}/enrolment"
+  private lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  private lazy val connector: TaxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
 
-  val utr = "1234567890"
+  private lazy val url: String = s"/tax-enrolments/service/${config.serviceName}/enrolment"
 
-  val request = Json.stringify(Json.obj(
+  private val utr = "1234567890"
+
+  private val request = Json.stringify(Json.obj(
     "identifiers" -> Json.arr(
       Json.obj(
         "key" -> "SAUTR",
@@ -60,16 +60,15 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
     )
   ))
 
-
-  private def wiremock(payload: String, expectedStatus: Int, expectedResponse: String) =
+  private def wiremock(payload: String, simulatedStatus: Int, simulatedResponse: String) =
     server.stubFor(
       put(urlEqualTo(url))
         .withHeader(CONTENT_TYPE, containing("application/json"))
         .withRequestBody(equalTo(payload))
         .willReturn(
           aResponse()
-            .withStatus(expectedStatus)
-            .withBody(expectedResponse)
+            .withStatus(simulatedStatus)
+            .withBody(simulatedResponse)
         )
     )
 
@@ -81,41 +80,28 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
 
         wiremock(
           payload = request,
-          expectedStatus = NO_CONTENT,
-          expectedResponse = ""
+          simulatedStatus = NO_CONTENT,
+          simulatedResponse = ""
         )
 
-        connector.enrol(TaxEnrolmentsRequest(utr)) map { response =>
+        connector.enrol(TaxEnrolmentRequest(utr)) map { response =>
           response mustBe EnrolmentCreated
         }
 
       }
 
-      "returns 400 BAD_REQUEST" in {
+      "returns other status" in {
 
         wiremock(
           payload = request,
-          expectedStatus = BAD_REQUEST,
-          expectedResponse = ""
+          simulatedStatus = BAD_REQUEST,
+          simulatedResponse = "error body"
         )
 
-        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr)))
-
+        connector.enrol(TaxEnrolmentRequest(utr)) map { response =>
+          response mustBe EnrolmentFailed(BAD_REQUEST, "error body")
+        }
       }
-      "returns 401 UNAUTHORIZED" in {
-
-        wiremock(
-          payload = request,
-          expectedStatus = UNAUTHORIZED,
-          expectedResponse = ""
-        )
-
-        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr)))
-
-      }
-
     }
-
   }
-
 }

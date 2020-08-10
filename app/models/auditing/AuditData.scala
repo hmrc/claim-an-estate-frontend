@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package models.auditing
 
-import play.api.libs.json.{Json, Writes}
+import play.api.libs.json.{Format, JsValue, Json}
 
-final case class TaxEnrolmentRequest(utr: String)
+case class AuditData(request: JsValue,
+                            internalAuthId : String,
+                            response: Option[JsValue])
 
-object TaxEnrolmentRequest {
+object AuditData {
 
-  implicit val writes: Writes[TaxEnrolmentRequest] = Writes { request =>
-    Json.obj(
-      "identifiers" -> Json.arr(
-        Json.obj(
-          "key" -> "SAUTR",
-          "value" -> request.utr
-        )),
-      "verifiers" -> Json.arr(
-        Json.obj(
-          "key" -> "SAUTR1",
-          "value" -> request.utr
-        )
-      )
-    )
-  }
+  implicit val formats: Format[AuditData] = Json.format[AuditData]
 
 }
