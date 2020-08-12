@@ -91,12 +91,15 @@ class TestRelationshipEstablishmentController @Inject()(
       val succeedRegex = "(2\\d{9})".r
       val failRegex = "(4\\d{9})".r
 
+      def insertRelationship = relationshipEstablishmentConnector
+        .createRelationship(request.credentials.providerId, utr) map {
+        _ =>
+          Redirect(controllers.routes.IvSuccessController.onPageLoad())
+      }
+
       utr match {
-        case utr @ succeedRegex(_) =>
-          relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, utr) map {
-            _ =>
-              Redirect(controllers.routes.IvSuccessController.onPageLoad())
-          }
+        case "5000000001" => insertRelationship
+        case succeedRegex(_) => insertRelationship
         case failRegex(_) =>
           Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure()))
         case _ =>
