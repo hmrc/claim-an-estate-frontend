@@ -25,6 +25,7 @@ import pages.{IsAgentManagingEstatePage, UTRPage}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.{EstateLocked, EstateNotFound, EstateStillProcessing}
@@ -38,13 +39,17 @@ class IvFailureController @Inject()(
                                      notFoundView: EstateNotFound,
                                      actions: Actions,
                                      relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
-                                     connector: EstatesStoreConnector
+                                     connector: EstatesStoreConnector,
+                                     auditService: AuditService
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def renderFailureReason(utr: String, journeyId: String)(implicit hc : HeaderCarrier) = {
+  private def renderFailureReason(utr: String, internalId: String, journeyId: String)(implicit hc : HeaderCarrier) = {
     relationshipEstablishmentConnector.journeyId(journeyId) map {
       case RelationshipEstablishmentStatus.Locked =>
         Logger.info(s"[IvFailure][status] $utr is locked")
+
+        auditService.auditEstateClaimError(utr, internalId, s"User failed IV 3 times, has been locked out for 30 minutes, journey Id was $journeyId")
+
         Redirect(routes.IvFailureController.estateLocked())
       case RelationshipEstablishmentStatus.NotFound =>
         Logger.info(s"[IvFailure][status] $utr was not found")
@@ -73,7 +78,7 @@ class IvFailureController @Inject()(
             Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
           }{
             journeyId =>
-              renderFailureReason(utr, journeyId)
+              renderFailureReason(utr, request.internalId, journeyId)
           }
         case None =>
           Logger.warn(s"[IVFailureController][onEstateIvFailure] unable to retrieve a UTR")
