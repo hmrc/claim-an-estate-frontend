@@ -41,7 +41,7 @@ object Relationship {
   implicit val format = Json.format[Relationship]
 }
 
-case class RelationshipJson(relationship: Relationship, ttlSeconds:Int =1440)
+case class RelationshipJson(relationship: Relationship, ttlSeconds:Int = 1440)
 
 object RelationshipJson {
   implicit val format = Json.format[RelationshipJson]
@@ -60,7 +60,7 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,co
     Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
 
   def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.POST[RelationshipJson,HttpResponse](relationshipEstablishmentPostUrl,RelationshipJson(newRelationship(credId, utr)))
+    httpClient.POST[RelationshipJson, HttpResponse](relationshipEstablishmentPostUrl,RelationshipJson(newRelationship(credId, utr)))
 
   def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier) =
     httpClient.GET(relationshipEstablishmentGetUrl(credId))
