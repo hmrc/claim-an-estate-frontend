@@ -22,6 +22,10 @@ GET        /check-your-answers                          controllers.CheckYourAns
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
+GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
+
+GET        /timeout                                     controllers.SessionTimeoutController.timeout
+
 GET        /logout                                      controllers.LogoutController.logout()
 
 GET        /managed-by-agent                            controllers.IsAgentManagingEstateController.onPageLoad(mode: Mode = NormalMode)
