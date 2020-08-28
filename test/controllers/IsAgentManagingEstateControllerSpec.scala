@@ -68,7 +68,7 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, utr)(fakeRequest, messages).toString
+        view(form, NormalMode, utr)(request, messages).toString
 
       application.stop()
     }
@@ -94,7 +94,7 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, utr)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, utr)(request, messages).toString
 
       application.stop()
     }
@@ -151,7 +151,7 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, utr)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, utr)(request, messages).toString
 
       application.stop()
     }
