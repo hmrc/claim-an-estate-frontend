@@ -25,7 +25,7 @@
 @(form: Form[_], mode: Mode, utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("isAgentManagingEstate.title")}"
+    title = s"${errorPrefix(form)}${messages("isAgentManagingEstate.title")}"
     ) {
 
     @formHelper(action = IsAgentManagingEstateController.onSubmit(mode), 'autoComplete -> "off") {
