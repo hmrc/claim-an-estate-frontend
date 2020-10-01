@@ -24,7 +24,7 @@ import scala.concurrent.Future
 
 class FakeRelationshipEstablishmentService(response: RelationEstablishmentStatus = RelationshipFound) extends RelationshipEstablishment {
 
-  override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful())
+  override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful(()))
 
   override def check(internalId: String, utr: String)
                     (implicit request: Request[AnyContent]) = Future.successful(response)

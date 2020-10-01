@@ -23,10 +23,8 @@ import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
@@ -95,7 +93,7 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wir
         val response =
           """{
             |  "status": "400",
-            |  "message":  "Unable to parse request body into a EstateClaim"
+            |  "message": "Unable to parse request body into a EstateClaim"
             |}""".stripMargin
 
         wiremock(
@@ -104,7 +102,9 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wir
           expectedResponse = response
         )
 
-        recoverToSucceededIf[BadRequestException](connector.lock(request))
+        connector.lock(request) map { response =>
+          response.status mustBe BAD_REQUEST
+        }
 
       }
       "returns 500 INTERNAL_SERVER_ERROR" in {
@@ -114,7 +114,7 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wir
         val response =
           """{
             |  "status": "500",
-            |  "message":  ""unable to store to estates store""
+            |  "message": "unable to store to estates store"
             |}""".stripMargin
 
         wiremock(
@@ -123,7 +123,9 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wir
           expectedResponse = response
         )
 
-        recoverToSucceededIf[Upstream5xxResponse](connector.lock(request))
+        connector.lock(request) map { response =>
+          response.status mustBe INTERNAL_SERVER_ERROR
+        }
 
       }
 

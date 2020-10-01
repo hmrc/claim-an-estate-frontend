@@ -16,7 +16,6 @@
 
 package models
 
-import models.auditing.AuditData
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 

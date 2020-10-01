@@ -21,7 +21,7 @@ import connectors.TaxEnrolmentsConnector
 import controllers.actions._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.requests.{DataRequest, OptionalDataRequest}
+import models.requests.OptionalDataRequest
 import models.{EnrolmentCreated, EnrolmentFailed, NormalMode, TaxEnrolmentRequest}
 import pages.{IsAgentManagingEstatePage, UTRPage}
 import play.api.Logger
@@ -43,10 +43,8 @@ class IvSuccessController @Inject()(
                                      view: IvSuccessView,
                                      errorHandler: ErrorHandler,
                                      auditService: AuditService
-                                   )(implicit ec: ExecutionContext,
-                                     val config: FrontendAppConfig)
-  extends FrontendBaseController with I18nSupport
-                                    with AuthPartialFunctions {
+                                   )(implicit ec: ExecutionContext, val config: FrontendAppConfig)
+  extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
 
   def onPageLoad(): Action[AnyContent] = actions.authWithSession.async {
     implicit request: OptionalDataRequest[AnyContent] =>

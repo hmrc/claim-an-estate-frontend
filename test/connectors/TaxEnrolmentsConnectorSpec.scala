@@ -26,8 +26,6 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()

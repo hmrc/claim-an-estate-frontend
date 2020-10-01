@@ -63,6 +63,9 @@ class IvFailureController @Inject()(
       case UpstreamRelationshipError(response) =>
         Logger.warn(s"[IvFailure][status] HTTP response: $response")
         Redirect(routes.FallbackFailureController.onPageLoad())
+      case _ =>
+        Logger.warn(s"[IvFailure][status] No errorKey in HTTP response")
+        Redirect(routes.FallbackFailureController.onPageLoad())
     }
   }
 
