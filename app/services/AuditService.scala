@@ -16,7 +16,6 @@
 
 package services
 
-import config.FrontendAppConfig
 import javax.inject.Inject
 import models.EnrolmentFailed
 import models.auditing.AuditData

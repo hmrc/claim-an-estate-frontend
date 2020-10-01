@@ -71,7 +71,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       val connector = mock[EstatesStoreConnector]
 
       when(connector.lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any()))
-        .thenReturn(Future.successful(HttpResponse(CREATED)))
+        .thenReturn(Future.successful(HttpResponse(CREATED, "")))
 
       val answers = emptyUserAnswers
         .set(UTRPage, "0987654321").success.value

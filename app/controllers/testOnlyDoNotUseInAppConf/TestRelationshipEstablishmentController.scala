@@ -23,6 +23,7 @@ import play.api.Logger
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc.MessagesControllerComponents
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -63,10 +64,10 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,co
     httpClient.POST[RelationshipJson, HttpResponse](relationshipEstablishmentPostUrl,RelationshipJson(newRelationship(credId, utr)))
 
   def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.GET(relationshipEstablishmentGetUrl(credId))
+    httpClient.GET[HttpResponse](relationshipEstablishmentGetUrl(credId))
 
   def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.DELETE(relationshipEstablishmentDeleteUrl(credId))
+    httpClient.DELETE[HttpResponse](relationshipEstablishmentDeleteUrl(credId))
 
 }
 

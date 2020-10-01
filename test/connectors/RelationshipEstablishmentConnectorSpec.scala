@@ -25,8 +25,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
@@ -117,6 +115,23 @@ class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with MustMatc
 
         connector.journeyId(journeyFailure) map { status =>
           status mustBe a[RelationshipEstablishmentStatus.UnsupportedRelationshipStatus]
+        }
+      }
+
+      "returns 200 with no status" in {
+
+        val expectedJourneyFailureReason =
+          """
+            |{
+            |
+            |}""".stripMargin
+
+        wiremock(
+          expectedJourneyFailureReason = expectedJourneyFailureReason
+        )
+
+        connector.journeyId(journeyFailure) map { status =>
+          status mustBe RelationshipEstablishmentStatus.NoRelationshipStatus
         }
       }
     }
