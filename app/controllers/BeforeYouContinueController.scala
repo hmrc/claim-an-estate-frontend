@@ -61,7 +61,7 @@ class BeforeYouContinueController @Inject()(
         }
       } getOrElse {
         logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
-          s" no utr available in user answers, cannot continue with claiming the trust")
+          s" no utr available in user answers, cannot continue with claiming the estate")
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }
   }
