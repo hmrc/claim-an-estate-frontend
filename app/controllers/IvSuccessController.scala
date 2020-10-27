@@ -30,6 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditService, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Session
 import views.html.IvSuccessView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,6 +46,8 @@ class IvSuccessController @Inject()(
                                      auditService: AuditService
                                    )(implicit ec: ExecutionContext, val config: FrontendAppConfig)
   extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
+
+  private val logger: Logger = Logger(getClass)
 
   def onPageLoad(): Action[AnyContent] = actions.authWithSession.async {
     implicit request: OptionalDataRequest[AnyContent] =>
@@ -63,7 +66,8 @@ class IvSuccessController @Inject()(
                     case None => false
                     case Some(value) => value
                   }
-
+                  logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+                    s" successfully enrolled utr $utr to users credential after passing Estates IV, user can now maintain the estate")
                   Ok(view(isAgentManagingEstate, utr))
 
                 case response: EnrolmentFailed =>
@@ -72,7 +76,9 @@ class IvSuccessController @Inject()(
 
               } recover {
                 case e =>
-                  Logger.error(s"[TaxEnrolments][error] failed to create enrolment for ${request.internalId} with UTR $utr: ${e.getMessage}")
+                  logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+                    s" failed to create enrolment for utr $utr with tax-enrolments," +
+                    s" users credential has not been updated, user needs to claim again")
                   auditService.auditEstateClaimError(utr, request.internalId, e.getMessage)
                   InternalServerError(errorHandler.internalServerErrorTemplate)
               }
@@ -82,11 +88,22 @@ class IvSuccessController @Inject()(
 
             relationshipEstablishment.check(request.internalId, utr) flatMap {
               case RelationshipFound => onRelationshipFound
-              case RelationshipNotFound => onRelationshipNotFound
+              case RelationshipNotFound =>
+                logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+                  s" no relationship found in Estates IV, cannot continue with enrolling the credential," +
+                  s" sending the user back to the start of Estates IV")
+                onRelationshipNotFound
             }
-          } getOrElse noUtrOnSuccess(request)
+          } getOrElse {
+            logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+              s" no utr found in user answers, unable to continue with enrolling credential and claiming the estate on behalf of the user")
+            noUtrOnSuccess(request)
+          }
 
-        case None => noUtrOnSuccess(request)
+        case None =>
+          logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+            s" no user answers found, unable to continue with enrolling credential and claiming the estate on behalf of the user")
+          noUtrOnSuccess(request)
       }
   }
 

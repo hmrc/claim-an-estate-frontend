@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Session
 import views.html.{EstateLocked, EstateNotFound, EstateStillProcessing}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,28 +44,34 @@ class IvFailureController @Inject()(
                                      auditService: AuditService
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private val logger: Logger = Logger(getClass)
+  
   private def renderFailureReason(utr: String, internalId: String, journeyId: String)(implicit hc : HeaderCarrier) = {
     relationshipEstablishmentConnector.journeyId(journeyId) map {
       case RelationshipEstablishmentStatus.Locked =>
-        Logger.info(s"[IvFailure][status] $utr is locked")
+        logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] $utr is locked")
 
-        auditService.auditEstateClaimError(utr, internalId, s"User failed IV 3 times, has been locked out for 30 minutes, journey Id was $journeyId")
+        auditService.auditEstateClaimError(
+          utr,
+          internalId,
+          s"User failed IV 3 times, has been locked out for 30 minutes, journey Id was $journeyId"
+        )
 
         Redirect(routes.IvFailureController.estateLocked())
       case RelationshipEstablishmentStatus.NotFound =>
-        Logger.info(s"[IvFailure][status] $utr was not found")
+        logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] $utr was not found")
         Redirect(routes.IvFailureController.estateNotFound())
       case RelationshipEstablishmentStatus.InProcessing =>
-        Logger.info(s"[IvFailure][status] $utr is processing")
+        logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] $utr is processing")
         Redirect(routes.IvFailureController.estateStillProcessing())
       case UnsupportedRelationshipStatus(reason) =>
-        Logger.warn(s"[IvFailure][status] Unsupported IV failure reason: $reason")
+        logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason")
         Redirect(routes.FallbackFailureController.onPageLoad())
       case UpstreamRelationshipError(response) =>
-        Logger.warn(s"[IvFailure][status] HTTP response: $response")
+        logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] HTTP response: $response")
         Redirect(routes.FallbackFailureController.onPageLoad())
       case _ =>
-        Logger.warn(s"[IvFailure][status] No errorKey in HTTP response")
+        logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] No errorKey in HTTP response")
         Redirect(routes.FallbackFailureController.onPageLoad())
     }
   }
@@ -77,14 +84,15 @@ class IvFailureController @Inject()(
           val queryString = request.getQueryString("journeyId")
 
           queryString.fold{
-            Logger.warn(s"[IVFailureController][onEstateIvFailure] unable to retrieve a journeyId to determine the reason")
+            logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+              s" unable to retrieve a journeyId to determine the reason")
             Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
           }{
             journeyId =>
               renderFailureReason(utr, request.internalId, journeyId)
           }
         case None =>
-          Logger.warn(s"[IVFailureController][onEstateIvFailure] unable to retrieve a UTR")
+          logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] unable to retrieve a UTR")
           Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
       }
   }
@@ -96,24 +104,42 @@ class IvFailureController @Inject()(
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingEstatePage)
       } yield {
         connector.lock(EstatesStoreRequest(request.internalId, utr, isManagedByAgent, estateLocked = true)) map { _ =>
+          logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+            s" failed IV 3 times, estate is locked out from IV")
           Ok(lockedView(utr))
         }
-      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse {
+        logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+          s" unable to determine if estate is locked out from IV")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 
   def estateNotFound : Action[AnyContent] = actions.authWithData.async {
     implicit request =>
       request.userAnswers.get(UTRPage) map {
         utr =>
+          logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+            s" IV was unable to find the estate for utr $utr")
           Future.successful(Ok(notFoundView(utr)))
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse {
+        logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+          s" no utr stored in user answers when informing user the estate was not found")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 
   def estateStillProcessing : Action[AnyContent] = actions.authWithData.async {
     implicit request =>
       request.userAnswers.get(UTRPage) map {
         utr =>
+          logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+            s" IV determined the estate utr $utr was still processing")
           Future.successful(Ok(stillProcessingView(utr)))
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse {
+        logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+          s" no utr stored in user answers when informing user estate was still processing")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 }

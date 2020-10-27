@@ -20,10 +20,12 @@ import controllers.actions.Actions
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
 import pages.UTRPage
+import play.api.Logger
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,6 +35,8 @@ class SaveUTRController @Inject()(
                                    sessionRepository: SessionRepository,
                                    relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends BackendController(cc) {
+
+  private val logger: Logger = Logger(getClass)
 
   def save(utr: String): Action[AnyContent] = actions.authWithSession.async {
     implicit request =>
@@ -46,11 +50,17 @@ class SaveUTRController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(userAnswers)
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.IsAgentManagingEstateController.onPageLoad(NormalMode))
+          } yield {
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+              s" user has started the claim an estate journey for utr $utr")
+            Redirect(routes.IsAgentManagingEstateController.onPageLoad(NormalMode))
+          }
       }
 
       relationship.check(request.internalId, utr) flatMap {
         case RelationshipFound =>
+          logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+            s" relationship is already established in IV for utr $utr sending user to successfully claimed")
           Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
         case RelationshipNotFound =>
           body

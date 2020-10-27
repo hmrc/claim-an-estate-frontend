@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -84,10 +85,13 @@ class TestRelationshipEstablishmentController @Inject()(
                                                        (implicit ec : ExecutionContext)
   extends FrontendBaseController {
 
+  private val logger: Logger = Logger(getClass)
+
   def check(utr: String) = identify.async {
     implicit request =>
 
-      Logger.warn("[TestRelationshipEstablishmentController] EstateIV is using a test route, you don't want this in production.")
+      logger.warn(s"[Session ID: ${Session.id(hc)}][UTR: $utr]" +
+        s" EstateIV is using a test route, you don't want this in production.")
 
       val succeedRegex = "(2\\d{9})".r
       val failRegex = "(4\\d{9})".r
