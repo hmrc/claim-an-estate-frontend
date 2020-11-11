@@ -24,12 +24,12 @@ import javax.inject.Inject
 import models.requests.OptionalDataRequest
 import models.{EnrolmentCreated, EnrolmentFailed, NormalMode, TaxEnrolmentRequest}
 import pages.{IsAgentManagingEstatePage, UTRPage}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditService, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.IvSuccessView
 
@@ -45,9 +45,7 @@ class IvSuccessController @Inject()(
                                      errorHandler: ErrorHandler,
                                      auditService: AuditService
                                    )(implicit ec: ExecutionContext, val config: FrontendAppConfig)
-  extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
-
-  private val logger: Logger = Logger(getClass)
+  extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
   def onPageLoad(): Action[AnyContent] = actions.authWithSession.async {
     implicit request: OptionalDataRequest[AnyContent] =>
