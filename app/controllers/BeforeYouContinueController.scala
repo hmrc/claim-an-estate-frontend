@@ -22,11 +22,11 @@ import controllers.actions._
 import javax.inject.Inject
 import models.EstatesStoreRequest
 import pages.{IsAgentManagingEstatePage, UTRPage}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.BeforeYouContinueView
 
@@ -40,9 +40,7 @@ class BeforeYouContinueController @Inject()(
                                        view: BeforeYouContinueView,
                                        connector: EstatesStoreConnector
                                      )(implicit ec: ExecutionContext,
-                                       config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
-
-  private val logger: Logger = Logger(getClass)
+                                       config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
   def onPageLoad: Action[AnyContent] = actions.authWithData.async {
     implicit request =>

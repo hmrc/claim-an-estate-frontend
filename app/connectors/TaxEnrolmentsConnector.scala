@@ -20,8 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.{EnrolmentResponse, TaxEnrolmentRequest}
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.concurrent.{ExecutionContext, Future}
 
