@@ -16,17 +16,16 @@
 
 package config
 
-import java.net.{URI, URLEncoder}
-
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.{Call, Request}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import java.net.{URI, URLEncoder}
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
+class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "estates"
