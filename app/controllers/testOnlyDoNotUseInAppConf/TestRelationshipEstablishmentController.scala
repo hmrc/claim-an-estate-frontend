@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,13 @@ package controllers.testOnlyDoNotUseInAppConf
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -83,9 +82,7 @@ class TestRelationshipEstablishmentController @Inject()(
                                                          identify: IdentifierAction
                                                        )
                                                        (implicit ec : ExecutionContext)
-  extends FrontendBaseController {
-
-  private val logger: Logger = Logger(getClass)
+  extends FrontendBaseController with Logging {
 
   def check(utr: String) = identify.async {
     implicit request =>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package services
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,9 +39,7 @@ class RelationshipEstablishmentService @Inject()(
                                                   implicit val config: FrontendAppConfig,
                                                   implicit val executionContext: ExecutionContext
                                                 )
-  extends RelationshipEstablishment {
-
-  private val logger: Logger = Logger(getClass)
+  extends RelationshipEstablishment with Logging {
   
   def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
 

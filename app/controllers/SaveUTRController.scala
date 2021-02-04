@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,23 +20,22 @@ import controllers.actions.Actions
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
 import pages.UTRPage
-import play.api.Logger
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.Logging
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveUTRController @Inject()(
                                    actions: Actions,
-                                   val cc: ControllerComponents,
+                                   val controllerComponents: MessagesControllerComponents,
                                    sessionRepository: SessionRepository,
                                    relationship: RelationshipEstablishment
-                                 )(implicit ec: ExecutionContext) extends BackendController(cc) {
-
-  private val logger: Logger = Logger(getClass)
+                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def save(utr: String): Action[AnyContent] = actions.authWithSession.async {
     implicit request =>

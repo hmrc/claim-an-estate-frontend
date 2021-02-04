@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,15 @@ package controllers
 import connectors.{EstatesStoreConnector, RelationshipEstablishmentConnector}
 import controllers.actions.Actions
 import javax.inject.Inject
-import models.{EstatesStoreRequest, RelationshipEstablishmentStatus}
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
+import models.{EstatesStoreRequest, RelationshipEstablishmentStatus}
 import pages.{IsAgentManagingEstatePage, UTRPage}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.{EstateLocked, EstateNotFound, EstateStillProcessing}
 
@@ -42,9 +42,7 @@ class IvFailureController @Inject()(
                                      relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
                                      connector: EstatesStoreConnector,
                                      auditService: AuditService
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
-  private val logger: Logger = Logger(getClass)
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
   
   private def renderFailureReason(utr: String, internalId: String, journeyId: String)(implicit hc : HeaderCarrier) = {
     relationshipEstablishmentConnector.journeyId(journeyId) map {

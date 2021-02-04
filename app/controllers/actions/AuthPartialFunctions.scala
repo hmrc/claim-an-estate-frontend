@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,16 @@ package controllers.actions
 
 import config.FrontendAppConfig
 import controllers.routes
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.auth.core.{AuthorisationException, NoActiveSession}
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Session
 
 import scala.concurrent.Future
 
-trait AuthPartialFunctions {
-
-  private val logger: Logger = Logger(getClass)
+trait AuthPartialFunctions extends Logging {
   
-  def recoverFromException()(implicit config: FrontendAppConfig, hc : HeaderCarrier): PartialFunction[Throwable, Future[Result]] = {
+  def recoverFromException()(implicit config: FrontendAppConfig): PartialFunction[Throwable, Future[Result]] = {
     case _: NoActiveSession =>
       Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
     case _: AuthorisationException =>
