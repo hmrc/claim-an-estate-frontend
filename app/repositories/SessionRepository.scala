@@ -16,25 +16,24 @@
 
 package repositories
 
-import java.time.LocalDateTime
-
-import javax.inject.Inject
 import models.UserAnswers
 import play.api.Configuration
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
+import reactivemongo.api.bson.BSONDocument
+import reactivemongo.api.bson.collection.BSONSerializationPack
 import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.BSONDocument
-import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
+import reactivemongo.play.json.collection.Helpers.idWrites
 import reactivemongo.play.json.collection.JSONCollection
 
+import java.time.LocalDateTime
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DefaultSessionRepository @Inject()(
                                           mongo: ReactiveMongoApi,
                                           config: Configuration
                                         )(implicit ec: ExecutionContext) extends SessionRepository {
-
 
   private val collectionName: String = "user-answers"
 
@@ -43,10 +42,29 @@ class DefaultSessionRepository @Inject()(
   private def collection: Future[JSONCollection] =
     mongo.database.map(_.collection[JSONCollection](collectionName))
 
-  private val lastUpdatedIndex = Index(
-    key     = Seq("lastUpdated" -> IndexType.Ascending),
-    name    = Some("user-answers-last-updated-index"),
-    options = BSONDocument("expireAfterSeconds" -> cacheTtl)
+  private val lastUpdatedIndex = Index.apply(BSONSerializationPack)(
+    key = Seq("lastUpdated" -> IndexType.Ascending),
+    name = Some("user-answers-last-updated-index"),
+    expireAfterSeconds = Some(cacheTtl),
+    options = BSONDocument.empty,
+    unique = true,
+    background = false,
+    dropDups = false,
+    sparse = false,
+    version = None,
+    partialFilter = None,
+    storageEngine = None,
+    weights = None,
+    defaultLanguage = None,
+    languageOverride = None,
+    textIndexVersion = None,
+    sphereIndexVersion = None,
+    bits = None,
+    min = None,
+    max = None,
+    bucketSize = None,
+    collation = None,
+    wildcardProjection = None
   )
 
   val started: Future[Unit] =
@@ -70,8 +88,8 @@ class DefaultSessionRepository @Inject()(
     collection.flatMap {
       _.update(ordered = false)
         .one(selector, modifier, upsert = true).map {
-          lastError =>
-            lastError.ok
+        lastError =>
+          lastError.ok
       }
     }
   }
