@@ -5,13 +5,13 @@ object AppDependencies {
 
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "org.reactivemongo" %% "play2-reactivemongo"           % "0.18.8-play27",
-    "uk.gov.hmrc"       %% "logback-json-logger"           % "4.8.0",
-    "uk.gov.hmrc"       %% "govuk-template"                % "5.61.0-play-27",
-    "uk.gov.hmrc"       %% "play-health"                   % "3.15.0-play-27",
+    "org.reactivemongo" %% "play2-reactivemongo"           % "0.20.3-play27",
+    "uk.gov.hmrc"       %% "logback-json-logger"           % "5.1.0",
+    "uk.gov.hmrc"       %% "govuk-template"                % "5.63.0-play-27",
+    "uk.gov.hmrc"       %% "play-health"                   % "3.16.0-play-27",
     "uk.gov.hmrc"       %% "play-ui"                       % "8.21.0-play-27",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.5.0-play-27",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-27"    % "2.25.0",
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.6.0-play-27",
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-27"    % "3.4.0",
     "uk.gov.hmrc"       %% "play-language"                 % "4.10.0-play-27"
   )
 
@@ -36,6 +36,7 @@ object AppDependencies {
     "com.typesafe.akka" %% "akka-protobuf_2.12"  % akkaVersion,
     "com.typesafe.akka" %% "akka-slf4j_2.12"     % akkaVersion,
     "com.typesafe.akka" %% "akka-actor_2.12"     % akkaVersion,
-    "com.typesafe.akka" %% "akka-http-core_2.12" % akkaHttpVersion
+    "com.typesafe.akka" %% "akka-http-core_2.12" % akkaHttpVersion,
+    "commons-codec"      % "commons-codec"       % "1.12"
   )
 }
