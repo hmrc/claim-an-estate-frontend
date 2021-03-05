@@ -92,9 +92,9 @@ class IvSuccessController @Inject()(
         ua <- Future.fromTry(userAnswers.set(HasEnrolled, true))
         _ <- sessionRepository.set(ua)
       } yield {
-          auditService.auditEstateClaimed(utr, request.internalId)
-          val isAgentManagingEstate = userAnswers.get(IsAgentManagingEstatePage).getOrElse(false)
-          logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+        auditService.auditEstateClaimed(utr, request.internalId)
+        val isAgentManagingEstate = userAnswers.get(IsAgentManagingEstatePage).getOrElse(false)
+        logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
             s" successfully enrolled utr $utr to users credential after passing Estates IV, user can now maintain the estate")
         Ok(view(isAgentManagingEstate, utr))
       }) recoverWith {

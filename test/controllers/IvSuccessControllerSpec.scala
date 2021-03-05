@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.TaxEnrolmentsConnector
-import models.{EnrolmentCreated, EnrolmentFailed, TaxEnrolmentRequest, UserAnswers}
+import models.{EnrolmentCreated, TaxEnrolmentRequest, UserAnswers}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -379,7 +379,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
               .thenReturn(Future.successful(RelationshipFound))
 
             when(connector.enrol(eqTo(TaxEnrolmentRequest(utr)))(any(), any()))
-              .thenReturn(Future.successful(EnrolmentFailed(BAD_REQUEST, "bad juju")))
+              .thenReturn(Future.failed(new Exception("bad juju")))
 
             val result = route(application, request).value
 
@@ -391,7 +391,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
             verify(connector).enrol(eqTo(TaxEnrolmentRequest(utr)))(any(), any())
             verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
-            verify(mockAuditService).auditEstateClaimFailed(eqTo(utr), eqTo("id"), eqTo(EnrolmentFailed(BAD_REQUEST, "bad juju")))(any())
+            verify(mockAuditService).auditEstateClaimError(eqTo(utr), eqTo("id"), eqTo("bad juju"))(any())
 
             application.stop()
 
