@@ -20,10 +20,9 @@ import config.FrontendAppConfig
 import connectors.TaxEnrolmentsConnector
 import controllers.actions._
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.requests.OptionalDataRequest
-import models.{EnrolmentCreated, EnrolmentFailed, NormalMode, TaxEnrolmentRequest}
-import pages.{IsAgentManagingEstatePage, UTRPage}
+import models.{EnrolmentCreated, EnrolmentFailed, NormalMode, TaxEnrolmentRequest, UserAnswers}
+import pages.{HasEnrolled, IsAgentManagingEstatePage, UTRPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.IvSuccessView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IvSuccessController @Inject()(
@@ -48,44 +48,15 @@ class IvSuccessController @Inject()(
   extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
   def onPageLoad(): Action[AnyContent] = actions.authWithSession.async {
-    implicit request: OptionalDataRequest[AnyContent] =>
+    implicit request =>
       request.userAnswers match {
         case Some(userAnswers) =>
           userAnswers.get(UTRPage).map { utr =>
 
-            def onRelationshipFound = {
-              taxEnrolmentsConnector.enrol(TaxEnrolmentRequest(utr)) map {
-
-                case EnrolmentCreated =>
-
-                  auditService.auditEstateClaimed(utr, request.internalId)
-
-                  val isAgentManagingEstate = userAnswers.get(IsAgentManagingEstatePage) match {
-                    case None => false
-                    case Some(value) => value
-                  }
-                  logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
-                    s" successfully enrolled utr $utr to users credential after passing Estates IV, user can now maintain the estate")
-                  Ok(view(isAgentManagingEstate, utr))
-
-                case response: EnrolmentFailed =>
-                  auditService.auditEstateClaimFailed(utr, request.internalId, response)
-                  InternalServerError(errorHandler.internalServerErrorTemplate)
-
-              } recover {
-                case e =>
-                  logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
-                    s" failed to create enrolment for utr $utr with tax-enrolments," +
-                    s" users credential has not been updated, user needs to claim again")
-                  auditService.auditEstateClaimError(utr, request.internalId, e.getMessage)
-                  InternalServerError(errorHandler.internalServerErrorTemplate)
-              }
-            }
-
             lazy val onRelationshipNotFound = Future.successful(Redirect(routes.IsAgentManagingEstateController.onPageLoad(NormalMode)))
 
             relationshipEstablishment.check(request.internalId, utr) flatMap {
-              case RelationshipFound => onRelationshipFound
+              case RelationshipFound => onRelationshipFound(utr, userAnswers)
               case RelationshipNotFound =>
                 logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}]" +
                   s" no relationship found in Estates IV, cannot continue with enrolling the credential," +
@@ -103,6 +74,40 @@ class IvSuccessController @Inject()(
             s" no user answers found, unable to continue with enrolling credential and claiming the estate on behalf of the user")
           noUtrOnSuccess(request)
       }
+  }
+
+  private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(implicit request: OptionalDataRequest[_]) = {
+
+
+    val hasEnrolled: Boolean = userAnswers.get(HasEnrolled).getOrElse(false);
+
+    if (hasEnrolled) {
+      auditService.auditEstateClaimed(utr, request.internalId)
+      val isAgentManagingEstate = userAnswers.get(IsAgentManagingEstatePage).getOrElse(false)
+      Future.successful(Ok(view(isAgentManagingEstate, utr)))
+    } else {
+      taxEnrolmentsConnector.enrol(TaxEnrolmentRequest(utr)) map {
+        case EnrolmentCreated =>
+          auditService.auditEstateClaimed(utr, request.internalId)
+          val isAgentManagingEstate = userAnswers.get(IsAgentManagingEstatePage) match {
+            case None => false
+            case Some(value) => value
+          }
+          logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+            s" successfully enrolled utr $utr to users credential after passing Estates IV, user can now maintain the estate")
+          Ok(view(isAgentManagingEstate, utr))
+        case response: EnrolmentFailed =>
+          auditService.auditEstateClaimFailed(utr, request.internalId, response)
+          InternalServerError(errorHandler.internalServerErrorTemplate)
+      } recover {
+        case e =>
+          logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+            s" failed to create enrolment for utr $utr with tax-enrolments," +
+            s" users credential has not been updated, user needs to claim again")
+          auditService.auditEstateClaimError(utr, request.internalId, e.getMessage)
+          InternalServerError(errorHandler.internalServerErrorTemplate)
+      }
+    }
   }
 
   private def noUtrOnSuccess(request: OptionalDataRequest[AnyContent])(implicit hc: HeaderCarrier) = {
