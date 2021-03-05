@@ -21,11 +21,12 @@ import connectors.TaxEnrolmentsConnector
 import controllers.actions._
 import handlers.ErrorHandler
 import models.requests.OptionalDataRequest
-import models.{EnrolmentCreated, EnrolmentFailed, NormalMode, TaxEnrolmentRequest, UserAnswers}
+import models.{NormalMode, TaxEnrolmentRequest, UserAnswers}
 import pages.{HasEnrolled, IsAgentManagingEstatePage, UTRPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import services.{AuditService, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -43,7 +44,8 @@ class IvSuccessController @Inject()(
                                      taxEnrolmentsConnector: TaxEnrolmentsConnector,
                                      view: IvSuccessView,
                                      errorHandler: ErrorHandler,
-                                     auditService: AuditService
+                                     auditService: AuditService,
+                                     sessionRepository: SessionRepository
                                    )(implicit ec: ExecutionContext, val config: FrontendAppConfig)
   extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
@@ -78,7 +80,6 @@ class IvSuccessController @Inject()(
 
   private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(implicit request: OptionalDataRequest[_]) = {
 
-
     val hasEnrolled: Boolean = userAnswers.get(HasEnrolled).getOrElse(false);
 
     if (hasEnrolled) {
@@ -86,26 +87,27 @@ class IvSuccessController @Inject()(
       val isAgentManagingEstate = userAnswers.get(IsAgentManagingEstatePage).getOrElse(false)
       Future.successful(Ok(view(isAgentManagingEstate, utr)))
     } else {
-      taxEnrolmentsConnector.enrol(TaxEnrolmentRequest(utr)) map {
-        case EnrolmentCreated =>
+      (for {
+        _ <- taxEnrolmentsConnector.enrol(TaxEnrolmentRequest(utr))
+        ua <- Future.fromTry(userAnswers.set(HasEnrolled, true))
+        _ <- sessionRepository.set(ua)
+      } yield {
           auditService.auditEstateClaimed(utr, request.internalId)
-          val isAgentManagingEstate = userAnswers.get(IsAgentManagingEstatePage) match {
-            case None => false
-            case Some(value) => value
-          }
+          val isAgentManagingEstate = userAnswers.get(IsAgentManagingEstatePage).getOrElse(false)
           logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
             s" successfully enrolled utr $utr to users credential after passing Estates IV, user can now maintain the estate")
-          Ok(view(isAgentManagingEstate, utr))
-        case response: EnrolmentFailed =>
-          auditService.auditEstateClaimFailed(utr, request.internalId, response)
-          InternalServerError(errorHandler.internalServerErrorTemplate)
-      } recover {
+        Ok(view(isAgentManagingEstate, utr))
+      }) recoverWith {
         case e =>
-          logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
-            s" failed to create enrolment for utr $utr with tax-enrolments," +
-            s" users credential has not been updated, user needs to claim again")
-          auditService.auditEstateClaimError(utr, request.internalId, e.getMessage)
-          InternalServerError(errorHandler.internalServerErrorTemplate)
+          Future.fromTry(userAnswers.set(HasEnrolled, false)).flatMap { ua =>
+            sessionRepository.set(ua).map { _ =>
+              logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+                s" failed to create enrolment for utr $utr with tax-enrolments," +
+                s" users credential has not been updated, user needs to claim again")
+              auditService.auditEstateClaimError(utr, request.internalId, e.getMessage)
+              InternalServerError(errorHandler.internalServerErrorTemplate)
+            }
+          }
       }
     }
   }
