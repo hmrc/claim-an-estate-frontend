@@ -53,8 +53,8 @@ class DefaultSessionRepository @Inject()(
 
   private def ensureIndexes: Future[Unit] = for {
     col <- mongo.database.map(_.collection[JSONCollection](collectionName))
-    createdIndex <- col.indexesManager.ensure(lastUpdatedIndex)
-  } yield createdIndex
+    _ <- col.indexesManager.ensure(lastUpdatedIndex)
+  } yield ()
 
   override def get(id: String): Future[Option[UserAnswers]] =
     collection.flatMap(_.find(Json.obj("_id" -> id), None).one[UserAnswers])
