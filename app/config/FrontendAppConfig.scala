@@ -97,9 +97,4 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   def routeToSwitchLanguage: String => Call =
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
-  private lazy val accessibilityLinkBaseUrl = configuration.get[String]("urls.accessibility")
-  def accessibilityLinkUrl(implicit request: Request[_]): String = {
-    val userAction = URLEncoder.encode(new URI(request.uri).getPath, "UTF-8")
-    s"$accessibilityLinkBaseUrl?userAction=$userAction"
-  }
 }
