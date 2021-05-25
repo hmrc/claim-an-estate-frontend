@@ -18,17 +18,48 @@ package controllers
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
+import controllers.actions.IdentifierAction
 import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Session
 
-@Singleton
-class LogoutController @Inject()(appConfig: FrontendAppConfig, val controllerComponents: MessagesControllerComponents)
-  extends FrontendBaseController with Logging {
+import scala.concurrent.ExecutionContext
 
-  def logout: Action[AnyContent] = Action { implicit request =>
+@Singleton
+class LogoutController @Inject()(appConfig: FrontendAppConfig,
+                                 val controllerComponents:
+                                 MessagesControllerComponents,
+                                 identify: IdentifierAction,
+                                 auditConnector: AuditConnector)
+                                (implicit val executionContext: ExecutionContext)
+                                 extends FrontendBaseController with Logging {
+
+  def logout: Action[AnyContent] = identify { implicit request =>
+
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
     logger.info(s"[Claiming][Session ID: Session ID: ${Session.id(hc)}] user signed out from the service")
-    Redirect(appConfig.logoutUrl).withNewSession
+
+    if(appConfig.logoutAudit) {
+
+      val auditData = Map(
+        "sessionId" -> Session.id(hc),
+        "event" -> "signout",
+        "service" -> "claim-an-estate-frontend",
+        "userGroup" -> request.affinityGroup.toString
+      )
+
+      auditConnector.sendExplicitAudit(
+        "estates",
+        auditData
+      )
+
+    }
+
+    Redirect(appConfig.logoutUrl).withSession(session = ("feedbackId", Session.id(hc)))
   }
 }

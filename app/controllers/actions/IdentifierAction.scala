@@ -32,9 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
-class AuthenticatedIdentifierAction @Inject()(
-                                               override val authConnector: AuthConnector,
-                                               val parser: BodyParsers.Default
+class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthConnector,
+                                              val parser: BodyParsers.Default
                                              )
                                              (implicit val executionContext: ExecutionContext,
                                               implicit val config: FrontendAppConfig)
@@ -44,9 +43,9 @@ class AuthenticatedIdentifierAction @Inject()(
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.internalId and Retrievals.credentials) {
-      case Some(internalId) ~ Some(credentials) =>
-        block(IdentifierRequest(request, internalId, credentials))
+    authorised().retrieve(Retrievals.internalId and Retrievals.credentials and Retrievals.affinityGroup) {
+      case Some(internalId) ~ Some(credentials) ~ Some(affinityGroup) =>
+        block(IdentifierRequest(request, internalId, affinityGroup, credentials))
       case _ =>
         logger.error(s"[Session ID: ${Session.id(hc)}] user not authenticated. Unable to retrieve internal Id")
         throw new UnauthorizedException("Unable to retrieve internal Id")
