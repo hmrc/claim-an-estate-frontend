@@ -29,14 +29,6 @@ trait ViewBehaviours extends ViewSpecBase {
 
       "rendered" must {
 
-        "have the correct banner title" in {
-
-          val doc = asDocument(view)
-          val nav = doc.getElementById("proposition-menu")
-          val span = nav.children.first
-          span.text mustBe messages("site.service_name")
-        }
-
         "display the correct browser title" in {
 
           val doc = asDocument(view)
@@ -58,7 +50,48 @@ trait ViewBehaviours extends ViewSpecBase {
         "display language toggles" in {
 
           val doc = asDocument(view)
-          assertRenderedById(doc, "cymraeg-switch")
+          assertRenderedByCssSelector(doc, "a[lang=cy]")
+        }
+      }
+    }
+  }
+
+  def normalPageWithCaption(view: HtmlFormat.Appendable,
+                            messageKeyPrefix: String,
+                            captionKey: String,
+                            captionParam: String,
+                            expectedGuidanceKeys: String*): Unit = {
+
+    "behave like a normal page" when {
+
+      "rendered" must {
+
+        "display the correct browser title" in {
+
+          val doc = asDocument(view)
+          assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
+        }
+
+        "display the correct page title" in {
+
+          val doc = asDocument(view)
+          assertPageTitleWithCaptionEqualsMessages(doc,
+            expectedCaptionMessageKey = s"$captionKey.subheading",
+            captionParam = captionParam,
+            expectedMessageKey = s"$messageKeyPrefix.heading"
+          )
+        }
+
+        "display the correct guidance" in {
+
+          val doc = asDocument(view)
+          for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
+        }
+
+        "display language toggles" in {
+
+          val doc = asDocument(view)
+          assertRenderedByCssSelector(doc, "a[lang=cy]")
         }
       }
     }
@@ -72,16 +105,6 @@ trait ViewBehaviours extends ViewSpecBase {
 
         val doc = asDocument(view)
         assertRenderedById(doc, "back-link")
-      }
-    }
-  }
-
-  def pageWithoutLogoutButton(view: HtmlFormat.Appendable) = {
-
-    "behave like a page without a logout button" must {
-      "not have a logout button" in {
-        val doc = asDocument(view)
-        assertNotRenderedById(doc, "logOut")
       }
     }
   }

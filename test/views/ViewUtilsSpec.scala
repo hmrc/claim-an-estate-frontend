@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package views
 
-import javax.inject.Inject
+class ViewUtilsSpec extends ViewSpecBase {
 
-import forms.mappings.Mappings
-import play.api.data.Form
+  "View utils" must {
 
-class IsAgentManagingEstateFormProvider @Inject() extends Mappings {
+    "render the subheading for a utr" in {
+      val heading = ViewUtils.subheading("1234567890")
+      heading mustBe "The trust’s UTR: 1234567890"
+    }
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isAgentManagingEstateYesNo.error.required")
-    )
+    "render the subheading for a urn" in {
+      val heading = ViewUtils.subheading("ABTRUST12345678")
+      heading mustBe "The trust’s URN: ABTRUST12345678"
+    }
+
+  }
+
 }

@@ -15,40 +15,53 @@
  *@
 
 @import config.FrontendAppConfig
+@import views.html.components.{HeadingWithIdentifierCaption, SubmitButton}
 
 @this(
- main_template: MainTemplate,
- config: FrontendAppConfig
+    mainTemplate: MainTemplate,
+    config: FrontendAppConfig,
+    heading: HeadingWithIdentifierCaption,
+    formHelper: FormWithCSRF,
+    submitButton: SubmitButton
 )
 
 @(isAgent: Boolean, utr: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
- title = if(isAgent) {messages("ivSuccess.agent.title")} else {messages("ivSuccess.no.agent.title")}
+@mainTemplate(
+    title = if(isAgent) {messages("ivSuccess.agent.title")} else {messages("ivSuccess.no.agent.title")},
+    showBackLink = true
 ) {
 
     <span class="govuk-caption-xl">@messages("ivSuccess.subheading", utr)</span>
     @if(isAgent) {
-        @components.heading("ivSuccess.agent.heading", headingSize = "heading-large govuk-fieldset__heading")
+
+        @heading(
+            messagePrefix = "ivSuccess.agent",
+            caption = subheading(utr)
+        )
+
         <p>@messages("ivSuccess.agent.paragraph1")</p>
         <p>@messages("ivSuccess.agent.paragraph2")</p>
         <p>@messages("ivSuccess.agent.paragraph3")</p>
 
-            @if(config.playbackEnabled) {
-                <p>@messages("ivSuccess.agent.paragraph4") <a href="@config.estatesContinueUrl">@messages("ivSuccess.agent.continueLink")</a>.</p>
-            }
+       <p>@messages("ivSuccess.agent.paragraph4") <a href="@config.estatesContinueUrl">@messages("ivSuccess.agent.continueLink")</a>.</p>
 
         <p>@messages("ivSuccess.agent.paragraph5") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
 
     } else {
-            @components.heading("ivSuccess.no.agent.heading", headingSize = "heading-large govuk-fieldset__heading")
+
+            @heading(
+                messagePrefix = "ivSuccess.no.agent",
+                caption = subheading(utr)
+            )
 
             <p>@messages("ivSuccess.no.agent.paragraph1")</p>
             <p>@messages("ivSuccess.no.agent.paragraph2") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
 
-        @if(config.playbackEnabled) {
-            @components.button_link(messages("site.continue"), config.estatesContinueUrl)
-        }
+            @formHelper(action = IvSuccessController.onSubmit(), 'autoComplete -> "off") {
+                @submitButton(Some(messages("site.continue")))
+            }
+
     }
 
 }

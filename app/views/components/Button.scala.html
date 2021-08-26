@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-import javax.inject.Inject
+@this(govukButton : GovukButton)
 
-import forms.mappings.Mappings
-import play.api.data.Form
+@(
+messageKey: String = "site.continue",
+isStartButton:Boolean = false,
+)(implicit messages: Messages)
 
-class IsAgentManagingEstateFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isAgentManagingEstateYesNo.error.required")
-    )
-}
+@govukButton(Button(
+ isStartButton = isStartButton,
+ content = Text(messages(messageKey))
+))

@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import javax.inject.Inject
-
-import forms.mappings.Mappings
-import play.api.data.Form
-
-class IsAgentManagingEstateFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isAgentManagingEstateYesNo.error.required")
-    )
+case object IsUTR {
+  def apply(identifier: String): Boolean = identifier.length == 10
 }

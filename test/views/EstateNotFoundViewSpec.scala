@@ -21,19 +21,17 @@ import views.html.EstateNotFound
 
 class EstateNotFoundViewSpec extends ViewBehaviours {
 
-  val utr = "0987654321"
-
   "EstateNotFound view" must {
 
     val view = viewFor[EstateNotFound](Some(emptyUserAnswers))
 
-    val applyView = view.apply(utr)(fakeRequest, messages)
+    val applyView = view.apply()(fakeRequest, messages)
 
     behave like normalPage(applyView, "notFound", "p1", "p2", "p3", "link1")
 
     "display the correct heading" in {
       val doc = asDocument(applyView)
-      assertContainsText(doc, messages("notFound.heading", utr))
+      assertContainsText(doc, messages("notFound.heading"))
     }
 
   }

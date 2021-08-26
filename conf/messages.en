@@ -69,11 +69,11 @@ notFound.p3 = If you need help with this service
 notFound.link1 = contact the deceased estate helpline (opens in a new window or tab)
 notFound.button=Try again
 
-isAgentManagingEstate.title = Is an agent managing the estate’s online register?
-isAgentManagingEstate.heading = Is an agent managing the estate’s online register?
-isAgentManagingEstate.subheading = This estate’s UTR: {0}
-isAgentManagingEstate.checkYourAnswersLabel = Is an agent managing the estate’s online register?
-isAgentManagingEstate.error.required = Select yes if an agent is managing the estate’s online register
+isAgentManagingEstateYesNo.title = Is an agent managing the estate’s online register?
+isAgentManagingEstateYesNo.heading = Is an agent managing the estate’s online register?
+isAgentManagingEstateYesNo.subheading = This estate’s UTR: {0}
+isAgentManagingEstateYesNo.checkYourAnswersLabel = Is an agent managing the estate’s online register?
+isAgentManagingEstateYesNo.error.required = Select yes if an agent is managing the estate’s online register
 
 ivSuccess.subheading = This estate’s UTR: {0}
 ivSuccess.contactLink =  contact the deceased estate helpline (opens in a new window or tab)
