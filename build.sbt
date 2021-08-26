@@ -50,7 +50,8 @@ lazy val root = (project in file("."))
       "javascripts/claimanestatefrontend-app.js" ->
         group(Seq(
           "javascripts/claimanestatefrontend.js",
-          "javascripts/iebacklink.js"
+          "javascripts/iebacklink.js",
+          "javascripts/print.js"
         ))
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
