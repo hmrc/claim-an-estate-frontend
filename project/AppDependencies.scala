@@ -5,17 +5,15 @@ object AppDependencies {
 
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "org.reactivemongo" %% "play2-reactivemongo"           % "0.20.13-play27",
-    "uk.gov.hmrc"       %% "play-health"                   % "3.16.0-play-27",
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "0.90.0-play-27",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.6.0-play-27",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-27"    % "5.8.0",
-    "uk.gov.hmrc"       %% "play-language"                 % "5.1.0-play-27"
+    "org.reactivemongo" %% "play2-reactivemongo"           % "0.20.13-play28",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "0.90.0-play-28",
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.9.0-play-28",
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % "5.9.0"
   )
 
   private val test: Seq[ModuleID] = Seq(
-    "org.scalatest"          %% "scalatest"          % "3.0.7",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.0",
+    "org.scalatest"          %% "scalatest"          % "3.0.9",
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0",
     "org.pegdown"            %  "pegdown"            % "1.6.0",
     "org.jsoup"              %  "jsoup"              % "1.12.1",
     "com.typesafe.play"      %% "play-test"          % PlayVersion.current,
@@ -26,7 +24,7 @@ object AppDependencies {
 
   def apply(): Seq[ModuleID] = compile ++ test
 
-  private val akkaVersion: String = "2.6.7"
+  private val akkaVersion: String = "2.6.10"
   private val akkaHttpVersion: String = "10.1.12"
 
   val overrides = Seq(
