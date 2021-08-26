@@ -31,11 +31,6 @@ class EstateStillProcessingViewSpec extends ViewBehaviours {
 
     behave like normalPageWithCaption(applyView, "stillProcessing", "utr", utr, "p2")
 
-    "display the correct subheading" in {
-      val doc = asDocument(applyView)
-      assertContainsText(doc, messages("stillProcessing.subheading", utr))
-    }
-
   }
 
 }
