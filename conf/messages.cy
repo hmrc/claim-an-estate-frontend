@@ -1,7 +1,7 @@
 date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn
-error.browser.title.prefix=Gwall:
+
 error.boolean=Rhowch ateb
 error.invalid_date=Rhowch ddyddiad cywir
 error.date.day_blank=Nodwch ddiwrnod
@@ -19,6 +19,7 @@ session_expired.title=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.heading=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.guidance=Mae’r manylion a roddwyd gennych wedi’u dileu gan nad ydych wedi mynd yn eich blaen â’r gwasanaeth ers 15 munud.
 session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i gynnal yr ystâd.
+
 site.back=Yn ôl
 site.delete=Tynnu
 site.edit=Newid
@@ -27,10 +28,15 @@ site.hidden-edit=Newid {0}
 site.no=Na
 site.yes=Iawn
 site.continue=Yn eich blaen
-site.service_name=Cofrestru Ystâd a’i Chynnal
 site.textarea.char_limit=(Y terfyn yw {0} o gymeriadau)
 site.sign_in=Mewngofnodi
 site.sign_out=Allgofnodi
+site.error=Gwall:
+
+service.name=Cofrestru Ystâd a’i Chynnal
+
+utr.subheading = UTR yr ystâd hon: {0}
+
 timeout.title=Bydd eich cais yn dod i ben cyn hir
 timeout.message=Byddwn yn ailosod eich cais os na fyddwch yn ymateb cyn pen
 timeout.keep-alive-button=Yn eich blaen â’r cais

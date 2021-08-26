@@ -21,20 +21,17 @@ import controllers.routes
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.Call
+import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
-
-  private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "estates"
+class FrontendAppConfig @Inject() (val configuration: Configuration,
+                                   contactFrontendConfig: ContactFrontendConfig,
+                                   servicesConfig: ServicesConfig) {
 
   lazy val serviceName: String = configuration.get[String]("serviceName")
 
-  val analyticsToken: String = configuration.get[String](s"google-analytics.token")
-  val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
-  val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   lazy val estatesRegistration: String = configuration.get[String]("urls.estatesRegistration")
   lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
@@ -45,14 +42,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val logoutAudit: Boolean =
     configuration.get[Boolean]("microservice.services.features.auditing.logout")
 
-  lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
-  lazy val timeoutLength: String = configuration.get[String]("timeout.length")
+  lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
+  lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
 
   lazy val estatesContinueUrl: String = {
     configuration.get[String]("urls.maintainContinue")
   }
-
-  lazy val playbackEnabled: Boolean = configuration.get[Boolean]("microservice.services.features.playback.enabled")
 
   lazy val taxEnrolmentsUrl: String = configuration.get[Service]("microservice.services.tax-enrolments").baseUrl + "/tax-enrolments"
 
@@ -62,13 +57,13 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val relationshipIdentifier : String =
     configuration.get[String]("microservice.services.self.relationship-establishment.identifier")
 
-  lazy val locationCanonicalList: String = configuration.get[String]("location.canonical.list.all")
-  lazy val locationCanonicalListNonUK: String = configuration.get[String]("location.canonical.list.nonUK")
-
   lazy val estatesStoreUrl: String = configuration.get[Service]("microservice.services.estates-store").baseUrl + "/estates-store"
+
+  def relationshipEstablishmentBaseUrl : String = servicesConfig.baseUrl("test.relationship-establishment")
 
   lazy val relationshipEstablishmentUrl : String =
     configuration.get[Service]("microservice.services.relationship-establishment").baseUrl
+
 
   lazy val relationshipEstablishmentStubbed: Boolean =
     configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")

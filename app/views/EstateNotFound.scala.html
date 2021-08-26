@@ -15,22 +15,24 @@
  *@
 
 @import config.FrontendAppConfig
+@import views.html.components.Heading
 
 @this(
-  main_template: MainTemplate,
-  config: FrontendAppConfig
+ mainTemplate: MainTemplate,
+ config: FrontendAppConfig,
+ heading: Heading
 )
 
-@(utr: String)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-title = messages("notFound.title")
+@mainTemplate(
+ title = messages("notFound.title"),
+ showBackLink = true
 ) {
 
-@components.heading("notFound.heading", headingSize = "heading-large")
+ @heading("notFound.heading")
 
-<p>@messages("notFound.p1")</p>
-<p>@messages("notFound.p2")</p>
-<p>@messages("notFound.p3") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("notFound.link1")</a>.</p>
-@components.button_link("notFound.button", config.estatesRegistration)
+ <p>@messages("notFound.p1")</p>
+ <p>@messages("notFound.p2")</p>
+ <p>@messages("notFound.p3") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("notFound.link1")</a>.</p>
 }

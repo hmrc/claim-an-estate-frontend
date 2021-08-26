@@ -116,4 +116,8 @@ class IvSuccessController @Inject()(
     auditService.auditEstateClaimError("Unknown", request.internalId, "No UTR available on success")
     Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
+
+  def onSubmit(): Action[AnyContent] = actions.authWithSession { _ =>
+      Redirect(config.estatesContinueUrl)
+  }
 }

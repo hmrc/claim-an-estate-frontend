@@ -14,18 +14,24 @@
  * limitations under the License.
  *@
 
+@import views.html.components.HeadingWithIdentifierCaption
+
 @this(
-main_template: MainTemplate
+    mainTemplate: MainTemplate,
+    heading: HeadingWithIdentifierCaption
 )
 
 @(utr: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("locked.title")
+@mainTemplate(
+    title = messages("locked.title"),
+    showBackLink = true
 ) {
 
-    <span class="govuk-caption-xl">@messages("locked.subheading", utr)</span>
-    @components.heading("locked.heading", headingSize = "heading-large govuk-fieldset__heading")
+    @heading(
+        messagePrefix = "locked",
+        caption = subheading(utr)
+    )
 
     <p>@messages("locked.p1")</p>
     <p>@messages("locked.p2")</p>

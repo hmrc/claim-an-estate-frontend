@@ -24,8 +24,7 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
 
   def yesNoPage(form: Form[Boolean],
                 createView: Form[Boolean] => HtmlFormat.Appendable,
-                messageKeyPrefix: String,
-                expectedFormAction: String): Unit = {
+                messageKeyPrefix: String): Unit = {
 
     "behave like a page with a Yes/No question" when {
 
@@ -36,7 +35,7 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
           val doc = asDocument(createView(form))
           val legends = doc.getElementsByTag("legend")
           legends.size mustBe 1
-          legends.first.text mustBe messages(s"$messageKeyPrefix.heading")
+          legends.first.text must include(messages(s"$messageKeyPrefix.heading"))
         }
 
         "contain an input for the value" in {
@@ -75,21 +74,20 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
         "show an error summary" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertRenderedById(doc, "error-summary-heading")
+          assertRenderedByClass(doc, "govuk-error-summary")
         }
 
-        "show an error associated with the value field" in {
+        "show an error in the value field's label" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          val errorSpan = doc.getElementsByClass("error-message").first
-          errorSpan.text mustBe (messages("error.browser.title.prefix") + " " + messages(errorMessage))
-          doc.getElementsByTag("fieldset").first.attr("aria-describedby") contains errorSpan.attr("id")
+          val errorSpan = doc.getElementsByClass("govuk-error-message").first
+          errorSpan.text mustBe s"""${messages("site.error")} ${messages(errorMessage)}"""
         }
 
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", ViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}"""))
+          assertEqualsValue(doc, "title", ViewUtils.breadcrumbTitle(s"""${messages("site.error")} ${messages(s"$messageKeyPrefix.title")}"""))
         }
       }
     }

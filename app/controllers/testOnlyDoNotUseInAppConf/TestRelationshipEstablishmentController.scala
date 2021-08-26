@@ -51,22 +51,24 @@ object RelationshipJson {
 class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,config: FrontendAppConfig)
                                                   (implicit val ec : ExecutionContext) {
 
-  private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentUrl}/relationship-establishment/relationship/"
+  private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
 
-  private def relationshipEstablishmentGetUrl(credId :String): String = s"${config.relationshipEstablishmentUrl}/relationship-establishment/relationship/$credId"
+  private def relationshipEstablishmentGetUrl(credId :String): String =
+    s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/$credId"
 
-  private def relationshipEstablishmentDeleteUrl(credId: String): String = s"${config.relationshipEstablishmentUrl}/test/relationship/$credId"
+  private def relationshipEstablishmentDeleteUrl(credId: String): String =
+    s"${config.relationshipEstablishmentBaseUrl}/test/relationship/$credId"
 
   private def newRelationship(credId: String, utr: String): Relationship =
     Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
 
-  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) =
+  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClient.POST[RelationshipJson, HttpResponse](relationshipEstablishmentPostUrl,RelationshipJson(newRelationship(credId, utr)))
 
-  def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier) =
+  def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClient.GET[HttpResponse](relationshipEstablishmentGetUrl(credId))
 
-  def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier) =
+  def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClient.DELETE[HttpResponse](relationshipEstablishmentDeleteUrl(credId))
 
 }

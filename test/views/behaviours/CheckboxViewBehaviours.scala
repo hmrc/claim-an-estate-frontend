@@ -34,7 +34,7 @@ trait CheckboxViewBehaviours[A] extends ViewBehaviours {
         val doc = asDocument(createView(form))
         val legends = doc.getElementsByTag("legend")
         legends.size mustBe 1
-        legends.text contains legend.getOrElse(messages(s"$messageKeyPrefix.heading"))
+        legends.first.text mustBe legend.getOrElse(messages(s"$messageKeyPrefix.heading"))
       }
 
       "contain an input for the value" in {
@@ -88,25 +88,24 @@ trait CheckboxViewBehaviours[A] extends ViewBehaviours {
 
       "not render an error summary" in {
         val doc = asDocument(createView(form))
-        assertNotRenderedById(doc, "error-summary-heading")
+        assertNotRenderedById(doc, "govuk-error-summary")
       }
 
 
       "show error in the title" in {
         val doc = asDocument(createView(form.withError(FormError(fieldKey, "error.invalid"))))
-        doc.title.contains(messages("error.browser.title.prefix")) mustBe true
+        doc.title.contains("Error: ") mustBe true
       }
 
       "show an error summary" in {
         val doc = asDocument(createView(form.withError(FormError(fieldKey, "error.invalid"))))
-        assertRenderedById(doc, "error-summary-heading")
+        assertRenderedByClass(doc, "govuk-error-summary")
       }
 
-      "show an error associated with the value field" in {
+      "show an error in the value field's label" in {
         val doc = asDocument(createView(form.withError(FormError(fieldKey, "error.invalid"))))
-        val errorSpan = doc.getElementsByClass("error-message").first
-        errorSpan.text mustBe (messages("error.browser.title.prefix") + " " + messages("error.invalid"))
-        doc.getElementsByTag("fieldset").first.attr("aria-describedby") contains errorSpan.attr("id")
+        val errorSpan = doc.getElementsByClass("error-notification").first
+        errorSpan.text mustBe messages("error.invalid")
       }
     }
   }

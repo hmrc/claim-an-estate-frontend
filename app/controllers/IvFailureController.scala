@@ -119,7 +119,7 @@ class IvFailureController @Inject()(
         utr =>
           logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
             s" IV was unable to find the estate for utr $utr")
-          Future.successful(Ok(notFoundView(utr)))
+          Future.successful(Ok(notFoundView()))
       } getOrElse {
         logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
           s" no utr stored in user answers when informing user the estate was not found")

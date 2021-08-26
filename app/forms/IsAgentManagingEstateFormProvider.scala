@@ -25,6 +25,6 @@ class IsAgentManagingEstateFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("isAgentManagingEstate.error.required")
+      "value" -> boolean("isAgentManagingEstateYesNo.error.required")
     )
 }
