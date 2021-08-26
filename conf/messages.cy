@@ -34,6 +34,8 @@ site.sign_in=Mewngofnodi
 site.sign_out=Allgofnodi
 site.error=Gwall:
 
+utr.subheading = UTR yr ystâd hon: {0}
+
 timeout.title=Bydd eich cais yn dod i ben cyn hir
 timeout.message=Byddwn yn ailosod eich cais os na fyddwch yn ymateb cyn pen
 timeout.keep-alive-button=Yn eich blaen â’r cais
