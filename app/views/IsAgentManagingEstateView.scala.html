@@ -29,7 +29,7 @@
 @(form: Form[_], mode: Mode, utr: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = s"${errorPrefix(form)}${messages("isAgentManagingTrustYesNo.title")}",
+    title = s"${errorPrefix(form)}${messages("isAgentManagingEstateYesNo.title")}",
     showBackLink = true
     ) {
 
@@ -39,7 +39,7 @@
 
         @inputYesNo(
             field = form("value"),
-            label = messages("isAgentManagingTrustYesNo.heading"),
+            label = messages("isAgentManagingEstateYesNo.heading"),
             caption = Some(subheading(utr)),
             legendAsHeading = true
         )

@@ -22,12 +22,7 @@ class ViewUtilsSpec extends ViewSpecBase {
 
     "render the subheading for a utr" in {
       val heading = ViewUtils.subheading("1234567890")
-      heading mustBe "The trust’s UTR: 1234567890"
-    }
-
-    "render the subheading for a urn" in {
-      val heading = ViewUtils.subheading("ABTRUST12345678")
-      heading mustBe "The trust’s URN: ABTRUST12345678"
+      heading mustBe "The estate’s UTR: 1234567890"
     }
 
   }

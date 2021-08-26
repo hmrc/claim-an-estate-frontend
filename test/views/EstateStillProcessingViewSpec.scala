@@ -29,7 +29,7 @@ class EstateStillProcessingViewSpec extends ViewBehaviours {
 
     val applyView = view.apply(utr)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "stillProcessing","p2")
+    behave like normalPageWithCaption(applyView, "stillProcessing", "utr", utr, "p2")
 
     "display the correct subheading" in {
       val doc = asDocument(applyView)

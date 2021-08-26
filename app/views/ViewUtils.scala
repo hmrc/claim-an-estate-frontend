@@ -16,7 +16,6 @@
 
 package views
 
-import models.IsUTR
 import play.api.data.{Field, Form, FormError}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.{RadioItem, Text}
@@ -25,7 +24,7 @@ import viewmodels.RadioOption
 object ViewUtils {
 
   def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
-    if (form.hasErrors || form.hasGlobalErrors) s"${messages("error.browser.title.prefix")} " else ""
+    if (form.hasErrors || form.hasGlobalErrors) s"${messages("site.error")} " else ""
   }
 
   def breadcrumbTitle(title: String)(implicit messages: Messages): String = {
@@ -33,11 +32,7 @@ object ViewUtils {
   }
 
   def subheading(identifier: String)(implicit messages: Messages) : String = {
-    if (IsUTR(identifier)) {
       s"${messages("utr.subheading", identifier)}"
-    } else {
-      s"${messages("urn.subheading", identifier)}"
-    }
   }
 
   def errorHref(error: FormError, radioOptions: Seq[RadioOption] = Nil): String = {

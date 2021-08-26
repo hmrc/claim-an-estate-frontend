@@ -117,8 +117,7 @@ class IvSuccessController @Inject()(
     Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
-  def onSubmit(): Action[AnyContent] = actions.authWithSession {
-    implicit request =>
+  def onSubmit(): Action[AnyContent] = actions.authWithSession { _ =>
       Redirect(config.estatesContinueUrl)
   }
 }

@@ -3,7 +3,6 @@ date.day = Day
 date.month = Month
 date.year = Year
 
-error.browser.title.prefix = Error:
 error.boolean = Please give an answer
 error.invalid_date = Give a correct date
 error.date.day_blank = Enter a day
@@ -36,6 +35,7 @@ site.service_name = Register and Maintain an Estate
 site.textarea.char_limit = (Limit is {0} characters)
 site.sign_out = Sign out
 site.sign_in = Sign in
+site.error = Error:
 
 #timeout dialog
 timeout.title=Your application will time out soon
@@ -44,6 +44,8 @@ timeout.keep-alive-button=Continue application
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+utr.subheading = The estate’s UTR: {0}
 
 locked.title = Your answers do not match the details we hold about this estate
 locked.heading = Your answers do not match the details we hold about this estate
