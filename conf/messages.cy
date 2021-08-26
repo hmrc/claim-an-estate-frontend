@@ -28,11 +28,12 @@ site.hidden-edit=Newid {0}
 site.no=Na
 site.yes=Iawn
 site.continue=Yn eich blaen
-site.name=Cofrestru Ystâd a’i Chynnal
 site.textarea.char_limit=(Y terfyn yw {0} o gymeriadau)
 site.sign_in=Mewngofnodi
 site.sign_out=Allgofnodi
 site.error=Gwall:
+
+service.name=Cofrestru Ystâd a’i Chynnal
 
 utr.subheading = UTR yr ystâd hon: {0}
 
