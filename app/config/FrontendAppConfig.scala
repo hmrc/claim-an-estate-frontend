@@ -22,12 +22,10 @@ import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class FrontendAppConfig @Inject() (val configuration: Configuration,
-                                   contactFrontendConfig: ContactFrontendConfig,
-                                   servicesConfig: ServicesConfig) {
+                                   contactFrontendConfig: ContactFrontendConfig) {
 
   lazy val serviceName: String = configuration.get[String]("serviceName")
 
@@ -58,8 +56,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
     configuration.get[String]("microservice.services.self.relationship-establishment.identifier")
 
   lazy val estatesStoreUrl: String = configuration.get[Service]("microservice.services.estates-store").baseUrl + "/estates-store"
-
-  def relationshipEstablishmentBaseUrl : String = servicesConfig.baseUrl("test.relationship-establishment")
 
   lazy val relationshipEstablishmentUrl : String =
     configuration.get[Service]("microservice.services.relationship-establishment").baseUrl

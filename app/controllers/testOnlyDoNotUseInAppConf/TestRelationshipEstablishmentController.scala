@@ -51,13 +51,13 @@ object RelationshipJson {
 class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,config: FrontendAppConfig)
                                                   (implicit val ec : ExecutionContext) {
 
-  private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
+  private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentUrl}/relationship-establishment/relationship/"
 
   private def relationshipEstablishmentGetUrl(credId :String): String =
-    s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/$credId"
+    s"${config.relationshipEstablishmentUrl}/relationship-establishment/relationship/$credId"
 
   private def relationshipEstablishmentDeleteUrl(credId: String): String =
-    s"${config.relationshipEstablishmentBaseUrl}/test/relationship/$credId"
+    s"${config.relationshipEstablishmentUrl}/test/relationship/$credId"
 
   private def newRelationship(credId: String, utr: String): Relationship =
     Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)

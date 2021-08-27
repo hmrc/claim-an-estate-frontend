@@ -18,7 +18,7 @@ object AppDependencies {
     "org.jsoup"              %  "jsoup"              % "1.12.1",
     "com.typesafe.play"      %% "play-test"          % PlayVersion.current,
     "org.mockito"            %  "mockito-all"        % "1.10.19",
-    "org.scalacheck"         %% "scalacheck"         % "1.14.1",
+    "org.scalacheck"         %% "scalacheck"         % "1.14.3",
     "com.github.tomakehurst" % "wiremock-standalone" % "2.27.2"
   ).map(_ % Test)
 
