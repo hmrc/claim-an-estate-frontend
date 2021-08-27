@@ -9,6 +9,7 @@ GET        /locked                                      controllers.IvFailureCon
 GET        /still-processing                            controllers.IvFailureController.estateStillProcessing
 
 GET        /not-found                                   controllers.IvFailureController.estateNotFound
+POST       /not-found                                   controllers.IvFailureController.estateNotFoundOnSubmit
 
 GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad
 
