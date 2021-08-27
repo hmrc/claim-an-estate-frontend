@@ -16,8 +16,10 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import connectors.{EstatesStoreConnector, RelationshipEstablishmentConnector}
 import controllers.actions.Actions
+
 import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{EstatesStoreRequest, RelationshipEstablishmentStatus}
@@ -35,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IvFailureController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
+                                     appConfig: FrontendAppConfig,
                                      lockedView: EstateLocked,
                                      stillProcessingView: EstateStillProcessing,
                                      notFoundView: EstateNotFound,
@@ -125,6 +128,10 @@ class IvFailureController @Inject()(
           s" no utr stored in user answers when informing user the estate was not found")
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }
+  }
+
+  def estateNotFoundOnSubmit: Action[AnyContent] = Action { _ =>
+    Redirect(appConfig.estatesRegistration)
   }
 
   def estateStillProcessing : Action[AnyContent] = actions.authWithData.async {

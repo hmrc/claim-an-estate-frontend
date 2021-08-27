@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import views.html.components.Heading
+@import views.html.components.{Heading, SubmitButton}
 
 @this(
  mainTemplate: MainTemplate,
- config: FrontendAppConfig,
- heading: Heading
+ formHelper: FormWithCSRF,
+ heading: Heading,
+ submitButton: SubmitButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -35,4 +35,8 @@
  <p>@messages("notFound.p1")</p>
  <p>@messages("notFound.p2")</p>
  <p>@messages("notFound.p3") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("notFound.link1")</a>.</p>
+
+ @formHelper(action = SessionExpiredController.onSubmit, 'autoComplete -> "off") {
+  @submitButton(Some(messages("notFound.button")))
+ }
 }
