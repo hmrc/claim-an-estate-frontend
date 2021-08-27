@@ -34,7 +34,7 @@
 
  <p>@messages("notFound.p1")</p>
  <p>@messages("notFound.p2")</p>
- <p>@messages("notFound.p3") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("notFound.link1")</a>.</p>
+ <p>@messages("notFound.p3") <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("notFound.link1")</a>.</p>
 
  @formHelper(action = SessionExpiredController.onSubmit, 'autoComplete -> "off") {
   @submitButton(Some(messages("notFound.button")))
