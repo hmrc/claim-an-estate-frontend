@@ -46,7 +46,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
       val doc = asDocument(applyView)
-      assertContainsText(doc, messages("ivSuccess.subheading", utr))
+      assertContainsText(doc, messages("utr.subheading", utr))
     }
 
   }
@@ -67,7 +67,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       "display the correct subheading" in {
         val doc = asDocument(applyView)
-        assertContainsText(doc, messages("ivSuccess.subheading", utr))
+        assertContainsText(doc, messages("utr.subheading", utr))
       }
 
       "show the continue button" in {
