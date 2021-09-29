@@ -15,6 +15,7 @@ error.non_numeric=Rhowch werth gan ddefnyddio rhifau yn unig
 error.number=Nodwch rif dilys
 error.required=Nodwch werth
 error.summary.title=Mae problem wedi codi
+
 session_expired.title=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.heading=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.guidance=Mae’r manylion a roddwyd gennych wedi’u dileu gan nad ydych wedi mynd yn eich blaen â’r gwasanaeth ers 15 munud.
@@ -40,8 +41,10 @@ utr.subheading = UTR yr ystâd hon: {0}
 timeout.title=Bydd eich cais yn dod i ben cyn hir
 timeout.message=Byddwn yn ailosod eich cais os na fyddwch yn ymateb cyn pen
 timeout.keep-alive-button=Yn eich blaen â’r cais
+
 unauthorised.title=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
 unauthorised.heading=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
+
 locked.title=Nid yw’ch atebion yn cyd-fynd â’r manylion sydd gennym am yr ystâd hon
 locked.heading=Nid yw’ch atebion yn cyd-fynd â’r manylion sydd gennym am yr ystâd hon
 locked.p1=Gan eich bod wedi gwneud tri chynnig aflwyddiannus i gael mynediad at yr ystâd hon, bydd angen i chi roi cynnig arall arni ymhen 30 munud.
@@ -50,12 +53,14 @@ locked.p3=Mae’n rhaid i’ch atebion gyd-fynd â’r manylion a roddwyd i CThE
 locked.p4=Os oes angen help arnoch i ddefnyddio’r gwasanaeth,
 locked.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 locked.subheading=UTR yr ystâd hon: {0}
+
 stillProcessing.title=Rydym yn prosesu’r newidiadau diweddaraf a wnaed i’r ystâd hon
 stillProcessing.heading=Rydym yn prosesu’r newidiadau diweddaraf a wnaed i’r ystâd hon
 stillProcessing.p2=Rhowch gynnig arall arni yn nes ymlaen.
 stillProcessing.p3=Os oes angen help arnoch gyda’r gwasanaeth,
 stillProcessing.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 stillProcessing.subheading=UTR yr ystâd hon: {0}
+
 notFound.title=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ystâd yn cyd-fynd â’n cofnodion
 notFound.heading=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ystâd yn cyd-fynd â’n cofnodion
 notFound.p1=Gwiriwch eich bod wedi nodi UTR ar gyfer yr ystâd yn gywir.
@@ -63,11 +68,13 @@ notFound.p2=Os nad oes gennych UTR ar gyfer yr ystâd, bydd angen i chi gofrestr
 notFound.p3=Os oes angen help arnoch gyda’r gwasanaeth hwn,
 notFound.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 notFound.button=Rhowch gynnig arall arni
-isAgentManagingEstate.title=A oes asiant yn rheoli cofrestr ar-lein yr ystâd?
-isAgentManagingEstate.heading=A oes asiant yn rheoli cofrestr ar-lein yr ystâd?
-isAgentManagingEstate.subheading=UTR yr ystâd hon: {0}
-isAgentManagingEstate.checkYourAnswersLabel=A oes asiant yn rheoli cofrestr ar-lein yr ystâd?
-isAgentManagingEstate.error.required=Dewiswch ‘Iawn’ os oes asiant yn rheoli cofrestr ar-lein yr ystâd
+
+isAgentManagingEstateYesNo.title=A oes asiant yn rheoli cofrestr ar-lein yr ystâd?
+isAgentManagingEstateYesNo.heading=A oes asiant yn rheoli cofrestr ar-lein yr ystâd?
+isAgentManagingEstateYesNo.subheading=UTR yr ystâd hon: {0}
+isAgentManagingEstateYesNo.checkYourAnswersLabel=A oes asiant yn rheoli cofrestr ar-lein yr ystâd?
+isAgentManagingEstateYesNo.error.required=Dewiswch ‘Iawn’ os oes asiant yn rheoli cofrestr ar-lein yr ystâd
+
 ivSuccess.subheading=UTR yr ystâd hon: {0}
 ivSuccess.contactLink=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 ivSuccess.agent.title=Rydych wedi hawlio’r ystâd yn llwyddiannus
@@ -78,10 +85,12 @@ ivSuccess.agent.paragraph3=Rhaid i’r cyfrif sefydliad ar gyfer Porth y Llywodr
 ivSuccess.agent.paragraph4=Os ydych am fwrw golwg dros y gofrestr,
 ivSuccess.agent.continueLink=gallwch fynd yn eich blaen i’r gwasanaeth
 ivSuccess.agent.paragraph5=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
+
 ivSuccess.no.agent.title=Rydych wedi hawlio’r ystâd yn llwyddiannus
 ivSuccess.no.agent.heading=Rydych wedi hawlio’r ystâd yn llwyddiannus
 ivSuccess.no.agent.paragraph1=Rydych bellach yn gallu newid yr wybodaeth sydd gan CThEM am y cynrychiolydd personol.
 ivSuccess.no.agent.paragraph2=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
+
 beforeYouContinue.title=Cyn i chi fynd yn eich blaen
 beforeYouContinue.heading=Cyn i chi fynd yn eich blaen
 beforeYouContinue.subheading=UTR yr ystâd hon: {0}
