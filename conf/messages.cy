@@ -52,14 +52,12 @@ locked.p2=Mae angen i chi ateb y cwestiynau diogelwch yn gywir er mwyn i chi all
 locked.p3=Mae’n rhaid i’ch atebion gyd-fynd â’r manylion a roddwyd i CThEM pan gafodd yr ystâd ei chofrestru neu ei diweddaru ar-lein yn ddiweddaraf.
 locked.p4=Os oes angen help arnoch i ddefnyddio’r gwasanaeth,
 locked.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
-locked.subheading=UTR yr ystâd hon: {0}
 
 stillProcessing.title=Rydym yn prosesu’r newidiadau diweddaraf a wnaed i’r ystâd hon
 stillProcessing.heading=Rydym yn prosesu’r newidiadau diweddaraf a wnaed i’r ystâd hon
 stillProcessing.p2=Rhowch gynnig arall arni yn nes ymlaen.
 stillProcessing.p3=Os oes angen help arnoch gyda’r gwasanaeth,
 stillProcessing.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
-stillProcessing.subheading=UTR yr ystâd hon: {0}
 
 notFound.title=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ystâd yn cyd-fynd â’n cofnodion
 notFound.heading=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ystâd yn cyd-fynd â’n cofnodion
@@ -71,11 +69,9 @@ notFound.button=Rhowch gynnig arall arni
 
 isAgentManagingEstateYesNo.title=A oes asiant yn rheoli cofrestr ar-lein yr ystâd?
 isAgentManagingEstateYesNo.heading=A oes asiant yn rheoli cofrestr ar-lein yr ystâd?
-isAgentManagingEstateYesNo.subheading=UTR yr ystâd hon: {0}
 isAgentManagingEstateYesNo.checkYourAnswersLabel=A oes asiant yn rheoli cofrestr ar-lein yr ystâd?
 isAgentManagingEstateYesNo.error.required=Dewiswch ‘Iawn’ os oes asiant yn rheoli cofrestr ar-lein yr ystâd
 
-ivSuccess.subheading=UTR yr ystâd hon: {0}
 ivSuccess.contactLink=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 ivSuccess.agent.title=Rydych wedi hawlio’r ystâd yn llwyddiannus
 ivSuccess.agent.heading=Rydych wedi hawlio’r ystâd yn llwyddiannus
@@ -93,7 +89,6 @@ ivSuccess.no.agent.paragraph2=Os oes angen help arnoch i ddefnyddio’r gwasanae
 
 beforeYouContinue.title=Cyn i chi fynd yn eich blaen
 beforeYouContinue.heading=Cyn i chi fynd yn eich blaen
-beforeYouContinue.subheading=UTR yr ystâd hon: {0}
 beforeYouContinue.p1=Gofynnir i chi ateb sawl cwestiwn am yr ystâd. Mae hyn er mwyn i chi allu cadarnhau eich bod wedi’ch awdurdodi i fwrw golwg dros fanylion yr ystâd a’u diwygio.
 beforeYouContinue.p2=Mae’n rhaid i’ch atebion gyd-fynd â’r manylion a roddwyd i CThEM pan gafodd yr ystâd ei chofrestru neu ei diweddaru ar-lein yn ddiweddaraf.
 beforeYouContinue.p3=Peidiwch â nodi unrhyw fanylion eraill wrth ateb y cwestiynau hyn, hyd yn oed os yw rhywun o’r ystâd wedi ysgrifennu at CThEM i’w newid.
