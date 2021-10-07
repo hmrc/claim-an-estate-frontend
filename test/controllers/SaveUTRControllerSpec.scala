@@ -26,7 +26,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
+import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 
 import scala.concurrent.Future
 
@@ -35,6 +35,7 @@ class SaveUTRControllerSpec extends SpecBase {
   val utr = "0987654321"
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
+  val fakeEstablishmentServicePassing = new FakeRelationshipEstablishmentService(RelationshipFound)
 
   "SaveUTRController" must {
 
@@ -84,6 +85,28 @@ class SaveUTRControllerSpec extends SpecBase {
         redirectLocation(result).value mustBe routes.IsAgentManagingEstateController.onPageLoad(NormalMode).url
 
         captor.getValue.get(UTRPage).value mustBe utr
+
+      }
+
+      "user answers exists and relationship found" in {
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+        val mockSessionRepository = mock[SessionRepository]
+
+        when(mockSessionRepository.set(captor.capture()))
+          .thenReturn(Future.successful(true))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServicePassing)
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+        val request = FakeRequest(GET, routes.SaveUTRController.save(utr).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad().url
 
       }
     }

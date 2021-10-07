@@ -53,17 +53,4 @@ object ViewUtils {
     }
   }
 
-  def mapRadioOptionsToRadioItems(field: Field, trackGa: Boolean,
-                                  inputs: Seq[RadioOption])(implicit messages: Messages): Seq[RadioItem] =
-    inputs.map(
-      a => {
-        RadioItem(
-          id = Some(a.id),
-          value = Some(a.value),
-          checked = field.value.contains(a.value),
-          content = Text(messages(a.messageKey)),
-          attributes = if (trackGa) Map[String, String]("data-journey-click" -> s"estates-frontend:click:${a.id}") else Map.empty
-        )
-      }
-    )
 }

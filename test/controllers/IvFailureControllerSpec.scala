@@ -28,6 +28,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.AuditService
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -147,6 +148,87 @@ class IvFailureControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.IvFailureController.estateStillProcessing().url
+
+        application.stop()
+      }
+
+      "redirect to trust utr Unsupported Relationship status page when the utr is processing" in {
+
+        val answers = emptyUserAnswers
+          .set(UTRPage, "1234567890").success.value
+          .set(IsAgentManagingEstatePage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.UnsupportedRelationshipStatus("")))
+
+        val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to trust utr Upstream Relationship error page when the utr is processing" in {
+
+        val answers = emptyUserAnswers
+          .set(UTRPage, "1234567890").success.value
+          .set(IsAgentManagingEstatePage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.UpstreamRelationshipError("")))
+
+        val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to IV FallbackFailure when no error key found in response" in {
+
+        val answers = emptyUserAnswers
+          .set(UTRPage, "1234567890").success.value
+          .set(IsAgentManagingEstatePage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.NoRelationshipStatus))
+
+        val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
 
         application.stop()
       }
