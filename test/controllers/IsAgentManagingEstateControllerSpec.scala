@@ -171,6 +171,21 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
 
+    "redirect to Session Expired for a GET if identifier is not found" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFailing).build()
+
+      val request = FakeRequest(GET, isAgentManagingEstateRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
     "redirect to Session Expired for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing).build()
@@ -178,6 +193,23 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       val request =
         FakeRequest(POST, isAgentManagingEstateRoute)
           .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a POST if identifier is not found" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFailing).build()
+
+      val request =
+        FakeRequest(POST, isAgentManagingEstateRoute)
+          .withFormUrlEncodedBody(("value", "random"))
 
       val result = route(application, request).value
 

@@ -28,7 +28,10 @@ lazy val scoverageSettings = {
     ".*testOnlyDoNotUseInAppConf.*",
     ".*AuditService.*",
     ".*models.Mode.*",
-    ".*pages.Page.*"
+    ".*pages.Page.*",
+    ".*utils.DateErrorFormatter",
+    ".*models.RichJsObject.*",
+    ".*models.RichJsValue.*"
   )
   Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),

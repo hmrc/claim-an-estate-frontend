@@ -19,12 +19,14 @@ package controllers
 import base.SpecBase
 import connectors.TaxEnrolmentsConnector
 import models.{EnrolmentCreated, TaxEnrolmentRequest, UserAnswers}
+import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{HasEnrolled, IsAgentManagingEstatePage, UTRPage}
 import play.api.inject.bind
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -52,6 +54,32 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   "IvSuccess Controller" must {
+
+    "estate not found route" when {
+
+      "redirect to estate continue if UTR does not exist" in {
+
+        val answers = emptyUserAnswers
+
+        val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .build()
+
+        val onIvSuccessRoute = routes.IvSuccessController.onSubmit().url
+
+        val request = FakeRequest(POST, s"$onIvSuccessRoute")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual "http://localhost:8828/maintain-an-estate/status"
+
+        application.stop()
+      }
+    }
 
     "claiming an estate" must {
 
