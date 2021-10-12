@@ -50,16 +50,20 @@ class SaveUTRController @Inject()(
             updatedAnswers <- Future.fromTry(userAnswers)
             _              <- sessionRepository.set(updatedAnswers)
           } yield {
+            // $COVERAGE-OFF$
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
               s" user has started the claim an estate journey for utr $utr")
+            // $COVERAGE-ON$
             Redirect(routes.IsAgentManagingEstateController.onPageLoad(NormalMode))
           }
       }
 
       relationship.check(request.internalId, utr) flatMap {
         case RelationshipFound =>
+          // $COVERAGE-OFF$
           logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
             s" relationship is already established in IV for utr $utr sending user to successfully claimed")
+          // $COVERAGE-ON$
           Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
         case RelationshipNotFound =>
           body

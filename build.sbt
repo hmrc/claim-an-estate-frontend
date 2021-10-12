@@ -23,7 +23,6 @@ lazy val scoverageSettings = {
     "com.kenshoo.play.metrics*.*",
     ".*LocalDateService.*",
     ".*LocalDateTimeService.*",
-    ".*RichJsValue.*",
     ".*Repository.*",
     ".*testOnlyDoNotUseInAppConf.*",
     ".*AuditService.*",
@@ -31,7 +30,8 @@ lazy val scoverageSettings = {
     ".*pages.Page.*",
     ".*utils.DateErrorFormatter",
     ".*models.RichJsObject.*",
-    ".*models.RichJsValue.*"
+    ".*models.RichJsValue.*",
+    ".*IndexManager.*"
   )
   Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),

@@ -379,6 +379,21 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         application.stop()
       }
 
+      "no utr exists in user answers" in {
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        verify(mockAuditService).auditEstateClaimError(eqTo("Unknown"), eqTo("id"), eqTo("No UTR available on success"))(any())
+
+        application.stop()
+      }
+
       "redirect to Internal Server Error" when {
 
         "tax enrolments fails" when {
