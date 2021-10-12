@@ -28,6 +28,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.AuditService
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -37,6 +38,32 @@ class IvFailureControllerSpec extends SpecBase {
   lazy val connector: RelationshipEstablishmentConnector = mock[RelationshipEstablishmentConnector]
 
   "IvFailure Controller" must {
+
+    "estate not found route" when {
+
+      "redirect to estate reg if UTR does not exist" in {
+
+        val answers = emptyUserAnswers
+
+        val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .build()
+
+        val onIvFailureRoute = routes.IvFailureController.estateNotFoundOnSubmit().url
+
+        val request = FakeRequest(POST, s"$onIvFailureRoute")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual "http://localhost:8822/register-an-estate"
+
+        application.stop()
+      }
+    }
 
     "callback-failure route" when {
 
@@ -150,6 +177,114 @@ class IvFailureControllerSpec extends SpecBase {
 
         application.stop()
       }
+
+      "redirect to trust utr Unsupported Relationship status page when the utr is processing" in {
+
+        val answers = emptyUserAnswers
+          .set(UTRPage, "1234567890").success.value
+          .set(IsAgentManagingEstatePage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.UnsupportedRelationshipStatus("")))
+
+        val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to trust utr Upstream Relationship error page when the utr is processing" in {
+
+        val answers = emptyUserAnswers
+          .set(UTRPage, "1234567890").success.value
+          .set(IsAgentManagingEstatePage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.UpstreamRelationshipError("")))
+
+        val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to IV FallbackFailure when no error key found in response" in {
+
+        val answers = emptyUserAnswers
+          .set(UTRPage, "1234567890").success.value
+          .set(IsAgentManagingEstatePage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.NoRelationshipStatus))
+
+        val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to IV SessionExpired when no UTR" in {
+
+        val answers = emptyUserAnswers
+          .set(IsAgentManagingEstatePage, true).success.value
+
+        val application = applicationBuilder(Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.NoRelationshipStatus))
+
+        val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+
+        application.stop()
+      }
+
     }
 
     "locked route" when {
@@ -186,6 +321,29 @@ class IvFailureControllerSpec extends SpecBase {
         contentAsString(result) must include("As you have had 3 unsuccessful tries at accessing this estate you will need to try again in 30 minutes.")
 
         verify(connector).lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
+
+        application.stop()
+      }
+
+      "redirect to Session Expired when no UTR" in {
+
+        val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
+        val onLockedRoute = routes.IvFailureController.estateLocked().url
+
+        val answers = emptyUserAnswers
+          .set(IsAgentManagingEstatePage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .build()
+
+        val request = FakeRequest(GET, onLockedRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
       }
@@ -241,6 +399,47 @@ class IvFailureControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
+
+      "return session expired when GET for not found route" in {
+
+        val onLockedRoute = routes.IvFailureController.estateNotFound().url
+
+        val answers = emptyUserAnswers
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .build()
+
+        val request = FakeRequest(GET, onLockedRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "return session expired when GET for still processing route" in {
+
+        val onLockedRoute = routes.IvFailureController.estateStillProcessing().url
+
+        val answers = emptyUserAnswers
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .build()
+
+        val request = FakeRequest(GET, onLockedRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
       }

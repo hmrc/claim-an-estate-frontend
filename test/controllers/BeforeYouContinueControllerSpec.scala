@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
+import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.http.HttpResponse
 import views.html.BeforeYouContinueView
 
@@ -41,6 +41,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
   val estateLocked = false
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
+  val fakeEstablishmentServiceSuccess = new FakeRelationshipEstablishmentService(RelationshipFound)
 
   "BeforeYouContinue Controller" must {
 
@@ -60,6 +61,28 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       contentAsString(result) mustEqual
         view(utr)(request, messages).toString
+
+      application.stop()
+    }
+
+    "return OK and the correct view for a GET when relationship found" in {
+
+      val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
+
+      val answers = emptyUserAnswers
+        .set(UTRPage, "0987654321").success.value
+        .set(IsAgentManagingEstatePage, true).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceSuccess)
+        .overrides(bind[Navigator].toInstance(fakeNavigator))
+        .build()
+
+      val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad().url
 
       application.stop()
     }
@@ -93,6 +116,46 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       verify(connector).lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
 
       application.stop()
+
+    }
+
+    "redirect to session expired for a GET" when {
+
+      "data does not exist" in {
+        val answers = emptyUserAnswers
+
+        val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
+
+        val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
+    }
+
+    "redirect to session expired for a POST" when {
+
+      "data does not exist" in {
+        val answers = emptyUserAnswers
+
+        val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
+
+        val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
 
     }
   }
