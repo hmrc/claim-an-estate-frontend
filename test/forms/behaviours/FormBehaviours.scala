@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ trait FormBehaviours extends FormSpec {
   def questionForm[A](expectedResult: A) = {
     "bind valid values correctly" in {
       val boundForm = form.bind(validData)
-      boundForm.get shouldBe expectedResult
+      boundForm.get mustBe expectedResult
     }
   }
 
@@ -38,7 +38,7 @@ trait FormBehaviours extends FormSpec {
       s"bind when $field is omitted" in {
         val data = validData - field
         val boundForm = form.bind(data)
-        boundForm.errors.isEmpty shouldBe true
+        boundForm.errors.isEmpty mustBe true
       }
     }
   }
@@ -63,7 +63,7 @@ trait FormBehaviours extends FormSpec {
     s"bind when $booleanField is false and $field is omitted" in {
       val data = validData + (booleanField -> "false") - field
       val boundForm = form.bind(data)
-      boundForm.errors.isEmpty shouldBe true
+      boundForm.errors.isEmpty mustBe true
     }
 
     s"fail to bind when $booleanField is true and $field is omitted" in {
@@ -94,7 +94,7 @@ trait FormBehaviours extends FormSpec {
       s"bind when ${field.name} is set to $validValue" in {
         val data = validData + (field.name -> validValue)
         val boundForm = form.bind(data)
-        boundForm.errors.isEmpty shouldBe true
+        boundForm.errors.isEmpty mustBe true
       }
     }
 

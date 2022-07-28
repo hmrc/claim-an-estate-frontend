@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,12 @@ trait BooleanFieldBehaviours extends FieldBehaviours {
 
     "bind true" in {
       val result = form.bind(Map(fieldName -> "true"))
-      result.value.value shouldBe true
+      result.value.value mustBe true
     }
 
     "bind false" in {
       val result = form.bind(Map(fieldName -> "false"))
-      result.value.value shouldBe false
+      result.value.value mustBe false
     }
 
     "not bind non-booleans" in {
@@ -39,7 +39,7 @@ trait BooleanFieldBehaviours extends FieldBehaviours {
       forAll(nonBooleans -> "nonBoolean") {
         nonBoolean =>
           val result = form.bind(Map(fieldName -> nonBoolean)).apply(fieldName)
-          result.errors shouldEqual Seq(invalidError)
+          result.errors mustEqual Seq(invalidError)
       }
     }
   }

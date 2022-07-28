@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package controllers
 import base.SpecBase
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, verify}
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.{OptionValues}
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.inject.bind
@@ -27,7 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
-class LogoutControllerSpec extends SpecBase with MustMatchers with GuiceOneAppPerSuite with OptionValues with MockitoSugar {
+class LogoutControllerSpec extends SpecBase with Matchers with GuiceOneAppPerSuite with OptionValues with MockitoSugar {
 
   "LogoutController" when {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,14 +64,14 @@ class IsAgentManagingEstateController @Inject()(
           case RelationshipFound =>
             logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
               s" user has recently passed IV for utr $utr, sending user to successfully claimed")
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
           case RelationshipNotFound =>
             body
         }
 
       } getOrElse {
         logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] unable to retrieve utr from user answers")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 
@@ -84,7 +84,7 @@ class IsAgentManagingEstateController @Inject()(
             Future.successful(BadRequest(view(formWithErrors, mode, utr)))
           } getOrElse {
             logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] unable to retrieve utr from user answers")
-            Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+            Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
           }
         ,
         value =>

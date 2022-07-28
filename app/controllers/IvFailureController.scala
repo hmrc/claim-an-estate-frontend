@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,32 +60,32 @@ class IvFailureController @Inject()(
           s"User failed IV 3 times, has been locked out for 30 minutes, journey Id was $journeyId"
         )
 
-        Redirect(routes.IvFailureController.estateLocked())
+        Redirect(routes.IvFailureController.estateLocked)
       case RelationshipEstablishmentStatus.NotFound =>
         // $COVERAGE-OFF$
         logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] $utr was not found")
         // $COVERAGE-ON$
-        Redirect(routes.IvFailureController.estateNotFound())
+        Redirect(routes.IvFailureController.estateNotFound)
       case RelationshipEstablishmentStatus.InProcessing =>
         // $COVERAGE-OFF$
         logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] $utr is processing")
         // $COVERAGE-ON$
-        Redirect(routes.IvFailureController.estateStillProcessing())
+        Redirect(routes.IvFailureController.estateStillProcessing)
       case UnsupportedRelationshipStatus(reason) =>
         // $COVERAGE-OFF$
         logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason")
         // $COVERAGE-ON$
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(routes.FallbackFailureController.onPageLoad)
       case UpstreamRelationshipError(response) =>
         // $COVERAGE-OFF$
         logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] HTTP response: $response")
         // $COVERAGE-ON$
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(routes.FallbackFailureController.onPageLoad)
       case _ =>
         // $COVERAGE-OFF$
         logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] No errorKey in HTTP response")
         // $COVERAGE-ON$
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(routes.FallbackFailureController.onPageLoad)
     }
   }
 
@@ -101,7 +101,7 @@ class IvFailureController @Inject()(
             logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
               s" unable to retrieve a journeyId to determine the reason")
             // $COVERAGE-ON$
-            Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+            Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
           }{
             journeyId =>
               renderFailureReason(utr, request.internalId, journeyId)
@@ -110,7 +110,7 @@ class IvFailureController @Inject()(
           // $COVERAGE-OFF$
           logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] unable to retrieve a UTR")
           // $COVERAGE-ON$
-          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
       }
   }
 
@@ -132,7 +132,7 @@ class IvFailureController @Inject()(
         logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
           s" unable to determine if estate is locked out from IV")
         // $COVERAGE-ON$
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 
@@ -150,7 +150,7 @@ class IvFailureController @Inject()(
         logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
           s" no utr stored in user answers when informing user the estate was not found")
         // $COVERAGE-ON$
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 
@@ -172,7 +172,7 @@ class IvFailureController @Inject()(
         logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
           s" no utr stored in user answers when informing user estate was still processing")
         // $COVERAGE-ON$
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ class DateBehaviours extends FieldBehaviours {
 
           val result = form.bind(data)
 
-          result.value.value shouldEqual date
+          result.value.value mustEqual date
       }
     }
   }
@@ -61,7 +61,7 @@ class DateBehaviours extends FieldBehaviours {
 
           val result = form.bind(data)
 
-          result.errors should contain only formError
+          result.errors must contain only formError
       }
     }
   }
@@ -83,7 +83,7 @@ class DateBehaviours extends FieldBehaviours {
 
           val result = form.bind(data)
 
-          result.errors should contain only formError
+          result.errors must contain only formError
       }
     }
   }
@@ -94,7 +94,7 @@ class DateBehaviours extends FieldBehaviours {
 
       val result = form.bind(Map.empty[String, String])
 
-      result.errors should contain only FormError(key, requiredAllKey, errorArgs)
+      result.errors must contain only FormError(key, requiredAllKey, errorArgs)
     }
   }
 }

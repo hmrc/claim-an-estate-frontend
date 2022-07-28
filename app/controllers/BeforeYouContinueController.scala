@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,14 +53,14 @@ class BeforeYouContinueController @Inject()(
           case RelationshipFound =>
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
               s"relationship is already established in IV for utr $utr sending user to successfully claimed")
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
           case RelationshipNotFound =>
             body
         }
       } getOrElse {
         logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
           s" no utr available in user answers, cannot continue with claiming the estate")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 
@@ -97,14 +97,14 @@ class BeforeYouContinueController @Inject()(
           case RelationshipFound =>
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
               s" relationship is already established in IV for utr $utr sending user to successfully claimed")
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
           case RelationshipNotFound =>
             onRelationshipNotFound
         }
       }) getOrElse {
         logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
           s" no utr available in user answers, cannot continue with claiming the estate")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 }

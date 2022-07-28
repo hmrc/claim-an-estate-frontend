@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           .overrides(bind[Navigator].toInstance(fakeNavigator))
           .build()
 
-        val onIvSuccessRoute = routes.IvSuccessController.onSubmit().url
+        val onIvSuccessRoute = routes.IvSuccessController.onSubmit.url
 
         val request = FakeRequest(POST, s"$onIvSuccessRoute")
 
@@ -96,7 +96,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
           .build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -142,7 +142,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
           .build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -193,7 +193,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
           .build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -240,7 +240,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
           .build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -291,7 +291,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
           .build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -332,7 +332,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
           .build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -367,13 +367,13 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
         verify(mockAuditService).auditEstateClaimError(eqTo("Unknown"), eqTo("id"), eqTo("No UTR available on success"))(any())
 
         application.stop()
@@ -382,13 +382,13 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
       "no utr exists in user answers" in {
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
         verify(mockAuditService).auditEstateClaimError(eqTo("Unknown"), eqTo("id"), eqTo("No UTR available on success"))(any())
 
         application.stop()
@@ -413,7 +413,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
               )
               .build()
 
-            val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+            val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
             // Stub a mongo connection
             when(mockRepository.set(any())).thenReturn(Future.successful(true))
@@ -454,7 +454,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
               )
               .build()
 
-            val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+            val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
             // Stub a mongo connection
             when(mockRepository.set(any())).thenReturn(Future.successful(true))
