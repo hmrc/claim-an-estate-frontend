@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,16 +98,16 @@ class TestRelationshipEstablishmentController @Inject()(
       def insertRelationship = relationshipEstablishmentConnector
         .createRelationship(request.credentials.providerId, utr) map {
         _ =>
-          Redirect(controllers.routes.IvSuccessController.onPageLoad())
+          Redirect(controllers.routes.IvSuccessController.onPageLoad)
       }
 
       utr match {
         case "5000000001" => insertRelationship
         case succeedRegex(_) => insertRelationship
         case failRegex(_) =>
-          Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure()))
+          Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure))
         case _ =>
-          Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure()))
+          Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure))
       }
   }
 

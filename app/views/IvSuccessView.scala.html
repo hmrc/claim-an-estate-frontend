@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@
             <p>@messages("ivSuccess.no.agent.paragraph1")</p>
             <p>@messages("ivSuccess.no.agent.paragraph2") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate" target="_blank" rel="noopener noreferrer">@messages("ivSuccess.contactLink")</a>.</p>
 
-            @formHelper(action = IvSuccessController.onSubmit(), 'autoComplete -> "off") {
+            @formHelper(action = IvSuccessController.onSubmit, 'autoComplete -> "off") {
                 @submitButton(Some(messages("site.continue")))
             }
 

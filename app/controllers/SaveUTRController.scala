@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ class SaveUTRController @Inject()(
           logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
             s" relationship is already established in IV for utr $utr sending user to successfully claimed")
           // $COVERAGE-ON$
-          Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+          Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
         case RelationshipNotFound =>
           body
       }

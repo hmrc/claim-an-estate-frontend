@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ class OptionFieldBehaviours extends FieldBehaviours {
       for(value <- validValues) {
 
         val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-        result.value.value shouldEqual value.toString
+        result.value.value mustEqual value.toString
       }
     }
 
@@ -43,7 +43,7 @@ class OptionFieldBehaviours extends FieldBehaviours {
         value =>
 
           val result = form.bind(Map(fieldName -> value)).apply(fieldName)
-          result.errors shouldEqual Seq(invalidError)
+          result.errors mustEqual Seq(invalidError)
       }
     }
   }
