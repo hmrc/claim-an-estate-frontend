@@ -67,6 +67,8 @@ final case class UserAnswers(
 
 object UserAnswers {
 
+  lazy val format: Format[UserAnswers] = Format.apply(reads, writes)
+
   implicit lazy val reads: Reads[UserAnswers] = {
 
     import play.api.libs.functional.syntax._
