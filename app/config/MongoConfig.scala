@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package repositories
+package config
 
-import models.UserAnswers
+import com.google.inject.{Inject, Singleton}
+import play.api.Configuration
 
-import scala.concurrent.Future
+@Singleton
+class MongoConfig @Inject() (val config: Configuration) {
 
-trait SessionRepository {
+  private val defaultTTLInSeconds = 3600
+  val ttlInSeconds: Int = config.getOptional[Int]("mongodb.timeToLiveInSeconds").getOrElse(defaultTTLInSeconds)
 
-  def get(id: String): Future[Option[UserAnswers]]
-
-  def set(userAnswers: UserAnswers): Future[Boolean]
+  val dropIndexes: Boolean = config.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
 }

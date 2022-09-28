@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.EstatesStoreConnector
 import models.EstatesStoreRequest
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{IsAgentManagingEstatePage, UTRPage}

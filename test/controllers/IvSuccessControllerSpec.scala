@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TaxEnrolmentsConnector
 import models.{EnrolmentCreated, TaxEnrolmentRequest, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -46,10 +46,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
   // Mock mongo repository
   private val mockRepository = mock[SessionRepository]
 
-  override def beforeEach {
-    reset(connector)
-    reset(mockRelationshipEstablishment)
-    reset(mockRepository)
+  override def beforeEach: Unit = {
+    reset(connector, mockRelationshipEstablishment, mockRepository)
     super.beforeEach()
   }
 

@@ -17,9 +17,9 @@
 package controllers
 
 import base.SpecBase
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, verify}
-import org.scalatest.{OptionValues}
+import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
