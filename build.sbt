@@ -46,7 +46,6 @@ lazy val root = (project in file("."))
   .enablePlugins(SbtAutoBuildPlugin, PlayScala, SbtDistributablesPlugin)
   .settings(DefaultBuildSettings.scalaSettings: _*)
   .settings(DefaultBuildSettings.defaultSettings(): _*)
-  .settings(SbtDistributablesPlugin.publishingSettings: _*)
   .settings(inConfig(Test)(testSettings): _*)
   .settings(majorVersion := 0)
   .settings(
