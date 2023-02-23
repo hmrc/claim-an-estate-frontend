@@ -5,7 +5,7 @@ The service sends the user to the estates-relationship-establishment-service and
 
 To run locally using the micro-service provided by the service manager:
 ```
-sm --start ESTATES_ALL -r
+sm2 --start ESTATES_ALL -r
 ```
 
 If you want to run your local copy, then stop the frontend ran by the service manager and run your local code by using the following (port number is 8830 but is defaulted to that in build.sbt).
