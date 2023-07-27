@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
 import play.api.Logging
 import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
@@ -33,19 +33,19 @@ import scala.concurrent.{ExecutionContext, Future}
 case class BusinessKey(name: String,value: String)
 
 object BusinessKey {
-  implicit val format = Json.format[BusinessKey]
+  implicit val format: OFormat[BusinessKey] = Json.format[BusinessKey]
 }
 
 case class Relationship(relationshipName: String, businessKeys: Set[BusinessKey], credId: String)
 
 object Relationship {
-  implicit val format = Json.format[Relationship]
+  implicit val format: OFormat[Relationship] = Json.format[Relationship]
 }
 
 case class RelationshipJson(relationship: Relationship, ttlSeconds:Int = 1440)
 
 object RelationshipJson {
-  implicit val format = Json.format[RelationshipJson]
+  implicit val format: OFormat[RelationshipJson] = Json.format[RelationshipJson]
 }
 
 class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,config: FrontendAppConfig)

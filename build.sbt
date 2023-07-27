@@ -49,8 +49,7 @@ lazy val root = (project in file("."))
   .settings(inConfig(Test)(testSettings): _*)
   .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.12.16",
-    SilencerSettings(),
+    scalaVersion := "2.13.11",
     name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
@@ -65,6 +64,8 @@ lazy val root = (project in file("."))
     ),
     PlayKeys.playDefaultPort := 8830,
     scalacOptions ++= Seq("-feature"),
+    scalacOptions += "-Wconf:src=routes/.*:s",
+    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     // concatenate js
@@ -94,3 +95,5 @@ lazy val testSettings: Seq[Def.Setting[_]] = Seq(
 )
 
 addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")
+
+libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always)
