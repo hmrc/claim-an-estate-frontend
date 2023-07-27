@@ -46,7 +46,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
   // Mock mongo repository
   private val mockRepository = mock[SessionRepository]
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(connector, mockRelationshipEstablishment, mockRepository)
     super.beforeEach()
   }
