@@ -34,10 +34,12 @@ trait MongoDateTimeFormats {
             JsError("Unexpected LocalDateTime Format")
           }
         case JsString(dateValue) =>
-          val parseDateTime = if (dateValue.contains("Z")) { (dateAsString: String) =>
-            ZonedDateTime.parse(dateAsString)
-          } else { (dateAsString: String) => LocalDateTime.parse(dateAsString) }
-          ZonedDateTime.parse(dateValue)
+          val parseDateTime = if (dateValue.contains("Z")) {
+            (dateAsString: String) => ZonedDateTime.parse(dateAsString)
+          } else {
+            (dateAsString: String) => LocalDateTime.parse(dateAsString)
+          }
+
           Try(parseDateTime(dateValue)) match {
             case Success(value: LocalDateTime) => JsSuccess(value)
             case Success(value: ZonedDateTime) => JsSuccess(value.toLocalDateTime)

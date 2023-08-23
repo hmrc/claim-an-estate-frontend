@@ -12,17 +12,9 @@ lazy val scoverageSettings = {
     "<empty>",
     ".*Reverse.*",
     ".*Routes.*",
-    ".*standardError*.*",
-    ".*main_template*.*",
     "uk.gov.hmrc.BuildInfo",
-    "app.*",
-    "prod.*",
     "config.*",
     "views.html.*",
-    "testOnly.*",
-    "com.kenshoo.play.metrics*.*",
-    ".*LocalDateService.*",
-    ".*LocalDateTimeService.*",
     ".*testOnlyDoNotUseInAppConf.*",
     ".*AuditService.*",
     ".*models.Mode.*",
@@ -31,22 +23,20 @@ lazy val scoverageSettings = {
     ".*models.RichJsObject.*",
     ".*models.RichJsValue.*"
   )
+
   Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 80,
+    ScoverageKeys.coverageMinimumStmtTotal := 88,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
 }
 
-
-
-
 lazy val root = (project in file("."))
   .enablePlugins(SbtAutoBuildPlugin, PlayScala, SbtDistributablesPlugin)
-  .settings(DefaultBuildSettings.scalaSettings: _*)
-  .settings(DefaultBuildSettings.defaultSettings(): _*)
-  .settings(inConfig(Test)(testSettings): _*)
+  .settings(DefaultBuildSettings.scalaSettings)
+  .settings(DefaultBuildSettings.defaultSettings())
+  .settings(inConfig(Test)(testSettings))
   .settings(majorVersion := 0)
   .settings(
     scalaVersion := "2.13.11",
@@ -67,14 +57,14 @@ lazy val root = (project in file("."))
     scalacOptions += "-Wconf:src=routes/.*:s",
     scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
     libraryDependencies ++= AppDependencies(),
+    libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always),
     retrieveManaged := true,
     // concatenate js
     Concat.groups := Seq(
       "javascripts/claimanestatefrontend-app.js" ->
         group(Seq(
           "javascripts/claimanestatefrontend.js",
-          "javascripts/iebacklink.js",
-          "javascripts/print.js"
+          "javascripts/iebacklink.js"
         ))
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
@@ -87,13 +77,11 @@ lazy val root = (project in file("."))
   )
   .settings(scoverageSettings)
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork        := true,
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf"
   )
 )
 
-addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")
-
-libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always)
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
