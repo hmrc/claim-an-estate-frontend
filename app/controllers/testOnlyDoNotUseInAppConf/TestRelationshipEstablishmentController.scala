@@ -22,7 +22,7 @@ import controllers.actions.IdentifierAction
 import play.api.Logging
 import play.api.i18n.MessagesApi
 import play.api.libs.json.{Json, OFormat}
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,7 +42,7 @@ object Relationship {
   implicit val format: OFormat[Relationship] = Json.format[Relationship]
 }
 
-case class RelationshipJson(relationship: Relationship, ttlSeconds:Int = 1440)
+case class RelationshipJson(relationship: Relationship, ttlSeconds: Int = 1440)
 
 object RelationshipJson {
   implicit val format: OFormat[RelationshipJson] = Json.format[RelationshipJson]
@@ -86,7 +86,7 @@ class TestRelationshipEstablishmentController @Inject()(
                                                        (implicit ec : ExecutionContext)
   extends FrontendBaseController with Logging {
 
-  def check(utr: String) = identify.async {
+  def check(utr: String): Action[AnyContent] = identify.async {
     implicit request =>
 
       logger.warn(s"[Session ID: ${Session.id(hc)}][UTR: $utr]" +
@@ -95,15 +95,15 @@ class TestRelationshipEstablishmentController @Inject()(
       val succeedRegex = "(2\\d{9})".r
       val failRegex = "(4\\d{9})".r
 
-      def insertRelationship = relationshipEstablishmentConnector
+      def insertRelationship(): Future[Result] = relationshipEstablishmentConnector
         .createRelationship(request.credentials.providerId, utr) map {
         _ =>
           Redirect(controllers.routes.IvSuccessController.onPageLoad)
       }
 
       utr match {
-        case "5000000001" => insertRelationship
-        case succeedRegex(_) => insertRelationship
+        case "5000000001" => insertRelationship()
+        case succeedRegex(_) => insertRelationship()
         case failRegex(_) =>
           Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure))
         case _ =>

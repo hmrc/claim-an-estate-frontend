@@ -40,7 +40,6 @@ class RelationshipEstablishmentService @Inject()(
                                                   implicit val executionContext: ExecutionContext
                                                 )
   extends RelationshipEstablishment with Logging {
-  
   def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)

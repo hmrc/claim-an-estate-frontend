@@ -46,7 +46,6 @@ class IvFailureController @Inject()(
                                      connector: EstatesStoreConnector,
                                      auditService: AuditService
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
-  
   private def renderFailureReason(utr: String, internalId: String, journeyId: String)(implicit hc : HeaderCarrier) = {
     relationshipEstablishmentConnector.journeyId(journeyId) map {
       case RelationshipEstablishmentStatus.Locked =>

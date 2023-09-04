@@ -16,38 +16,67 @@
 
 package models
 
-import java.time.{LocalDate, LocalDateTime}
+import play.api.libs.json._
 
-import org.scalatest.{OptionValues}
-import org.scalatest.matchers.must.Matchers
+import java.time.LocalDateTime
+import models.MongoDateTimeFormats.localDateTimeRead
+import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
-import play.api.libs.json.Json
+import org.scalatest.matchers.must.Matchers
 
-class MongoDateTimeFormatsSpec extends AnyFreeSpec with Matchers with OptionValues with MongoDateTimeFormats {
+import java.time.format.DateTimeFormatter
 
-  "a LocalDateTime" - {
+class MongoDateTimeFormatsSpec extends AnyFreeSpec with Matchers with OptionValues {
 
-    val date = LocalDate.of(2018, 2, 1).atStartOfDay
+  "localDateTimeRead" - {
 
-    val dateMillis = 1517443200000L
+    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+    val expectedDate = LocalDateTime.parse("2020-05-18 14:10:30.000", formatter)
 
-    val json = Json.obj(
-      s"$$date" -> dateMillis
-    )
+    "return a LocalDateTime when parsed a Json object containing" - {
+      "a string date which contains a 'Z' character" in {
+        val json = Json.obj(("$date", "2020-05-18T14:10:30.000Z"))
+        val nameResult: JsResult[LocalDateTime] = json.validate[LocalDateTime]
+        nameResult mustBe JsSuccess(expectedDate)
+      }
 
-    "must serialise to json" in {
-      val result = Json.toJson(date)
-      result mustEqual json
+      "a string date which without a 'Z' character" in {
+        val json = Json.obj(("$date", "2020-05-18T14:10:30.000"))
+        val nameResult: JsResult[LocalDateTime] = json.validate[LocalDateTime]
+        nameResult mustBe JsSuccess(expectedDate)
+      }
+
+      "a nested Json Object which contains a number" in {
+        val json = Json.obj(("$date", Json.obj(("$numberLong", "1589811030000"))))
+        val nameResult: JsResult[LocalDateTime] = json.validate[LocalDateTime]
+        nameResult mustBe JsSuccess(expectedDate)
+      }
+
+      "a number" in {
+        val json = Json.obj(("$date", 1589811030000L))
+        val nameResult: JsResult[LocalDateTime] = json.validate[LocalDateTime]
+        nameResult mustBe JsSuccess(expectedDate)
+      }
     }
 
-    "must deserialise from json" in {
-      val result = json.as[LocalDateTime]
-      result mustEqual date
-    }
+    "throw a JsError when parsed a" - {
+      "string without a 'Z'" in {
+        val json = Json.obj(("$date", "NOT A DATE"))
+        val nameResult: JsResult[LocalDateTime] = json.validate[LocalDateTime]
+        nameResult mustBe JsError("Unexpected LocalDateTime Format")
+      }
 
-    "must serialise/deserialise to the same value" in {
-      val result = Json.toJson(date).as[LocalDateTime]
-      result mustEqual date
+      "nested Json Object without a $numberLong field" in {
+        val json = Json.obj(("$date", Json.obj(("$notNumberLong", 1589811030000L))))
+        val nameResult: JsResult[LocalDateTime] = json.validate[LocalDateTime]
+        nameResult mustBe JsError("Unexpected LocalDateTime Format")
+      }
+
+      "Json Object with no $date field" in {
+        val json = Json.obj()
+        val nameResult: JsResult[LocalDateTime] = json.validate[LocalDateTime]
+        nameResult mustBe JsError("Unexpected LocalDateTime Format")
+      }
     }
   }
 }
