@@ -34,6 +34,7 @@ lazy val scoverageSettings = {
 
 lazy val root = (project in file("."))
   .enablePlugins(SbtAutoBuildPlugin, PlayScala, SbtDistributablesPlugin)
+  .disablePlugins(JUnitXmlReportPlugin)
   .settings(DefaultBuildSettings.scalaSettings)
   .settings(DefaultBuildSettings.defaultSettings())
   .settings(inConfig(Test)(testSettings))
