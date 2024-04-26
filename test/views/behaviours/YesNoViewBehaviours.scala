@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,12 +61,12 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
 
       "rendered with a value of true" must {
 
-        behave like answeredYesNoPage(createView, true)
+        behave like answeredYesNoPage(createView, answer = true)
       }
 
       "rendered with a value of false" must {
 
-        behave like answeredYesNoPage(createView, false)
+        behave like answeredYesNoPage(createView, answer = false)
       }
 
       "rendered with an error" must {

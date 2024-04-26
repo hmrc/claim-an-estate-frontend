@@ -1,18 +1,15 @@
-import play.sbt.routes.RoutesKeys
-import sbt.Def
-import uk.gov.hmrc.DefaultBuildSettings
-import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 import scoverage.ScoverageKeys
+
+ThisBuild / scalaVersion := "2.13.13"
+ThisBuild / majorVersion := 0
 
 lazy val appName: String = "claim-an-estate-frontend"
 
 lazy val scoverageSettings = {
 
-  val excludedPackages = Seq(
+  val excludedPackages: Seq[String] = Seq(
     "<empty>",
-    ".*Reverse.*",
     ".*Routes.*",
-    "uk.gov.hmrc.BuildInfo",
     "config.*",
     "views.html.*",
     ".*testOnlyDoNotUseInAppConf.*",
@@ -32,17 +29,14 @@ lazy val scoverageSettings = {
   )
 }
 
-lazy val root = (project in file("."))
-  .enablePlugins(SbtAutoBuildPlugin, PlayScala, SbtDistributablesPlugin)
+lazy val microservice = Project(appName, file("."))
+  .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
-  .settings(DefaultBuildSettings.scalaSettings)
-  .settings(DefaultBuildSettings.defaultSettings())
-  .settings(inConfig(Test)(testSettings))
-  .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.13.11",
-    name := appName,
-    RoutesKeys.routesImport += "models._",
+    Test / javaOptions ++= Seq(
+      "-Dconfig.resource=test.application.conf"
+    ),
+    routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
@@ -54,12 +48,12 @@ lazy val root = (project in file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 8830,
-    scalacOptions ++= Seq("-feature"),
-    scalacOptions += "-Wconf:src=routes/.*:s",
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+    scalacOptions ++= Seq(
+      "-feature",
+      "-Wconf:src=routes/.*:s",
+      "-Wconf:cat=unused-imports&src=html/.*:s"
+    ),
     libraryDependencies ++= AppDependencies(),
-    libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always),
-    retrieveManaged := true,
     // concatenate js
     Concat.groups := Seq(
       "javascripts/claimanestatefrontend-app.js" ->
@@ -77,12 +71,5 @@ lazy val root = (project in file("."))
     uglify / includeFilter := GlobFilter("claimanestatefrontend-*.js")
   )
   .settings(scoverageSettings)
-
-lazy val testSettings: Seq[Def.Setting[?]] = Seq(
-  fork        := true,
-  javaOptions ++= Seq(
-    "-Dconfig.resource=test.application.conf"
-  )
-)
 
 addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")

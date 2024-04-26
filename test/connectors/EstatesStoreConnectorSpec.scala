@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with Matchers with WireMoc
   val internalId = "some-authenticated-internal-id"
   val managedByAgent = true
 
-  val request = EstatesStoreRequest(internalId, utr, managedByAgent, false)
+  val request: EstatesStoreRequest = EstatesStoreRequest(internalId, utr, managedByAgent, estateLocked = false)
 
   private def wiremock(payload: String, expectedStatus: Int, expectedResponse: String) =
     server.stubFor(
