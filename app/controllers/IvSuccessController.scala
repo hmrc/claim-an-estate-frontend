@@ -80,7 +80,7 @@ class IvSuccessController @Inject()(
 
   private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(implicit request: OptionalDataRequest[_]) = {
 
-    val hasEnrolled: Boolean = userAnswers.get(HasEnrolled).getOrElse(false);
+    val hasEnrolled: Boolean = userAnswers.get(HasEnrolled).getOrElse(false)
 
     if (hasEnrolled) {
       auditService.auditEstateClaimed(utr, request.internalId)

@@ -21,6 +21,9 @@ import views.ViewSpecBase
 
 trait ViewBehaviours extends ViewSpecBase {
 
+  private def findBannerTitle(view:HtmlFormat.Appendable):String =
+    asDocument(view).getElementsByClass("govuk-header__link govuk-header__service-name").html()
+
   def normalPage(view: HtmlFormat.Appendable,
                  messageKeyPrefix: String,
                  expectedGuidanceKeys: String*): Unit = {
@@ -28,6 +31,10 @@ trait ViewBehaviours extends ViewSpecBase {
     "behave like a normal page" when {
 
       "rendered" must {
+
+        "have the correct banner title" in {
+          findBannerTitle(view) mustBe messages("service.name")
+        }
 
         "display the correct browser title" in {
 
@@ -65,6 +72,10 @@ trait ViewBehaviours extends ViewSpecBase {
     "behave like a normal page" when {
 
       "rendered" must {
+
+        "have the correct banner title" in {
+          findBannerTitle(view) mustBe messages("service.name")
+        }
 
         "display the correct browser title" in {
 
