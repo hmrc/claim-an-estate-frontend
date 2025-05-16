@@ -36,7 +36,7 @@ site.sign_out = Sign out
 site.sign_in = Sign in
 site.error = Error:
 
-service.name = Manage an Estate
+service.name = Manage an estate
 
 #timeout dialog
 timeout.title=Your application will time out soon
