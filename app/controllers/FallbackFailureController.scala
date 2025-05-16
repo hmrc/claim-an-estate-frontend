@@ -23,16 +23,19 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
+import controllers.actions.Actions
+import scala.concurrent.ExecutionContext
 
 class FallbackFailureController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
+                                        actions: Actions,
                                         errorHandler: ErrorHandler
-                                      ) extends FrontendBaseController with I18nSupport with Logging {
+                                      )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = Action {
+  def onPageLoad: Action[AnyContent] = actions.authWithSession.async {
     implicit request =>
-      logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
-        s" Estates IV encountered a problem that could not be recovered from")
-      InternalServerError(errorHandler.internalServerErrorTemplate)
+      logger.error(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}]" +
+        s"Claim an Estate encountered a problem that could not be recovered from")
+      errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
   }
 }

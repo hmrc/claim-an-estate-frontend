@@ -17,17 +17,22 @@
 package connectors
 
 import config.FrontendAppConfig
+
 import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.RelationshipEstablishmentStatus
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RelationshipEstablishmentConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
+class RelationshipEstablishmentConnector @Inject()(http: HttpClientV2, config : FrontendAppConfig) {
 
   def journeyId(id: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): Future[RelationshipEstablishmentStatus] = {
     val url = s"${config.relationshipEstablishmentUrl}/relationship-establishment/journey-failure/$id"
 
-    http.GET[RelationshipEstablishmentStatus](url)
+    http
+      .get(url"$url")
+      .execute[RelationshipEstablishmentStatus]
+
   }
 }
