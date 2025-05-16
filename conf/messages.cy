@@ -34,7 +34,7 @@ site.sign_in=Mewngofnodi
 site.sign_out=Allgofnodi
 site.error=Gwall:
 
-service.name=Cofrestru Ystâd a’i Chynnal
+service.name=Rheoli ystâd
 
 utr.subheading = UTR yr ystâd hon: {0}
 
