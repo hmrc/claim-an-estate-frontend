@@ -18,14 +18,14 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.TaxEnrolmentsConnector
-import controllers.actions._
+import controllers.actions.{Actions, AuthPartialFunctions}
 import handlers.ErrorHandler
 import models.requests.OptionalDataRequest
 import models.{NormalMode, TaxEnrolmentRequest, UserAnswers}
 import pages.{HasEnrolled, IsAgentManagingEstatePage, UTRPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.{AuditService, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -78,7 +78,7 @@ class IvSuccessController @Inject()(
       }
   }
 
-  private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(implicit request: OptionalDataRequest[_]) = {
+  private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(implicit request: OptionalDataRequest[_]): Future[Result] = {
 
     val hasEnrolled: Boolean = userAnswers.get(HasEnrolled).getOrElse(false)
 
@@ -105,7 +105,8 @@ class IvSuccessController @Inject()(
                 s" failed to create enrolment for utr $utr with tax-enrolments," +
                 s" users credential has not been updated, user needs to claim again")
               auditService.auditEstateClaimError(utr, request.internalId, e.getMessage)
-              InternalServerError(errorHandler.internalServerErrorTemplate)
+//              InternalServerError(errorHandler.internalServerErrorTemplate)
+              errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
             }
           }
       }
