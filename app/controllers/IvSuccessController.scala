@@ -100,13 +100,12 @@ class IvSuccessController @Inject()(
       }) recoverWith {
         case e =>
           Future.fromTry(userAnswers.set(HasEnrolled, false)).flatMap { ua =>
-            sessionRepository.set(ua).map { _ =>
+            sessionRepository.set(ua).flatMap { _ =>
               logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
                 s" failed to create enrolment for utr $utr with tax-enrolments," +
                 s" users credential has not been updated, user needs to claim again")
               auditService.auditEstateClaimError(utr, request.internalId, e.getMessage)
-//              InternalServerError(errorHandler.internalServerErrorTemplate)
-              errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+              errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
             }
           }
       }
