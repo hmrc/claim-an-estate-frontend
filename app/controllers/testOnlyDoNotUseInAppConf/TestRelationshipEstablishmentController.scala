@@ -24,7 +24,8 @@ import play.api.i18n.MessagesApi
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
@@ -48,7 +49,7 @@ object RelationshipJson {
   implicit val format: OFormat[RelationshipJson] = Json.format[RelationshipJson]
 }
 
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,config: FrontendAppConfig)
+class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClientV2, config: FrontendAppConfig)
                                                   (implicit val ec : ExecutionContext) {
 
   private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentUrl}/relationship-establishment/relationship/"
@@ -63,14 +64,20 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,co
     Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
 
   def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
-    httpClient.POST[RelationshipJson, HttpResponse](relationshipEstablishmentPostUrl,RelationshipJson(newRelationship(credId, utr)))
+    httpClient
+      .post(url"$relationshipEstablishmentPostUrl")
+      .withBody(Json.toJson(RelationshipJson(newRelationship(credId, utr))))
+      .execute[HttpResponse]
 
   def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](relationshipEstablishmentGetUrl(credId))
+    httpClient
+      .get(url"${relationshipEstablishmentGetUrl(credId)}")
+      .execute[HttpResponse]
 
   def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
-    httpClient.DELETE[HttpResponse](relationshipEstablishmentDeleteUrl(credId))
-
+    httpClient
+      .delete(url"${relationshipEstablishmentDeleteUrl(credId)}")
+      .execute[HttpResponse]
 }
 
 /**

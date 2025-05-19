@@ -17,20 +17,24 @@
 package connectors
 
 import config.FrontendAppConfig
+
 import javax.inject.Inject
 import models.{EnrolmentResponse, TaxEnrolmentRequest}
-import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
-
-  val url: String = config.taxEnrolmentsUrl + s"/service/${config.serviceName}/enrolment"
+class TaxEnrolmentsConnector @Inject()(http: HttpClientV2, config : FrontendAppConfig) {
 
   def enrol(request: TaxEnrolmentRequest)(implicit hc : HeaderCarrier,
                                           ec : ExecutionContext): Future[EnrolmentResponse] = {
+    val url: String = config.taxEnrolmentsUrl + s"/service/${config.serviceName}/enrolment"
 
-    http.PUT[JsValue, EnrolmentResponse](url, Json.toJson(request))
+    http.put(url"$url")
+      .withBody(Json.toJson(request))
+      .execute[EnrolmentResponse]
+
   }
 }
