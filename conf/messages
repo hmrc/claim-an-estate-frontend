@@ -21,7 +21,7 @@ error.summary.title = There is a problem
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
 session_expired.guidance = This is because you have been inactive on the service for 15 minutes.
-session_expired.guidance.2 = You will need to sign in to continue maintaining the estate.
+session_expired.guidance.2 = You will need to sign in to continue managing the estate.
 
 site.back = Back
 site.delete = Remove
@@ -80,7 +80,7 @@ ivSuccess.contactLink =  contact the deceased estate helpline (opens in a new wi
 ivSuccess.agent.title = You have successfully claimed the estate
 ivSuccess.agent.heading = You have successfully claimed the estate
 ivSuccess.agent.paragraph1 = You need to tell your agent you have passed the estate’s security questions
-ivSuccess.agent.paragraph2 = Your agent then needs to send you an authorisation link to approve so they can maintain the estate online.
+ivSuccess.agent.paragraph2 = Your agent then needs to send you an authorisation link to approve so they can manage the estate online.
 ivSuccess.agent.paragraph3 = The Government Gateway organisation account used to claim this estate must be used to log in and approve this link. An agent cannot access the estate’s register until you complete this step.
 ivSuccess.agent.paragraph4 = If you want to view the register,
 ivSuccess.agent.continueLink =  you can continue into the service
