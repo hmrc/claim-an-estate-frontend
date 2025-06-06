@@ -19,7 +19,7 @@ error.summary.title=Mae problem wedi codi
 session_expired.title=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.heading=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.guidance=Mae’r manylion a roddwyd gennych wedi’u dileu gan nad ydych wedi mynd yn eich blaen â’r gwasanaeth ers 15 munud.
-session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i gynnal yr ystâd.
+session_expired.guidance.2=Bydd angen i chi fewngofnodi er mwyn parhau i reoli’r ystâd.
 
 site.back=Yn ôl
 site.delete=Tynnu
@@ -76,7 +76,7 @@ ivSuccess.contactLink=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEF (yn agor
 ivSuccess.agent.title=Rydych wedi hawlio’r ystâd yn llwyddiannus
 ivSuccess.agent.heading=Rydych wedi hawlio’r ystâd yn llwyddiannus
 ivSuccess.agent.paragraph1=Mae angen i chi roi gwybod i’ch asiant eich bod wedi pasio cwestiynau diogelwch yr ystâd
-ivSuccess.agent.paragraph2=Yna, mae angen i’ch asiant anfon cysylltiad awdurdodi atoch i’w gymeradwyo er mwyn iddo allu cynnal yr ystâd ar-lein.
+ivSuccess.agent.paragraph2=Yna, bydd angen i’ch asiant anfon cysylltiad awdurdodi atoch i’w gymeradwyo er mwyn iddo allu rheoli’r ystâd ar-lein.
 ivSuccess.agent.paragraph3=Rhaid i’r cyfrif sefydliad ar gyfer Porth y Llywodraeth a ddefnyddiwyd i hawlio’r ystâd hon gael ei ddefnyddio i fewngofnodi a chymeradwyo’r cysylltiad hwn. Ni all asiant gael at gofrestr yr ystâd hyd nes i chi gwblhau’r cam hwn.
 ivSuccess.agent.paragraph4=Os ydych am fwrw golwg dros y gofrestr,
 ivSuccess.agent.continueLink=gallwch fynd yn eich blaen i’r gwasanaeth
