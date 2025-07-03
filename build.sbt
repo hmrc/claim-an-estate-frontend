@@ -72,5 +72,3 @@ lazy val microservice = Project(appName, file("."))
     uglify / includeFilter := GlobFilter("claimanestatefrontend-*.js")
   )
   .settings(scoverageSettings)
-
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
