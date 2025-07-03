@@ -75,7 +75,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "http://localhost:8828/maintain-an-estate/status"
+        redirectLocation(result).value mustEqual "http://localhost:8828/maintain-an-estate/want-to-see-last-declared"
 
         application.stop()
       }
