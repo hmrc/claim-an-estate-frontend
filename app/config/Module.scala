@@ -35,4 +35,5 @@ class Module extends AbstractModule {
 
     bind(classOf[RelationshipEstablishment]).to(classOf[RelationshipEstablishmentService])
   }
+
 }

@@ -31,7 +31,7 @@ import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class BusinessKey(name: String,value: String)
+case class BusinessKey(name: String, value: String)
 
 object BusinessKey {
   implicit val format: OFormat[BusinessKey] = Json.format[BusinessKey]
@@ -49,12 +49,14 @@ object RelationshipJson {
   implicit val format: OFormat[RelationshipJson] = Json.format[RelationshipJson]
 }
 
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClientV2, config: FrontendAppConfig)
-                                                  (implicit val ec : ExecutionContext) {
+class RelationshipEstablishmentConnector @Inject() (val httpClient: HttpClientV2, config: FrontendAppConfig)(implicit
+  val ec: ExecutionContext
+) {
 
-  private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentUrl}/relationship-establishment/relationship/"
+  private val relationshipEstablishmentPostUrl: String =
+    s"${config.relationshipEstablishmentUrl}/relationship-establishment/relationship/"
 
-  private def relationshipEstablishmentGetUrl(credId :String): String =
+  private def relationshipEstablishmentGetUrl(credId: String): String =
     s"${config.relationshipEstablishmentUrl}/relationship-establishment/relationship/$credId"
 
   private def relationshipEstablishmentDeleteUrl(credId: String): String =
@@ -78,44 +80,43 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClientV2,
     httpClient
       .delete(url"${relationshipEstablishmentDeleteUrl(credId)}")
       .execute[HttpResponse]
+
 }
 
 /**
  * Test controller and connector to relationship-establishment to set a relationship for a given UTR.
  * This will then enable the service to "succeed" and "fail" an IV check without having to go into EstateIV.
  */
-class TestRelationshipEstablishmentController @Inject()(
-                                                         override val messagesApi: MessagesApi,
-                                                         val controllerComponents: MessagesControllerComponents,
-                                                         relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
-                                                         identify: IdentifierAction
-                                                       )
-                                                       (implicit ec : ExecutionContext)
-  extends FrontendBaseController with Logging {
+class TestRelationshipEstablishmentController @Inject() (
+  override val messagesApi: MessagesApi,
+  val controllerComponents: MessagesControllerComponents,
+  relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
+  identify: IdentifierAction
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with Logging {
 
-  def check(utr: String): Action[AnyContent] = identify.async {
-    implicit request =>
+  def check(utr: String): Action[AnyContent] = identify.async { implicit request =>
+    logger.warn(
+      s"[Session ID: ${Session.id(hc)}][UTR: $utr]" +
+        s" EstateIV is using a test route, you don't want this in production."
+    )
 
-      logger.warn(s"[Session ID: ${Session.id(hc)}][UTR: $utr]" +
-        s" EstateIV is using a test route, you don't want this in production.")
+    val succeedRegex = "(2\\d{9})".r
+    val failRegex    = "(4\\d{9})".r
 
-      val succeedRegex = "(2\\d{9})".r
-      val failRegex = "(4\\d{9})".r
+    def insertRelationship(): Future[Result] = relationshipEstablishmentConnector
+      .createRelationship(request.credentials.providerId, utr) map { _ =>
+      Redirect(controllers.routes.IvSuccessController.onPageLoad)
+    }
 
-      def insertRelationship(): Future[Result] = relationshipEstablishmentConnector
-        .createRelationship(request.credentials.providerId, utr) map {
-        _ =>
-          Redirect(controllers.routes.IvSuccessController.onPageLoad)
-      }
-
-      utr match {
-        case "5000000001" => insertRelationship()
-        case succeedRegex(_) => insertRelationship()
-        case failRegex(_) =>
-          Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure))
-        case _ =>
-          Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure))
-      }
+    utr match {
+      case "5000000001"    => insertRelationship()
+      case succeedRegex(_) => insertRelationship()
+      case failRegex(_)    =>
+        Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure))
+      case _               =>
+        Future.successful(Redirect(controllers.routes.IvFailureController.onEstateIvFailure))
+    }
   }
 
 }

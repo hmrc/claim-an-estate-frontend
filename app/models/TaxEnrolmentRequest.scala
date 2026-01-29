@@ -26,12 +26,13 @@ object TaxEnrolmentRequest {
     Json.obj(
       "identifiers" -> Json.arr(
         Json.obj(
-          "key" -> "SAUTR",
+          "key"   -> "SAUTR",
           "value" -> request.utr
-        )),
-      "verifiers" -> Json.arr(
+        )
+      ),
+      "verifiers"   -> Json.arr(
         Json.obj(
-          "key" -> "SAUTR1",
+          "key"   -> "SAUTR1",
           "value" -> request.utr
         )
       )

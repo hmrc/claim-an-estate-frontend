@@ -27,17 +27,16 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EstatesStoreConnector @Inject()(http: HttpClientV2, config : FrontendAppConfig) {
+class EstatesStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig) {
 
   val url: String = config.estatesStoreUrl + "/lock"
 
-  def lock(request: EstatesStoreRequest)(implicit hc : HeaderCarrier,
-                                         ec : ExecutionContext,
-                                         writes: Writes[EstatesStoreRequest]): Future[HttpResponse] = {
+  def lock(
+    request: EstatesStoreRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[EstatesStoreRequest]): Future[HttpResponse] =
     http
       .post(url"$url")
       .withBody(Json.toJson(request))
       .execute[HttpResponse]
-  }
 
 }

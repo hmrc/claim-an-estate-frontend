@@ -26,15 +26,18 @@ import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaxEnrolmentsConnector @Inject()(http: HttpClientV2, config : FrontendAppConfig) {
+class TaxEnrolmentsConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig) {
 
-  def enrol(request: TaxEnrolmentRequest)(implicit hc : HeaderCarrier,
-                                          ec : ExecutionContext): Future[EnrolmentResponse] = {
+  def enrol(
+    request: TaxEnrolmentRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EnrolmentResponse] = {
     val url: String = config.taxEnrolmentsUrl + s"/service/${config.serviceName}/enrolment"
 
-    http.put(url"$url")
+    http
+      .put(url"$url")
       .withBody(Json.toJson(request))
       .execute[EnrolmentResponse]
 
   }
+
 }

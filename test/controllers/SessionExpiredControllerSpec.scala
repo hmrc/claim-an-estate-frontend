@@ -58,4 +58,5 @@ class SessionExpiredControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

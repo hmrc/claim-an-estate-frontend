@@ -36,9 +36,9 @@ import scala.concurrent.Future
 
 class BeforeYouContinueControllerSpec extends SpecBase {
 
-  val utr = "0987654321"
+  val utr            = "0987654321"
   val managedByAgent = true
-  val estateLocked = false
+  val estateLocked   = false
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
   val fakeEstablishmentServiceSuccess = new FakeRelationshipEstablishmentService(RelationshipFound)
@@ -70,8 +70,12 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
       val answers = emptyUserAnswers
-        .set(UTRPage, "0987654321").success.value
-        .set(IsAgentManagingEstatePage, true).success.value
+        .set(UTRPage, "0987654321")
+        .success
+        .value
+        .set(IsAgentManagingEstatePage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceSuccess)
         .overrides(bind[Navigator].toInstance(fakeNavigator))
@@ -93,12 +97,18 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val connector = mock[EstatesStoreConnector]
 
-      when(connector.lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any()))
+      when(
+        connector.lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
+      )
         .thenReturn(Future.successful(HttpResponse(CREATED, "")))
 
       val answers = emptyUserAnswers
-        .set(UTRPage, "0987654321").success.value
-        .set(IsAgentManagingEstatePage, true).success.value
+        .set(UTRPage, "0987654321")
+        .success
+        .value
+        .set(IsAgentManagingEstatePage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing)
         .overrides(bind[EstatesStoreConnector].toInstance(connector))
@@ -113,7 +123,8 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       redirectLocation(result).value must include("0987654321")
 
-      verify(connector).lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
+      verify(connector)
+        .lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
 
       application.stop()
 
@@ -159,4 +170,5 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
     }
   }
+
 }

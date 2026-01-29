@@ -23,4 +23,5 @@ trait PageGenerators {
 
   implicit lazy val arbitraryIsAgentManagingEstatePage: Arbitrary[IsAgentManagingEstatePage.type] =
     Arbitrary(IsAgentManagingEstatePage)
+
 }

@@ -22,7 +22,7 @@ import play.api.data.FormError
 class IsAgentManagingEstateFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "isAgentManagingEstateYesNo.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey  = "error.boolean"
 
   val form = new IsAgentManagingEstateFormProvider()()
 
@@ -42,4 +42,5 @@ class IsAgentManagingEstateFormProviderSpec extends BooleanFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

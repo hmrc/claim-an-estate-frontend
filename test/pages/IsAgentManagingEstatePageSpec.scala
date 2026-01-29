@@ -28,4 +28,5 @@ class IsAgentManagingEstatePageSpec extends PageBehaviours {
 
     beRemovable[Boolean](IsAgentManagingEstatePage)
   }
+
 }

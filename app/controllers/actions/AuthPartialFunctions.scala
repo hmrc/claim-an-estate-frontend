@@ -26,8 +26,9 @@ import uk.gov.hmrc.auth.core.{AuthorisationException, NoActiveSession}
 import scala.concurrent.Future
 
 trait AuthPartialFunctions extends Logging {
+
   def recoverFromException()(implicit config: FrontendAppConfig): PartialFunction[Throwable, Future[Result]] = {
-    case _: NoActiveSession =>
+    case _: NoActiveSession        =>
       Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
     case _: AuthorisationException =>
       Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))

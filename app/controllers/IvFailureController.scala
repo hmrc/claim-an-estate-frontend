@@ -35,20 +35,22 @@ import views.html.{EstateLocked, EstateNotFound, EstateStillProcessing}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IvFailureController @Inject()(
-                                     val controllerComponents: MessagesControllerComponents,
-                                     appConfig: FrontendAppConfig,
-                                     lockedView: EstateLocked,
-                                     stillProcessingView: EstateStillProcessing,
-                                     notFoundView: EstateNotFound,
-                                     actions: Actions,
-                                     relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
-                                     connector: EstatesStoreConnector,
-                                     auditService: AuditService
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
-  private def renderFailureReason(utr: String, internalId: String, journeyId: String)(implicit hc : HeaderCarrier) = {
+class IvFailureController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  appConfig: FrontendAppConfig,
+  lockedView: EstateLocked,
+  stillProcessingView: EstateStillProcessing,
+  notFoundView: EstateNotFound,
+  actions: Actions,
+  relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
+  connector: EstatesStoreConnector,
+  auditService: AuditService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
+
+  private def renderFailureReason(utr: String, internalId: String, journeyId: String)(implicit hc: HeaderCarrier) =
     relationshipEstablishmentConnector.journeyId(journeyId) map {
-      case RelationshipEstablishmentStatus.Locked =>
+      case RelationshipEstablishmentStatus.Locked       =>
         // $COVERAGE-OFF$
         logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] $utr is locked")
         // $COVERAGE-ON$
@@ -60,7 +62,7 @@ class IvFailureController @Inject()(
         )
 
         Redirect(routes.IvFailureController.estateLocked)
-      case RelationshipEstablishmentStatus.NotFound =>
+      case RelationshipEstablishmentStatus.NotFound     =>
         // $COVERAGE-OFF$
         logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] $utr was not found")
         // $COVERAGE-ON$
@@ -70,108 +72,113 @@ class IvFailureController @Inject()(
         logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] $utr is processing")
         // $COVERAGE-ON$
         Redirect(routes.IvFailureController.estateStillProcessing)
-      case UnsupportedRelationshipStatus(reason) =>
+      case UnsupportedRelationshipStatus(reason)        =>
         // $COVERAGE-OFF$
         logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason")
         // $COVERAGE-ON$
         Redirect(routes.FallbackFailureController.onPageLoad)
-      case UpstreamRelationshipError(response) =>
+      case UpstreamRelationshipError(response)          =>
         // $COVERAGE-OFF$
         logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] HTTP response: $response")
         // $COVERAGE-ON$
         Redirect(routes.FallbackFailureController.onPageLoad)
-      case _ =>
+      case _                                            =>
         // $COVERAGE-OFF$
         logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] No errorKey in HTTP response")
         // $COVERAGE-ON$
         Redirect(routes.FallbackFailureController.onPageLoad)
     }
-  }
 
-  def onEstateIvFailure: Action[AnyContent] = actions.authWithData.async {
-    implicit request =>
+  def onEstateIvFailure: Action[AnyContent] = actions.authWithData.async { implicit request =>
+    request.userAnswers.get(UTRPage) match {
+      case Some(utr) =>
+        val queryString = request.getQueryString("journeyId")
 
-      request.userAnswers.get(UTRPage) match {
-        case Some(utr) =>
-          val queryString = request.getQueryString("journeyId")
-
-          queryString.fold{
-            // $COVERAGE-OFF$
-            logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
-              s" unable to retrieve a journeyId to determine the reason")
-            // $COVERAGE-ON$
-            Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
-          }{
-            journeyId =>
-              renderFailureReason(utr, request.internalId, journeyId)
-          }
-        case None =>
+        queryString.fold {
           // $COVERAGE-OFF$
-          logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] unable to retrieve a UTR")
+          logger.warn(
+            s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+              s" unable to retrieve a journeyId to determine the reason"
+          )
           // $COVERAGE-ON$
           Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
-      }
-  }
-
-  def estateLocked : Action[AnyContent] = actions.authWithData.async {
-    implicit request =>
-      (for {
-        utr <- request.userAnswers.get(UTRPage)
-        isManagedByAgent <- request.userAnswers.get(IsAgentManagingEstatePage)
-      } yield {
-        connector.lock(EstatesStoreRequest(request.internalId, utr, isManagedByAgent, estateLocked = true)) map { _ =>
-          // $COVERAGE-OFF$
-          logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
-            s" failed IV 3 times, estate is locked out from IV")
-          // $COVERAGE-ON$
-          Ok(lockedView(utr))
+        } { journeyId =>
+          renderFailureReason(utr, request.internalId, journeyId)
         }
-      }) getOrElse {
+      case None      =>
         // $COVERAGE-OFF$
-        logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
-          s" unable to determine if estate is locked out from IV")
+        logger.warn(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] unable to retrieve a UTR")
         // $COVERAGE-ON$
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-      }
+        Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
+    }
   }
 
-  def estateNotFound : Action[AnyContent] = actions.authWithData.async {
-    implicit request =>
-      request.userAnswers.get(UTRPage) map {
-        utr =>
-          // $COVERAGE-OFF$
-          logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
-            s" IV was unable to find the estate for utr $utr")
-          // $COVERAGE-ON$
-          Future.successful(Ok(notFoundView()))
-      } getOrElse {
+  def estateLocked: Action[AnyContent] = actions.authWithData.async { implicit request =>
+    (for {
+      utr              <- request.userAnswers.get(UTRPage)
+      isManagedByAgent <- request.userAnswers.get(IsAgentManagingEstatePage)
+    } yield connector.lock(EstatesStoreRequest(request.internalId, utr, isManagedByAgent, estateLocked = true)) map {
+      _ =>
         // $COVERAGE-OFF$
-        logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
-          s" no utr stored in user answers when informing user the estate was not found")
+        logger.info(
+          s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+            s" failed IV 3 times, estate is locked out from IV"
+        )
         // $COVERAGE-ON$
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-      }
+        Ok(lockedView(utr))
+    }) getOrElse {
+      // $COVERAGE-OFF$
+      logger.error(
+        s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+          s" unable to determine if estate is locked out from IV"
+      )
+      // $COVERAGE-ON$
+      Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+    }
+  }
+
+  def estateNotFound: Action[AnyContent] = actions.authWithData.async { implicit request =>
+    request.userAnswers.get(UTRPage) map { utr =>
+      // $COVERAGE-OFF$
+      logger.info(
+        s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+          s" IV was unable to find the estate for utr $utr"
+      )
+      // $COVERAGE-ON$
+      Future.successful(Ok(notFoundView()))
+    } getOrElse {
+      // $COVERAGE-OFF$
+      logger.error(
+        s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+          s" no utr stored in user answers when informing user the estate was not found"
+      )
+      // $COVERAGE-ON$
+      Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+    }
   }
 
   def estateNotFoundOnSubmit: Action[AnyContent] = Action { _ =>
     Redirect(appConfig.estatesRegistration)
   }
 
-  def estateStillProcessing : Action[AnyContent] = actions.authWithData.async {
-    implicit request =>
-      request.userAnswers.get(UTRPage) map {
-        utr =>
-          // $COVERAGE-OFF$
-          logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
-            s" IV determined the estate utr $utr was still processing")
-          // $COVERAGE-ON$
-          Future.successful(Ok(stillProcessingView(utr)))
-      } getOrElse {
-        // $COVERAGE-OFF$
-        logger.error(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
-          s" no utr stored in user answers when informing user estate was still processing")
-        // $COVERAGE-ON$
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-      }
+  def estateStillProcessing: Action[AnyContent] = actions.authWithData.async { implicit request =>
+    request.userAnswers.get(UTRPage) map { utr =>
+      // $COVERAGE-OFF$
+      logger.info(
+        s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+          s" IV determined the estate utr $utr was still processing"
+      )
+      // $COVERAGE-ON$
+      Future.successful(Ok(stillProcessingView(utr)))
+    } getOrElse {
+      // $COVERAGE-OFF$
+      logger.error(
+        s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
+          s" no utr stored in user answers when informing user estate was still processing"
+      )
+      // $COVERAGE-ON$
+      Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+    }
   }
+
 }

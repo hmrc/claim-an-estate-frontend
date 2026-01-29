@@ -20,15 +20,16 @@ import com.google.inject.Inject
 import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
 
-class Actions @Inject()(
-                         identify: IdentifierAction,
-                         getData: DataRetrievalAction,
-                         requireData: DataRequiredAction
-                       ) {
+class Actions @Inject() (
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction
+) {
 
   def authWithSession: ActionBuilder[OptionalDataRequest, AnyContent] =
     identify andThen getData
 
   def authWithData: ActionBuilder[DataRequest, AnyContent] =
     authWithSession andThen requireData
+
 }

@@ -25,12 +25,12 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext
 
-class AuditService @Inject()(auditConnector: AuditConnector)(implicit ec: ExecutionContext) {
+class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext) {
 
   private object AuditEvent {
-    val ESTATE_CLAIMED = "EstateClaimed"
+    val ESTATE_CLAIMED      = "EstateClaimed"
     val ESTATE_CLAIM_FAILED = "EstateClaimFailed"
-    val ESTATE_CLAIM_ERROR = "EstateClaimError"
+    val ESTATE_CLAIM_ERROR  = "EstateClaimError"
   }
 
   def auditEstateClaimed(utr: String, internalId: String)(implicit hc: HeaderCarrier): Unit =
@@ -41,7 +41,9 @@ class AuditService @Inject()(auditConnector: AuditConnector)(implicit ec: Execut
       Json.obj()
     )
 
-  def auditEstateClaimFailed(utr: String, internalId: String, failed: EnrolmentFailed)(implicit hc: HeaderCarrier): Unit =
+  def auditEstateClaimFailed(utr: String, internalId: String, failed: EnrolmentFailed)(implicit
+    hc: HeaderCarrier
+  ): Unit =
     audit(
       AuditEvent.ESTATE_CLAIM_FAILED,
       Json.obj("utr" -> utr),
@@ -52,13 +54,14 @@ class AuditService @Inject()(auditConnector: AuditConnector)(implicit ec: Execut
   def auditEstateClaimError(utr: String, internalId: String, errorReason: String)(implicit hc: HeaderCarrier): Unit =
     audit(
       AuditEvent.ESTATE_CLAIM_ERROR,
-      Json.obj("utr" -> utr),
+      Json.obj("utr"         -> utr),
       internalId,
       Json.obj("errorReason" -> errorReason)
     )
 
-  private def audit(event: String, request: JsValue, internalId: String, response: JsValue)
-                   (implicit hc: HeaderCarrier): Unit = {
+  private def audit(event: String, request: JsValue, internalId: String, response: JsValue)(implicit
+    hc: HeaderCarrier
+  ): Unit = {
 
     val auditPayload = AuditData(
       request = request,
@@ -71,4 +74,5 @@ class AuditService @Inject()(auditConnector: AuditConnector)(implicit ec: Execut
       auditPayload
     )
   }
+
 }

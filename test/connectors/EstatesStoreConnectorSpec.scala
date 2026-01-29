@@ -33,18 +33,15 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with Matchers with WireMoc
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val app = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.estates-store.port" -> server.port(),
-      "auditing.enabled" -> false): _*
-    )
+    .configure(Seq("microservice.services.estates-store.port" -> server.port(), "auditing.enabled" -> false): _*)
     .build()
 
   lazy val connector: EstatesStoreConnector = app.injector.instanceOf[EstatesStoreConnector]
 
   lazy val url: String = "/estates-store/lock"
 
-  val utr = "1234567890"
-  val internalId = "some-authenticated-internal-id"
+  val utr            = "1234567890"
+  val internalId     = "some-authenticated-internal-id"
   val managedByAgent = true
 
   val request: EstatesStoreRequest = EstatesStoreRequest(internalId, utr, managedByAgent, estateLocked = false)
@@ -74,7 +71,6 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with Matchers with WireMoc
             |  "utr": "a string representing the tax reference to associate with this internalId",
             |  "managedByAgent": "boolean derived from answers in the claim a estate journey"
             |}""".stripMargin
-
 
         wiremock(
           payload = json,

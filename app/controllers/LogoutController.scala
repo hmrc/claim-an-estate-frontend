@@ -30,26 +30,25 @@ import utils.Session
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class LogoutController @Inject()(appConfig: FrontendAppConfig,
-                                 val controllerComponents:
-                                 MessagesControllerComponents,
-                                 identify: IdentifierAction,
-                                 auditConnector: AuditConnector)
-                                (implicit val executionContext: ExecutionContext)
-                                 extends FrontendBaseController with Logging {
+class LogoutController @Inject() (
+  appConfig: FrontendAppConfig,
+  val controllerComponents: MessagesControllerComponents,
+  identify: IdentifierAction,
+  auditConnector: AuditConnector
+)(implicit val executionContext: ExecutionContext)
+    extends FrontendBaseController with Logging {
 
   def logout: Action[AnyContent] = identify { implicit request =>
-
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     logger.info(s"[Claiming][Session ID: Session ID: ${Session.id(hc)}] user signed out from the service")
 
-    if(appConfig.logoutAudit) {
+    if (appConfig.logoutAudit) {
 
       val auditData = Map(
         "sessionId" -> Session.id(hc),
-        "event" -> "signout",
-        "service" -> "claim-an-estate-frontend",
+        "event"     -> "signout",
+        "service"   -> "claim-an-estate-frontend",
         "userGroup" -> request.affinityGroup.toString
       )
 
@@ -62,4 +61,5 @@ class LogoutController @Inject()(appConfig: FrontendAppConfig,
 
     Redirect(appConfig.logoutUrl).withSession(session = ("feedbackId", Session.id(hc)))
   }
+
 }
