@@ -30,35 +30,35 @@ import utils.WireMockHelper
 
 class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
-  private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+  implicit private lazy val hc: HeaderCarrier = HeaderCarrier()
 
   private lazy val app = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.tax-enrolments.port" -> server.port(),
-      "auditing.enabled" -> false): _*
-    )
+    .configure(Seq("microservice.services.tax-enrolments.port" -> server.port(), "auditing.enabled" -> false): _*)
     .build()
 
-  private lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  private lazy val config: FrontendAppConfig         = app.injector.instanceOf[FrontendAppConfig]
   private lazy val connector: TaxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
 
   private lazy val url: String = s"/tax-enrolments/service/${config.serviceName}/enrolment"
 
   private val utr = "1234567890"
 
-  private val request = Json.stringify(Json.obj(
-    "identifiers" -> Json.arr(
-      Json.obj(
-        "key" -> "SAUTR",
-        "value" -> utr
-      )),
-    "verifiers" -> Json.arr(
-      Json.obj(
-        "key" -> "SAUTR1",
-        "value" -> utr
+  private val request = Json.stringify(
+    Json.obj(
+      "identifiers" -> Json.arr(
+        Json.obj(
+          "key"   -> "SAUTR",
+          "value" -> utr
+        )
+      ),
+      "verifiers"   -> Json.arr(
+        Json.obj(
+          "key"   -> "SAUTR1",
+          "value" -> utr
+        )
       )
     )
-  ))
+  )
 
   private def wiremock(payload: String, simulatedStatus: Int, simulatedResponse: String) =
     server.stubFor(
@@ -104,4 +104,5 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with Matchers with WireMo
       }
     }
   }
+
 }

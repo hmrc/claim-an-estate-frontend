@@ -84,4 +84,5 @@ class LogoutControllerSpec extends SpecBase with Matchers with GuiceOneAppPerSui
       }
     }
   }
+
 }

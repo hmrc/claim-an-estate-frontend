@@ -26,7 +26,7 @@ import views.html.IsAgentManagingEstateView
 class IsAgentManagingEstateViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "isAgentManagingEstateYesNo"
-  val utr = "0987654321"
+  val utr              = "0987654321"
 
   val form = new IsAgentManagingEstateFormProvider()()
 
@@ -43,4 +43,5 @@ class IsAgentManagingEstateViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(form, applyView, messageKeyPrefix)
   }
+
 }

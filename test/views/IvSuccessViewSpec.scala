@@ -34,8 +34,13 @@ class IvSuccessViewSpec extends ViewBehaviours {
       behave like normalPageWithCaption(
         applyView,
         "ivSuccess.agent",
-        "utr", utr,
-        "paragraph1", "paragraph2", "paragraph3", "paragraph4", "paragraph5"
+        "utr",
+        utr,
+        "paragraph1",
+        "paragraph2",
+        "paragraph3",
+        "paragraph4",
+        "paragraph5"
       )
     }
 
@@ -76,7 +81,6 @@ class IvSuccessViewSpec extends ViewBehaviours {
       }
 
     }
-
 
   }
 

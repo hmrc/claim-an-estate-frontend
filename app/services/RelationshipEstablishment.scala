@@ -31,16 +31,18 @@ sealed trait RelationEstablishmentStatus
 
 case object RelationshipFound extends RelationEstablishmentStatus
 case object RelationshipNotFound extends RelationEstablishmentStatus
-case class RelationshipError(reason : String) extends Exception(reason)
+case class RelationshipError(reason: String) extends Exception(reason)
 
-class RelationshipEstablishmentService @Inject()(
-                                                  val authConnector: AuthConnector
-                                                )(
-                                                  implicit val config: FrontendAppConfig,
-                                                  implicit val executionContext: ExecutionContext
-                                                )
-  extends RelationshipEstablishment with Logging {
-  def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
+class RelationshipEstablishmentService @Inject() (
+  val authConnector: AuthConnector
+)(
+  implicit val config: FrontendAppConfig,
+  implicit val executionContext: ExecutionContext
+) extends RelationshipEstablishment with Logging {
+
+  def check(internalId: String, utr: String)(implicit
+    request: Request[AnyContent]
+  ): Future[RelationEstablishmentStatus] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
@@ -48,27 +50,32 @@ class RelationshipEstablishmentService @Inject()(
       case FailedRelationship(msg) =>
         // relationship does not exist
         // $COVERAGE-OFF$
-        logger.info(s"[Claiming][Session ID: ${Session.id(hc)}][UTR: $utr]" +
-          s" Relationship does not exist in Estate IV for user $internalId due to $msg")
+        logger.info(
+          s"[Claiming][Session ID: ${Session.id(hc)}][UTR: $utr]" +
+            s" Relationship does not exist in Estate IV for user $internalId due to $msg"
+        )
         // $COVERAGE-ON$
         Future.successful(RelationshipNotFound)
-      case e : Throwable =>
+      case e: Throwable            =>
         // $COVERAGE-OFF$
-        logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
-          s" Service was unable to determine if an IV relationship existed in Estates IV. Cannot continue with the journey")
+        logger.error(
+          s"[Claiming][Session ID: ${Session.id(hc)}]" +
+            s" Service was unable to determine if an IV relationship existed in Estates IV. Cannot continue with the journey"
+        )
         // $COVERAGE-ON$
         throw RelationshipError(e.getMessage)
     }
 
     authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
       // $COVERAGE-OFF$
-      logger.info(s"[Claiming][Session ID: ${Session.id(hc)}][UTR: $utr]" +
-        s" Relationship established in Estate IV for user $internalId")
+      logger.info(
+        s"[Claiming][Session ID: ${Session.id(hc)}][UTR: $utr]" +
+          s" Relationship established in Estate IV for user $internalId"
+      )
       // $COVERAGE-ON$
-        Future.successful(RelationshipFound)
-    } recoverWith {
+      Future.successful(RelationshipFound)
+    } recoverWith
       failedRelationshipPF
-    }
   }
 
 }

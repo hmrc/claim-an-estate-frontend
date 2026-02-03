@@ -32,12 +32,12 @@ object EnrolmentResponse {
 
   import play.api.http.Status._
 
-  implicit lazy val httpReads : HttpReads[EnrolmentResponse] = new HttpReads[EnrolmentResponse] {
-    override def read(method: String, url: String, response: HttpResponse): EnrolmentResponse = {
+  implicit lazy val httpReads: HttpReads[EnrolmentResponse] = new HttpReads[EnrolmentResponse] {
+    override def read(method: String, url: String, response: HttpResponse): EnrolmentResponse =
       response.status match {
         case NO_CONTENT => EnrolmentCreated
-        case _ => EnrolmentFailed(response.status, response.body)
+        case _          => EnrolmentFailed(response.status, response.body)
       }
-    }
   }
+
 }

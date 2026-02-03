@@ -30,44 +30,48 @@ import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SaveUTRController @Inject()(
-                                   actions: Actions,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   sessionRepository: SessionRepository,
-                                   relationship: RelationshipEstablishment
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class SaveUTRController @Inject() (
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  sessionRepository: SessionRepository,
+  relationship: RelationshipEstablishment
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  def save(utr: String): Action[AnyContent] = actions.authWithSession.async {
-    implicit request =>
-
-      lazy val body = {
-          val userAnswers = request.userAnswers match {
-            case Some(userAnswers) => userAnswers.set(UTRPage, utr)
-            case _ =>
-              UserAnswers(request.internalId).set(UTRPage, utr)
-          }
-          for {
-            updatedAnswers <- Future.fromTry(userAnswers)
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield {
-            // $COVERAGE-OFF$
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
-              s" user has started the claim an estate journey for utr $utr")
-            // $COVERAGE-ON$
-            Redirect(routes.IsAgentManagingEstateController.onPageLoad(NormalMode))
-          }
+  def save(utr: String): Action[AnyContent] = actions.authWithSession.async { implicit request =>
+    lazy val body = {
+      val userAnswers = request.userAnswers match {
+        case Some(userAnswers) => userAnswers.set(UTRPage, utr)
+        case _                 =>
+          UserAnswers(request.internalId).set(UTRPage, utr)
       }
-
-      relationship.check(request.internalId, utr) flatMap {
-        case RelationshipFound =>
-          // $COVERAGE-OFF$
-          logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
-            s" relationship is already established in IV for utr $utr sending user to successfully claimed")
-          // $COVERAGE-ON$
-          Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
-        case RelationshipNotFound =>
-          body
+      for {
+        updatedAnswers <- Future.fromTry(userAnswers)
+        _              <- sessionRepository.set(updatedAnswers)
+      } yield {
+        // $COVERAGE-OFF$
+        logger.info(
+          s"[Claiming][Session ID: ${Session.id(hc)}]" +
+            s" user has started the claim an estate journey for utr $utr"
+        )
+        // $COVERAGE-ON$
+        Redirect(routes.IsAgentManagingEstateController.onPageLoad(NormalMode))
       }
+    }
+
+    relationship.check(request.internalId, utr) flatMap {
+      case RelationshipFound    =>
+        // $COVERAGE-OFF$
+        logger.info(
+          s"[Claiming][Session ID: ${Session.id(hc)}]" +
+            s" relationship is already established in IV for utr $utr sending user to successfully claimed"
+        )
+        // $COVERAGE-ON$
+        Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
+      case RelationshipNotFound =>
+        body
+    }
 
   }
+
 }

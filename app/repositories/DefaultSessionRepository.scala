@@ -29,24 +29,25 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DefaultSessionRepository @Inject()(
-                                          val mongoComponent: MongoComponent,
-                                          val config: MongoConfig
-                                        )(implicit val ec: ExecutionContext)
-  extends PlayMongoRepository[UserAnswers](
-    collectionName = "user-answers",
-    mongoComponent = mongoComponent,
-    domainFormat = UserAnswers.format,
-    indexes = Seq(
-      IndexModel(
-        ascending("lastUpdated"),
-        IndexOptions()
-          .unique(false)
-          .name("user-answers-last-updated-index")
-          .expireAfter(config.ttlInSeconds, TimeUnit.SECONDS))
-    ),
-    replaceIndexes = config.dropIndexes
-  )
+class DefaultSessionRepository @Inject() (
+  val mongoComponent: MongoComponent,
+  val config: MongoConfig
+)(implicit val ec: ExecutionContext)
+    extends PlayMongoRepository[UserAnswers](
+      collectionName = "user-answers",
+      mongoComponent = mongoComponent,
+      domainFormat = UserAnswers.format,
+      indexes = Seq(
+        IndexModel(
+          ascending("lastUpdated"),
+          IndexOptions()
+            .unique(false)
+            .name("user-answers-last-updated-index")
+            .expireAfter(config.ttlInSeconds, TimeUnit.SECONDS)
+        )
+      ),
+      replaceIndexes = config.dropIndexes
+    )
     with SessionRepository {
 
   private def eqId(id: String) = Filters.eq("_id", id)
@@ -55,7 +56,9 @@ class DefaultSessionRepository @Inject()(
     collection.find(eqId(id)).headOption()
 
   override def set(userAnswers: UserAnswers): Future[Boolean] =
-    collection.replaceOne(eqId(userAnswers.id), userAnswers, ReplaceOptions().upsert(true))
+    collection
+      .replaceOne(eqId(userAnswers.id), userAnswers, ReplaceOptions().upsert(true))
       .head()
       .map(_.wasAcknowledged())
+
 }

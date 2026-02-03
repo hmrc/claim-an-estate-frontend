@@ -29,7 +29,12 @@ class NavigatorSpec extends SpecBase {
 
     "go to BeforeYouContinue from IsAgentManagingEstate" in {
 
-      navigator.nextPage(IsAgentManagingEstatePage, NormalMode, UserAnswers("id")) mustBe routes.BeforeYouContinueController.onPageLoad()
+      navigator.nextPage(
+        IsAgentManagingEstatePage,
+        NormalMode,
+        UserAnswers("id")
+      ) mustBe routes.BeforeYouContinueController.onPageLoad()
     }
   }
+
 }

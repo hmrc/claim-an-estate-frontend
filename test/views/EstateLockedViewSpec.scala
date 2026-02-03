@@ -32,8 +32,13 @@ class EstateLockedViewSpec extends ViewBehaviours {
     behave like normalPageWithCaption(
       applyView,
       "locked",
-      "utr", utr,
-      "p1", "p2", "p3", "p4", "link1"
+      "utr",
+      utr,
+      "p1",
+      "p2",
+      "p3",
+      "p4",
+      "link1"
     )
 
   }

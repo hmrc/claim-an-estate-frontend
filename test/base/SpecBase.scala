@@ -53,9 +53,10 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
 
   val mockAuditService: AuditService = mock[AuditService]
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
-                                   relationshipEstablishment: RelationshipEstablishment = new FakeRelationshipEstablishmentService()
-                                  ): GuiceApplicationBuilder = {
+  protected def applicationBuilder(
+    userAnswers: Option[UserAnswers] = None,
+    relationshipEstablishment: RelationshipEstablishment = new FakeRelationshipEstablishmentService()
+  ): GuiceApplicationBuilder = {
     reset(mockAuditService)
 
     new GuiceApplicationBuilder()
@@ -67,4 +68,5 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
         bind(classOf[AuditService]).toInstance(mockAuditService)
       )
   }
+
 }

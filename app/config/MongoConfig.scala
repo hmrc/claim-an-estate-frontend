@@ -23,7 +23,9 @@ import play.api.Configuration
 class MongoConfig @Inject() (val config: Configuration) {
 
   private val defaultTTLInSeconds = 3600
-  val ttlInSeconds: Int = config.getOptional[Int]("mongodb.timeToLiveInSeconds").getOrElse(defaultTTLInSeconds)
+  val ttlInSeconds: Int           = config.getOptional[Int]("mongodb.timeToLiveInSeconds").getOrElse(defaultTTLInSeconds)
 
-  val dropIndexes: Boolean = config.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
+  val dropIndexes: Boolean =
+    config.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
+
 }

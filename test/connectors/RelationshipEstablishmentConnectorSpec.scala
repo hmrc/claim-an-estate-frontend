@@ -27,26 +27,28 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
+class RelationshipEstablishmentConnectorSpec
+    extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  lazy val config: FrontendAppConfig                     = app.injector.instanceOf[FrontendAppConfig]
   lazy val connector: RelationshipEstablishmentConnector = app.injector.instanceOf[RelationshipEstablishmentConnector]
 
   lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.relationship-establishment.port" -> server.port(),
-      "auditing.enabled" -> false): _*
+    .configure(
+      Seq("microservice.services.relationship-establishment.port" -> server.port(), "auditing.enabled" -> false): _*
     )
     .build()
 
   val journeyFailure = s"47a8a543-6961-4221-86e8-d22e2c3c91de"
-  val url = s"/relationship-establishment/journey-failure/$journeyFailure"
+  val url            = s"/relationship-establishment/journey-failure/$journeyFailure"
 
   private def wiremock(expectedJourneyFailureReason: String) =
-    server.stubFor(get(urlEqualTo(url))
-      .willReturn(okJson(expectedJourneyFailureReason)))
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(okJson(expectedJourneyFailureReason))
+    )
 
   "RelationshipEstablishmentConnector" must {
 

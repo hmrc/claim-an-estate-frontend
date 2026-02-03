@@ -31,20 +31,20 @@ object RelationshipEstablishmentStatus {
 
   import play.api.http.Status._
 
-  implicit lazy val httpReads : HttpReads[RelationshipEstablishmentStatus] = new HttpReads[RelationshipEstablishmentStatus] {
-    override def read(method: String, url: String, response: HttpResponse): RelationshipEstablishmentStatus = {
-      response.status match {
-        case OK =>
-          (response.json \ "errorKey").asOpt[String] match {
-            case Some("ESTATE_LOCKED")      => Locked
-            case Some("UTR_NOT_FOUND")      => NotFound
-            case Some("UTR_IN_PROCESSING")  => InProcessing
-            case Some(unsupported)          => UnsupportedRelationshipStatus(unsupported)
-            case _                          => NoRelationshipStatus
-          }
-        case status => UpstreamRelationshipError(s"Unexpected HTTP response code $status")
-      }
+  implicit lazy val httpReads: HttpReads[RelationshipEstablishmentStatus] =
+    new HttpReads[RelationshipEstablishmentStatus] {
+      override def read(method: String, url: String, response: HttpResponse): RelationshipEstablishmentStatus =
+        response.status match {
+          case OK     =>
+            (response.json \ "errorKey").asOpt[String] match {
+              case Some("ESTATE_LOCKED")     => Locked
+              case Some("UTR_NOT_FOUND")     => NotFound
+              case Some("UTR_IN_PROCESSING") => InProcessing
+              case Some(unsupported)         => UnsupportedRelationshipStatus(unsupported)
+              case _                         => NoRelationshipStatus
+            }
+          case status => UpstreamRelationshipError(s"Unexpected HTTP response code $status")
+        }
     }
-  }
 
 }

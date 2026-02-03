@@ -40,7 +40,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val utr = "0987654321"
 
-  private val connector = mock[TaxEnrolmentsConnector]
+  private val connector                     = mock[TaxEnrolmentsConnector]
   private val mockRelationshipEstablishment = mock[RelationshipEstablishment]
 
   // Mock mongo repository
@@ -77,8 +77,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         redirectLocation(result).value mustEqual frontendAppConfig.estatesContinueUrl
 
-
-
         application.stop()
       }
     }
@@ -88,15 +86,20 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
       "return OK and the correct view for a GET with no Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingEstatePage, false).success.value
-          .set(UTRPage, utr).success.value
+          .set(IsAgentManagingEstatePage, false)
+          .success
+          .value
+          .set(UTRPage, utr)
+          .success
+          .value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-          .overrides(
-            bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-            bind(classOf[SessionRepository]).toInstance(mockRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+            .overrides(
+              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+              bind(classOf[SessionRepository]).toInstance(mockRepository)
+            )
+            .build()
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -134,15 +137,20 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
       "return OK and the correct view for a GET with Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingEstatePage, true).success.value
-          .set(UTRPage, utr).success.value
+          .set(IsAgentManagingEstatePage, true)
+          .success
+          .value
+          .set(UTRPage, utr)
+          .success
+          .value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-          .overrides(
-            bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-            bind(classOf[SessionRepository]).toInstance(mockRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+            .overrides(
+              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+              bind(classOf[SessionRepository]).toInstance(mockRepository)
+            )
+            .build()
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -184,16 +192,23 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
       "return OK and the correct view for a GET with no Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingEstatePage, false).success.value
-          .set(UTRPage, utr).success.value
-          .set(HasEnrolled, false).success.value
+          .set(IsAgentManagingEstatePage, false)
+          .success
+          .value
+          .set(UTRPage, utr)
+          .success
+          .value
+          .set(HasEnrolled, false)
+          .success
+          .value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-          .overrides(
-            bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-            bind(classOf[SessionRepository]).toInstance(mockRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+            .overrides(
+              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+              bind(classOf[SessionRepository]).toInstance(mockRepository)
+            )
+            .build()
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -231,16 +246,23 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
       "return OK and the correct view for a GET with Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingEstatePage, true).success.value
-          .set(UTRPage, utr).success.value
-          .set(HasEnrolled, false).success.value
+          .set(IsAgentManagingEstatePage, true)
+          .success
+          .value
+          .set(UTRPage, utr)
+          .success
+          .value
+          .set(HasEnrolled, false)
+          .success
+          .value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-          .overrides(
-            bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-            bind(classOf[SessionRepository]).toInstance(mockRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+            .overrides(
+              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+              bind(classOf[SessionRepository]).toInstance(mockRepository)
+            )
+            .build()
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -282,16 +304,23 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
       "return OK and the correct view for a GET with no Agent and has enrolled" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingEstatePage, false).success.value
-          .set(UTRPage, utr).success.value
-          .set(HasEnrolled, true).success.value
+          .set(IsAgentManagingEstatePage, false)
+          .success
+          .value
+          .set(UTRPage, utr)
+          .success
+          .value
+          .set(HasEnrolled, true)
+          .success
+          .value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-          .overrides(
-            bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-            bind(classOf[SessionRepository]).toInstance(mockRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+            .overrides(
+              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+              bind(classOf[SessionRepository]).toInstance(mockRepository)
+            )
+            .build()
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -323,16 +352,23 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
       "return OK and the correct view for a GET with Agent and has enrolled" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingEstatePage, true).success.value
-          .set(UTRPage, utr).success.value
-          .set(HasEnrolled, true).success.value
+          .set(IsAgentManagingEstatePage, true)
+          .success
+          .value
+          .set(UTRPage, utr)
+          .success
+          .value
+          .set(HasEnrolled, true)
+          .success
+          .value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-          .overrides(
-            bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-            bind(classOf[SessionRepository]).toInstance(mockRepository)
-          )
-          .build()
+        val application =
+          applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+            .overrides(
+              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+              bind(classOf[SessionRepository]).toInstance(mockRepository)
+            )
+            .build()
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -376,7 +412,11 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
-        verify(mockAuditService).auditEstateClaimError(eqTo("Unknown"), eqTo("id"), eqTo("No UTR available on success"))(any())
+        verify(mockAuditService).auditEstateClaimError(
+          eqTo("Unknown"),
+          eqTo("id"),
+          eqTo("No UTR available on success")
+        )(any())
 
         application.stop()
       }
@@ -391,7 +431,11 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
-        verify(mockAuditService).auditEstateClaimError(eqTo("Unknown"), eqTo("id"), eqTo("No UTR available on success"))(any())
+        verify(mockAuditService).auditEstateClaimError(
+          eqTo("Unknown"),
+          eqTo("id"),
+          eqTo("No UTR available on success")
+        )(any())
 
         application.stop()
       }
@@ -405,10 +449,17 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
             val utr = "1234567890"
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(IsAgentManagingEstatePage, true).success.value
-              .set(UTRPage, utr).success.value
+              .set(IsAgentManagingEstatePage, true)
+              .success
+              .value
+              .set(UTRPage, utr)
+              .success
+              .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+            val application = applicationBuilder(
+              userAnswers = Some(userAnswers),
+              relationshipEstablishment = mockRelationshipEstablishment
+            )
               .overrides(
                 bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
                 bind(classOf[SessionRepository]).toInstance(mockRepository)
@@ -446,10 +497,17 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
             val utr = "0987654321"
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(IsAgentManagingEstatePage, true).success.value
-              .set(UTRPage, utr).success.value
+              .set(IsAgentManagingEstatePage, true)
+              .success
+              .value
+              .set(UTRPage, utr)
+              .success
+              .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+            val application = applicationBuilder(
+              userAnswers = Some(userAnswers),
+              relationshipEstablishment = mockRelationshipEstablishment
+            )
               .overrides(
                 bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
                 bind(classOf[SessionRepository]).toInstance(mockRepository)
@@ -486,4 +544,5 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
   }
+
 }
