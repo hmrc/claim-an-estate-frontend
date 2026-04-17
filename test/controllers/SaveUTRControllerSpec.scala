@@ -68,7 +68,7 @@ class SaveUTRControllerSpec extends SpecBase with LogCapturing with BeforeAndAft
 
     "send UTR to session repo" when {
 
-      "user answers does not exist" in {
+      "user answers do not exist" in {
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
         when(mockSessionRepository.set(captor.capture())).thenReturn(Future.successful(true))
@@ -81,7 +81,7 @@ class SaveUTRControllerSpec extends SpecBase with LogCapturing with BeforeAndAft
         captor.getValue.get(UTRPage).value mustBe utr
       }
 
-      "user answers exists" in
+      "user answers exist" in
         withCaptureOfLoggingFrom(Logger(classOf[SaveUTRController])) { logs =>
           val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
@@ -98,7 +98,7 @@ class SaveUTRControllerSpec extends SpecBase with LogCapturing with BeforeAndAft
           logs.head.toString must include("user has started the claim an estate journey for utr 0987654321")
         }
 
-      "user answers exists and relationship found" in
+      "user answers exist and relationship found" in
         withCaptureOfLoggingFrom(Logger(classOf[SaveUTRController])) { logs =>
           val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
