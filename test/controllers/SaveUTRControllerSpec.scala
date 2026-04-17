@@ -18,98 +18,123 @@ package controllers
 
 import base.SpecBase
 import models.{NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.mockito.{ArgumentCaptor, Mockito}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.UTRPage
+import play.api.Logger
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
+import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 
 import scala.concurrent.Future
 
-class SaveUTRControllerSpec extends SpecBase {
+class SaveUTRControllerSpec extends SpecBase with LogCapturing with BeforeAndAfterEach {
 
   val utr = "0987654321"
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
   val fakeEstablishmentServicePassing = new FakeRelationshipEstablishmentService(RelationshipFound)
 
+  private val mockSessionRepository = mock[SessionRepository]
+
+  private val appWithFailingRelationship =
+    applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
+      .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+      .build()
+
+  private val appWithPassingRelationship =
+    applicationBuilder(userAnswers = None, fakeEstablishmentServicePassing)
+      .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+      .build()
+
+  private val appWithExistingAnswersAndFailingRelationship =
+    applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFailing)
+      .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+      .build()
+
+  val request = FakeRequest(GET, routes.SaveUTRController.save(utr).url)
+
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+    super.beforeEach()
+  }
+
   "SaveUTRController" must {
 
     "send UTR to session repo" when {
 
       "user answers does not exist" in {
-
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-        val mockSessionRepository = mock[SessionRepository]
+        when(mockSessionRepository.set(captor.capture())).thenReturn(Future.successful(true))
 
-        when(mockSessionRepository.set(captor.capture()))
-          .thenReturn(Future.successful(true))
-
-        val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
-
-        val request = FakeRequest(GET, routes.SaveUTRController.save(utr).url)
-
-        val result = route(application, request).value
+        val result = route(appWithFailingRelationship, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustBe routes.IsAgentManagingEstateController.onPageLoad(NormalMode).url
 
         captor.getValue.get(UTRPage).value mustBe utr
-
-      }
-      "user answers exists" in {
-
-        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
-        val mockSessionRepository = mock[SessionRepository]
-
-        when(mockSessionRepository.set(captor.capture()))
-          .thenReturn(Future.successful(true))
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFailing)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
-
-        val request = FakeRequest(GET, routes.SaveUTRController.save(utr).url)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustBe routes.IsAgentManagingEstateController.onPageLoad(NormalMode).url
-
-        captor.getValue.get(UTRPage).value mustBe utr
-
       }
 
-      "user answers exists and relationship found" in {
+      "user answers exists" in
+        withCaptureOfLoggingFrom(Logger(classOf[SaveUTRController])) { logs =>
+          val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          when(mockSessionRepository.set(captor.capture())).thenReturn(Future.successful(true))
 
-        val mockSessionRepository = mock[SessionRepository]
+          val result = route(appWithExistingAnswersAndFailingRelationship, request).value
 
-        when(mockSessionRepository.set(captor.capture()))
-          .thenReturn(Future.successful(true))
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe routes.IsAgentManagingEstateController.onPageLoad(NormalMode).url
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServicePassing)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+          captor.getValue.get(UTRPage).value mustBe utr
 
-        val request = FakeRequest(GET, routes.SaveUTRController.save(utr).url)
+          logs.size mustEqual 1
+          logs.head.toString must include("user has started the claim an estate journey for utr 0987654321")
+        }
 
-        val result = route(application, request).value
+      "user answers exists and relationship found" in
+        withCaptureOfLoggingFrom(Logger(classOf[SaveUTRController])) { logs =>
+          val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad.url
+          when(mockSessionRepository.set(captor.capture())).thenReturn(Future.successful(true))
 
-      }
+          val result = route(appWithPassingRelationship, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad.url
+
+          logs.size mustEqual 1
+          logs.head.toString must include(
+            "relationship is already established in IV for utr 0987654321 sending user to successfully claimed"
+          )
+
+          Mockito.verifyNoInteractions(mockSessionRepository)
+        }
     }
+
+    "return an internal server error" when {
+
+      "UTR fails validation" in
+        withCaptureOfLoggingFrom(Logger(classOf[SaveUTRController])) { logs =>
+          val request = FakeRequest(GET, controllers.routes.SaveUTRController.save("<script>alert('xss')</script>").url)
+
+          val result = route(appWithFailingRelationship, request).value
+
+          status(result) mustEqual INTERNAL_SERVER_ERROR
+
+          logs.size mustEqual 1
+          logs.head.toString must include("Invalid UTR: <script>alert('xss')</script>")
+
+          Mockito.verifyNoInteractions(mockSessionRepository)
+        }
+    }
+
   }
 
 }
