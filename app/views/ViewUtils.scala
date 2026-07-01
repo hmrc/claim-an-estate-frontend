@@ -31,7 +31,6 @@ object ViewUtils {
   def subheading(identifier: String)(implicit messages: Messages): String =
     s"${messages("utr.subheading", identifier)}"
 
-  // scalastyle:off
   def errorHref(error: FormError, radioOptions: Seq[RadioOption] = Nil): String =
     error.args match {
       case x if x.contains("day") || x.contains("month") || x.contains("year") =>
@@ -49,6 +48,5 @@ object ViewUtils {
           s"${error.key}"
         }
     }
-  // scalastyle:on
 
 }

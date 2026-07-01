@@ -14,15 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import views.html.components.{Heading, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    appConfig: FrontendAppConfig,
-        heading: Heading,
-        formHelper: FormWithCSRF,
-        submitButton: SubmitButton
+    heading: Heading,
+    formHelper: FormWithCSRF,
+    submitButton: SubmitButton
 )
 
 @()(implicit request: RequestHeader, messages: Messages)
@@ -35,8 +33,8 @@
 
     @heading("session_expired.heading")
 
-    <p>@messages("session_expired.guidance")</p>
-    <p>@messages("session_expired.guidance.2")</p>
+    <p class="govuk-body">@messages("session_expired.guidance")</p>
+    <p class="govuk-body">@messages("session_expired.guidance.2")</p>
 
     @formHelper(action = SessionExpiredController.onSubmit, Symbol("autoComplete") -> "off") {
         @submitButton(Some(messages("site.sign_in")))

@@ -17,10 +17,8 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import controllers.routes
 import play.api.Configuration
 import play.api.i18n.Lang
-import play.api.mvc.Call
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 @Singleton
@@ -84,8 +82,5 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, contactFron
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
   )
-
-  def routeToSwitchLanguage: String => Call =
-    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
 }
