@@ -113,7 +113,6 @@ package object models {
       }
     }
 
-    // scalastyle:off
     def remove(path: JsPath): JsResult[JsValue] =
 
       (path.path, jsValue) match {
@@ -148,7 +147,6 @@ package object models {
                 }
             }
       }
-    // scalastyle:on
 
   }
 

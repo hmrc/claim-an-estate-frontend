@@ -32,9 +32,9 @@
 
  @heading("notFound.heading")
 
- <p>@messages("notFound.p1")</p>
- <p>@messages("notFound.p2")</p>
- <p>@messages("notFound.p3") <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("notFound.link1")</a>.</p>
+ <p class="govuk-body">@messages("notFound.p1")</p>
+ <p class="govuk-body">@messages("notFound.p2")</p>
+ <p class="govuk-body">@messages("notFound.p3") <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("notFound.link1")</a>.</p>
 
  @formHelper(action = SessionExpiredController.onSubmit, Symbol("autoComplete") -> "off") {
   @submitButton(Some(messages("notFound.button")))

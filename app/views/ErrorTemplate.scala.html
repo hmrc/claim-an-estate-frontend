@@ -14,11 +14,9 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import views.html.components.Heading
 
 @this(
-        appConfig: FrontendAppConfig,
         mainTemplate: MainTemplate,
         headingI: Heading
 )
@@ -30,7 +28,7 @@
 }
 
 @mainContent = {
- <p>@message</p>
+ <p class="govuk-body">@message</p>
 }
 
 @mainTemplate(title = pageTitle, contentHeader = Some(contentHeader))(mainContent = mainContent)
