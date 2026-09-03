@@ -44,6 +44,8 @@ class LogoutControllerSpec extends SpecBase with Matchers with GuiceOneAppPerSui
           .configure("microservice.services.features.auditing.logout" -> true)
           .build()
 
+        frontendAppConfig.feedbackFrontendUrl must include("useServiceNavigation")
+
         val continueUrl = URLEncoder.encode(s"${frontendAppConfig.feedbackFrontendUrl}", "UTF-8")
 
         val expectedUrl = s"${frontendAppConfig.logoutWithBasGatewayUrl}?continue=$continueUrl"

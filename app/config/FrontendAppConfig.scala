@@ -26,9 +26,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, contactFron
 
   lazy val serviceName: String = configuration.get[String]("serviceName")
 
-  val betaFeedbackUrl =
-    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
-
   lazy val estatesRegistration: String = configuration.get[String]("urls.estatesRegistration")
   lazy val authUrl: String             = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String            = configuration.get[String]("urls.login")
@@ -36,7 +33,7 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, contactFron
   lazy val logoutUrl: String           = configuration.get[String]("urls.logout")
 
   lazy val basGatewayBaseUrl: String       = configuration.get[String]("bas-gateway.host")
-  lazy val feedbackFrontendUrl: String     = configuration.get[String]("feedback-frontend.url")
+  lazy val feedbackFrontendUrl: String     = s"${configuration.get[String]("feedback-frontend.url")}?useServiceNavigation"
   lazy val timeOutUrl: String              = configuration.get[String]("urls.timeOut")
   lazy val logoutWithBasGatewayUrl: String = s"$basGatewayBaseUrl$logoutUrl"
 
