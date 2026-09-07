@@ -19,15 +19,13 @@ package config
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
-import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (val configuration: Configuration, contactFrontendConfig: ContactFrontendConfig) {
+class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
   lazy val serviceName: String = configuration.get[String]("serviceName")
 
   lazy val estatesRegistration: String = configuration.get[String]("urls.estatesRegistration")
-  lazy val authUrl: String             = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String            = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String    = configuration.get[String]("urls.loginContinue")
   lazy val logoutUrl: String           = configuration.get[String]("urls.logout")
@@ -76,9 +74,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, contactFron
 
   lazy val failureUrl: String =
     configuration.get[String]("urls.failureUrl")
-
-  lazy val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
