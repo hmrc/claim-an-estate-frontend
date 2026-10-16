@@ -5,3 +5,4 @@ type: Service
 service-type: Frontend
 test-repositories:
   - estates-acceptance-tests
+serviceNowMapping: SNSVC0005913
