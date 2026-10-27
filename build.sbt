@@ -1,5 +1,7 @@
-ThisBuild / scalaVersion := "2.13.18"
-ThisBuild / majorVersion := 0
+import uk.gov.hmrc.DefaultBuildSettings.targetJvm
+ThisBuild / scalaVersion := "3.9.0"
+ThisBuild / targetJvm := "jvm-21"
+ThisBuild / majorVersion := 1
 
 lazy val microservice = Project("claim-an-estate-frontend", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
@@ -21,9 +23,9 @@ lazy val microservice = Project("claim-an-estate-frontend", file("."))
     ),
     PlayKeys.playDefaultPort := 8830,
     scalacOptions ++= Seq(
-      "-feature",
       "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused-imports&src=html/.*:s"
+      "-Wconf:msg=unused import&src=html/.*:s",
+      "-feature"
     ),
     libraryDependencies ++= AppDependencies()
   )

@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
-
+import play.api.libs.ws.writeableOf_JsValue
 import scala.concurrent.{ExecutionContext, Future}
 
 case class BusinessKey(name: String, value: String)
@@ -106,7 +106,7 @@ class TestRelationshipEstablishmentController @Inject() (
 
     def insertRelationship(): Future[Result] = relationshipEstablishmentConnector
       .createRelationship(request.credentials.providerId, utr) map { _ =>
-      Redirect(controllers.routes.IvSuccessController.onPageLoad)
+      Redirect(controllers.routes.IvSuccessController.onPageLoad())
     }
 
     utr match {

@@ -23,6 +23,7 @@ import models.{EnrolmentResponse, TaxEnrolmentRequest}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import play.api.libs.ws.writeableOf_JsValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,7 +38,6 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClientV2, config: FrontendAppC
       .put(url"$url")
       .withBody(Json.toJson(request))
       .execute[EnrolmentResponse]
-
   }
 
 }

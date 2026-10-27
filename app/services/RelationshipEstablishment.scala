@@ -35,9 +35,9 @@ case class RelationshipError(reason: String) extends Exception(reason)
 
 class RelationshipEstablishmentService @Inject() (
   val authConnector: AuthConnector
-)(
-  implicit val config: FrontendAppConfig,
-  implicit val executionContext: ExecutionContext
+)(implicit
+  val config: FrontendAppConfig,
+  executionContext: ExecutionContext
 ) extends RelationshipEstablishment with Logging {
 
   def check(internalId: String, utr: String)(implicit
@@ -49,25 +49,21 @@ class RelationshipEstablishmentService @Inject() (
     def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
         // relationship does not exist
-        // $COVERAGE-OFF$
         logger.info(
           s"[Claiming][Session ID: ${Session.id(hc)}][UTR: $utr]" +
             s" Relationship does not exist in Estate IV for user $internalId due to $msg"
         )
-        // $COVERAGE-ON$
         Future.successful(RelationshipNotFound)
       case e: Throwable            =>
-        // $COVERAGE-OFF$
         logger.error(
           s"[Claiming][Session ID: ${Session.id(hc)}]" +
             s" Service was unable to determine if an IV relationship existed in Estates IV. Cannot continue with the journey"
         )
-        // $COVERAGE-ON$
         throw RelationshipError(e.getMessage)
     }
 
     authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
-      // $COVERAGE-OFF$
+
       logger.info(
         s"[Claiming][Session ID: ${Session.id(hc)}][UTR: $utr]" +
           s" Relationship established in Estate IV for user $internalId"

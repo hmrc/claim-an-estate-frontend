@@ -27,4 +27,11 @@ class ViewUtilsSpec extends ViewSpecBase {
 
   }
 
+  " breadcrumbTitle" should {
+    "return the expected breadcrumb title" in {
+      val heading = ViewUtils.breadcrumbTitle("1234567890")
+      heading mustBe "1234567890 - Manage an estate - GOV.UK"
+    }
+  }
+
 }

@@ -107,7 +107,7 @@ class SaveUTRControllerSpec extends SpecBase with LogCapturing with BeforeAndAft
           val result = route(appWithPassingRelationship, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad.url
+          redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad().url
 
           logs.size mustEqual 1
           logs.head.toString must include(

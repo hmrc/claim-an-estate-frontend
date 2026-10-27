@@ -43,7 +43,7 @@ class DefaultSessionRepository @Inject() (
           IndexOptions()
             .unique(false)
             .name("user-answers-last-updated-index")
-            .expireAfter(config.ttlInSeconds, TimeUnit.SECONDS)
+            .expireAfter(config.ttlInSeconds.toLong, TimeUnit.SECONDS)
         )
       ),
       replaceIndexes = config.dropIndexes

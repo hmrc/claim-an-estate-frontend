@@ -84,7 +84,7 @@ class IvSuccessController @Inject() (
   }
 
   private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(implicit
-    request: OptionalDataRequest[_]
+    request: OptionalDataRequest[?]
   ): Future[Result] = {
 
     val hasEnrolled: Boolean = userAnswers.get(HasEnrolled).getOrElse(false)

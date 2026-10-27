@@ -54,7 +54,7 @@ class SaveUTRController @Inject() (
               s"$logStart relationship is already established in IV for utr $utr sending user to successfully claimed"
             )
 
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
 
           case RelationshipNotFound =>
             val userAnswers = request.userAnswers match {

@@ -115,7 +115,7 @@ class IvFailureControllerSpec extends SpecBase {
           .overrides(bind[Navigator].toInstance(fakeNavigator))
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.Locked))
 
         val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
@@ -145,7 +145,7 @@ class IvFailureControllerSpec extends SpecBase {
           )
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotFound))
 
         val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure.url
@@ -177,7 +177,7 @@ class IvFailureControllerSpec extends SpecBase {
           )
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.InProcessing))
 
         val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure.url
@@ -207,7 +207,7 @@ class IvFailureControllerSpec extends SpecBase {
           .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.UnsupportedRelationshipStatus("")))
 
         val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure.url
@@ -237,7 +237,7 @@ class IvFailureControllerSpec extends SpecBase {
           .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.UpstreamRelationshipError("")))
 
         val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure.url
@@ -267,7 +267,7 @@ class IvFailureControllerSpec extends SpecBase {
           .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.NoRelationshipStatus))
 
         val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure.url
@@ -294,7 +294,7 @@ class IvFailureControllerSpec extends SpecBase {
           .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.NoRelationshipStatus))
 
         val onIvFailureRoute = routes.IvFailureController.onEstateIvFailure.url
@@ -327,7 +327,11 @@ class IvFailureControllerSpec extends SpecBase {
 
         when(
           connector
-            .lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
+            .lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(using
+              any(),
+              any(),
+              any()
+            )
         )
           .thenReturn(Future.successful(HttpResponse(CREATED, "")))
 
@@ -355,7 +359,7 @@ class IvFailureControllerSpec extends SpecBase {
         )
 
         verify(connector)
-          .lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
+          .lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(using any(), any(), any())
 
         application.stop()
       }

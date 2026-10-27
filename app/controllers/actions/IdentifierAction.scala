@@ -36,7 +36,7 @@ trait IdentifierAction
 class AuthenticatedIdentifierAction @Inject() (
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default
-)(implicit val executionContext: ExecutionContext, implicit val config: FrontendAppConfig)
+)(implicit val executionContext: ExecutionContext, config: FrontendAppConfig)
     extends IdentifierAction with AuthorisedFunctions with AuthPartialFunctions with Logging {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
