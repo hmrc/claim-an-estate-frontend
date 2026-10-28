@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FakeFailingAuthConnector @Inject() (exceptionToReturn: Throwable) extends AuthConnector {
   val serviceUrl: String = ""
 
-  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit
+  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(using
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[A] =
@@ -37,7 +37,7 @@ class FakeFailingAuthConnector @Inject() (exceptionToReturn: Throwable) extends 
 
 class FakeAuthConnector(stubbedRetrievalResult: Future[?]) extends AuthConnector {
 
-  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit
+  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(using
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[A] =

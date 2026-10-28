@@ -46,10 +46,11 @@ class IvSuccessController @Inject() (
   errorHandler: ErrorHandler,
   auditService: AuditService,
   sessionRepository: SessionRepository
-)(implicit ec: ExecutionContext, val config: FrontendAppConfig)
+)(using ec: ExecutionContext, val config: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
-  def onPageLoad(): Action[AnyContent] = actions.authWithSession.async { implicit request =>
+  def onPageLoad(): Action[AnyContent] = actions.authWithSession.async { request =>
+    given request.type = request
     request.userAnswers match {
       case Some(userAnswers) =>
         userAnswers.get(UTRPage).map { utr =>
@@ -83,7 +84,7 @@ class IvSuccessController @Inject() (
     }
   }
 
-  private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(implicit
+  private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(using
     request: OptionalDataRequest[?]
   ): Future[Result] = {
 
@@ -122,7 +123,7 @@ class IvSuccessController @Inject() (
     }
   }
 
-  private def noUtrOnSuccess(request: OptionalDataRequest[AnyContent])(implicit hc: HeaderCarrier) = {
+  private def noUtrOnSuccess(request: OptionalDataRequest[AnyContent])(using hc: HeaderCarrier) = {
     auditService.auditEstateClaimError("Unknown", request.internalId, "No UTR available on success")
     Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
   }

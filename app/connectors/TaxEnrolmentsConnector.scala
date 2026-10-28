@@ -31,7 +31,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClientV2, config: FrontendAppC
 
   def enrol(
     request: TaxEnrolmentRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EnrolmentResponse] = {
+  )(using hc: HeaderCarrier, ec: ExecutionContext): Future[EnrolmentResponse] = {
     val url: String = config.taxEnrolmentsUrl + s"/service/${config.serviceName}/enrolment"
 
     http

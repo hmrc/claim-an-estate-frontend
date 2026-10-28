@@ -23,7 +23,7 @@
     submitButton: SubmitButton
 )
 
-@(utr: String)(implicit request: RequestHeader, messages: Messages)
+@(utr: String)(using request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("beforeYouContinue.title"),

@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DefaultSessionRepository @Inject() (
   val mongoComponent: MongoComponent,
   val config: MongoConfig
-)(implicit val ec: ExecutionContext)
+)(using val ec: ExecutionContext)
     extends PlayMongoRepository[UserAnswers](
       collectionName = "user-answers",
       mongoComponent = mongoComponent,

@@ -44,12 +44,13 @@ class IsAgentManagingEstateController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: IsAgentManagingEstateView,
   relationship: RelationshipEstablishment
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = actions.authWithData.async { implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = actions.authWithData.async { request =>
+    given request.type = request
     request.userAnswers.get(UTRPage) map { utr =>
       lazy val body = {
         val preparedForm = request.userAnswers.get(IsAgentManagingEstatePage) match {

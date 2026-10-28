@@ -49,7 +49,7 @@ object RelationshipJson {
   implicit val format: OFormat[RelationshipJson] = Json.format[RelationshipJson]
 }
 
-class RelationshipEstablishmentConnector @Inject() (val httpClient: HttpClientV2, config: FrontendAppConfig)(implicit
+class RelationshipEstablishmentConnector @Inject() (val httpClient: HttpClientV2, config: FrontendAppConfig)(using
   val ec: ExecutionContext
 ) {
 
@@ -65,18 +65,18 @@ class RelationshipEstablishmentConnector @Inject() (val httpClient: HttpClientV2
   private def newRelationship(credId: String, utr: String): Relationship =
     Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
 
-  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  def createRelationship(credId: String, utr: String)(using headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClient
       .post(url"$relationshipEstablishmentPostUrl")
       .withBody(Json.toJson(RelationshipJson(newRelationship(credId, utr))))
       .execute[HttpResponse]
 
-  def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  def getRelationship(credId: String)(using headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClient
       .get(url"${relationshipEstablishmentGetUrl(credId)}")
       .execute[HttpResponse]
 
-  def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  def deleteRelationship(credId: String)(using headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClient
       .delete(url"${relationshipEstablishmentDeleteUrl(credId)}")
       .execute[HttpResponse]
@@ -92,10 +92,11 @@ class TestRelationshipEstablishmentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
   identify: IdentifierAction
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with Logging {
 
-  def check(utr: String): Action[AnyContent] = identify.async { implicit request =>
+  def check(utr: String): Action[AnyContent] = identify.async { request =>
+    given request.type = request
     logger.warn(
       s"[Session ID: ${Session.id(hc)}][UTR: $utr]" +
         s" EstateIV is using a test route, you don't want this in production."

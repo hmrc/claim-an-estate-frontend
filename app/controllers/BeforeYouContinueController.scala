@@ -39,10 +39,11 @@ class BeforeYouContinueController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: BeforeYouContinueView,
   connector: EstatesStoreConnector
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(using ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
-  def onPageLoad: Action[AnyContent] = actions.authWithData.async { implicit request =>
+  def onPageLoad: Action[AnyContent] = actions.authWithData.async { request =>
+    given request.type = request
     request.userAnswers.get(UTRPage) map { utr =>
       def body =
         Future.successful(Ok(view(utr)))
@@ -65,7 +66,8 @@ class BeforeYouContinueController @Inject() (
     }
   }
 
-  def onSubmit: Action[AnyContent] = actions.authWithData.async { implicit request =>
+  def onSubmit: Action[AnyContent] = actions.authWithData.async { request =>
+    given request.type = request
     (for {
       utr              <- request.userAnswers.get(UTRPage)
       isManagedByAgent <- request.userAnswers.get(IsAgentManagingEstatePage)

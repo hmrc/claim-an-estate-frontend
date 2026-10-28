@@ -29,10 +29,10 @@ final case class UserAnswers(
   lastUpdated: LocalDateTime = LocalDateTime.now
 ) {
 
-  def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
+  def get[A](page: QuestionPage[A])(using rds: Reads[A]): Option[A] =
     Reads.optionNoError(using Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def set[A](page: QuestionPage[A], value: A)(using writes: Writes[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>

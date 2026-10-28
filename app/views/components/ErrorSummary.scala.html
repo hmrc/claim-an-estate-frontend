@@ -22,7 +22,7 @@
     govUkErrorSummary: GovukErrorSummary
 )
 
-@(errors: Seq[FormError], radioOptions: Seq[RadioOption] = Nil)(implicit messages: Messages)
+@(errors: Seq[FormError], radioOptions: Seq[RadioOption] = Nil)(using messages: Messages)
 
 @if(errors.nonEmpty) {
     @govUkErrorSummary(uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.ErrorSummary(

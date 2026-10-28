@@ -34,7 +34,7 @@ class EstatesStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppCo
 
   def lock(
     request: EstatesStoreRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[EstatesStoreRequest]): Future[HttpResponse] =
+  )(using hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[EstatesStoreRequest]): Future[HttpResponse] =
     http
       .post(url"$url")
       .withBody(Json.toJson(request))

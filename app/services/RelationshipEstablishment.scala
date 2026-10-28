@@ -35,16 +35,16 @@ case class RelationshipError(reason: String) extends Exception(reason)
 
 class RelationshipEstablishmentService @Inject() (
   val authConnector: AuthConnector
-)(implicit
+)(using
   val config: FrontendAppConfig,
   executionContext: ExecutionContext
 ) extends RelationshipEstablishment with Logging {
 
-  def check(internalId: String, utr: String)(implicit
+  def check(internalId: String, utr: String)(using
     request: Request[AnyContent]
   ): Future[RelationEstablishmentStatus] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    given hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
@@ -78,6 +78,6 @@ class RelationshipEstablishmentService @Inject() (
 
 trait RelationshipEstablishment extends AuthorisedFunctions {
 
-  def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus]
+  def check(internalId: String, utr: String)(using request: Request[AnyContent]): Future[RelationEstablishmentStatus]
 
 }

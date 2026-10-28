@@ -29,7 +29,7 @@ class RelationshipEstablishmentConnector @Inject() (http: HttpClientV2, config: 
 
   def journeyId(
     id: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RelationshipEstablishmentStatus] = {
+  )(using hc: HeaderCarrier, ec: ExecutionContext): Future[RelationshipEstablishmentStatus] = {
     val url = s"${config.relationshipEstablishmentUrl}/relationship-establishment/journey-failure/$id"
 
     http

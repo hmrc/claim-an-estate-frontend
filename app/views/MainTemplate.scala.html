@@ -37,7 +37,7 @@
         timeoutEnabled: Boolean = true,
         canSignOut: Boolean = true,
         showBackLink: Boolean = false
-)(mainContent: Html)(implicit request: RequestHeader, messages: Messages)
+)(mainContent: Html)(using request: RequestHeader, messages: Messages)
 
 @additionalHead = {
     @if(timeoutEnabled) {

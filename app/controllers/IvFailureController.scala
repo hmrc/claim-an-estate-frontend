@@ -45,10 +45,10 @@ class IvFailureController @Inject() (
   relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
   connector: EstatesStoreConnector,
   auditService: AuditService
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
-  private def renderFailureReason(utr: String, internalId: String, journeyId: String)(implicit hc: HeaderCarrier) =
+  private def renderFailureReason(utr: String, internalId: String, journeyId: String)(using hc: HeaderCarrier) =
     relationshipEstablishmentConnector.journeyId(journeyId) map {
       case RelationshipEstablishmentStatus.Locked       =>
         logger.info(s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}] $utr is locked")
@@ -77,7 +77,8 @@ class IvFailureController @Inject() (
         Redirect(routes.FallbackFailureController.onPageLoad)
     }
 
-  def onEstateIvFailure: Action[AnyContent] = actions.authWithData.async { implicit request =>
+  def onEstateIvFailure: Action[AnyContent] = actions.authWithData.async { request =>
+    given request.type = request
     request.userAnswers.get(UTRPage) match {
       case Some(utr) =>
         val queryString = request.getQueryString("journeyId")
