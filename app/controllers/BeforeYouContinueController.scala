@@ -39,10 +39,11 @@ class BeforeYouContinueController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: BeforeYouContinueView,
   connector: EstatesStoreConnector
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(using ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
   def onPageLoad: Action[AnyContent] = actions.authWithData.async { implicit request =>
+
     request.userAnswers.get(UTRPage) map { utr =>
       def body =
         Future.successful(Ok(view(utr)))
@@ -52,7 +53,7 @@ class BeforeYouContinueController @Inject() (
             s"[Claiming][Session ID: ${Session.id(hc)}]" +
               s"relationship is already established in IV for utr $utr sending user to successfully claimed"
           )
-          Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
+          Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
         case RelationshipNotFound =>
           body
       }
@@ -100,7 +101,7 @@ class BeforeYouContinueController @Inject() (
             s"[Claiming][Session ID: ${Session.id(hc)}]" +
               s" relationship is already established in IV for utr $utr sending user to successfully claimed"
           )
-          Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
+          Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
         case RelationshipNotFound =>
           onRelationshipNotFound
       }

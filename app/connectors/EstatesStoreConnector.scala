@@ -24,6 +24,7 @@ import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import play.api.libs.ws.writeableOf_JsValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,7 +34,7 @@ class EstatesStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppCo
 
   def lock(
     request: EstatesStoreRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[EstatesStoreRequest]): Future[HttpResponse] =
+  )(using hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[EstatesStoreRequest]): Future[HttpResponse] =
     http
       .post(url"$url")
       .withBody(Json.toJson(request))

@@ -39,12 +39,12 @@ class SaveUTRController @Inject() (
   sessionRepository: SessionRepository,
   relationship: RelationshipEstablishment,
   errorHandler: ErrorHandler
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   def save(utr: String): Action[AnyContent] = actions.authWithSession.async { implicit request =>
-    val utrPattern = """^\d{10}$""".r
 
+    val utrPattern     = """^\d{10}$""".r
     utr match {
       case utrPattern() =>
 
@@ -54,7 +54,7 @@ class SaveUTRController @Inject() (
               s"$logStart relationship is already established in IV for utr $utr sending user to successfully claimed"
             )
 
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
 
           case RelationshipNotFound =>
             val userAnswers = request.userAnswers match {
@@ -82,7 +82,7 @@ class SaveUTRController @Inject() (
 
   }
 
-  private def logStart(implicit hc: HeaderCarrier): String =
+  private def logStart(using hc: HeaderCarrier): String =
     s"[SaveUTRController][save][Session ID: ${Session.id(hc)}]"
 
 }

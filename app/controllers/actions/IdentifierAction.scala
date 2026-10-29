@@ -36,12 +36,12 @@ trait IdentifierAction
 class AuthenticatedIdentifierAction @Inject() (
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default
-)(implicit val executionContext: ExecutionContext, implicit val config: FrontendAppConfig)
+)(using val executionContext: ExecutionContext, val config: FrontendAppConfig)
     extends IdentifierAction with AuthorisedFunctions with AuthPartialFunctions with Logging {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    given hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised().retrieve(Retrievals.internalId and Retrievals.credentials and Retrievals.affinityGroup) {
       case Some(internalId) ~ Some(credentials) ~ Some(affinityGroup) =>
@@ -49,8 +49,7 @@ class AuthenticatedIdentifierAction @Inject() (
       case _                                                          =>
         logger.error(s"[Session ID: ${Session.id(hc)}] user not authenticated. Unable to retrieve internal Id")
         throw new UnauthorizedException("Unable to retrieve internal Id")
-    } recoverWith
-      recoverFromException()
+    } recoverWith recoverFromException()
   }
 
 }

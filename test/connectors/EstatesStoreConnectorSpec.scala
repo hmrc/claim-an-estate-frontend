@@ -33,7 +33,7 @@ class EstatesStoreConnectorSpec extends AsyncWordSpec with Matchers with WireMoc
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val app = new GuiceApplicationBuilder()
-    .configure(Seq("microservice.services.estates-store.port" -> server.port(), "auditing.enabled" -> false): _*)
+    .configure(Seq("microservice.services.estates-store.port" -> server.port(), "auditing.enabled" -> false)*)
     .build()
 
   lazy val connector: EstatesStoreConnector = app.injector.instanceOf[EstatesStoreConnector]

@@ -33,7 +33,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with Matchers with WireMo
   implicit private lazy val hc: HeaderCarrier = HeaderCarrier()
 
   private lazy val app = new GuiceApplicationBuilder()
-    .configure(Seq("microservice.services.tax-enrolments.port" -> server.port(), "auditing.enabled" -> false): _*)
+    .configure(Seq("microservice.services.tax-enrolments.port" -> server.port(), "auditing.enabled" -> false)*)
     .build()
 
   private lazy val config: FrontendAppConfig         = app.injector.instanceOf[FrontendAppConfig]

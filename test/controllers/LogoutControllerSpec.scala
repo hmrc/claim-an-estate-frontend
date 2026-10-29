@@ -59,7 +59,7 @@ class LogoutControllerSpec extends SpecBase with Matchers with GuiceOneAppPerSui
         redirectLocation(result).value mustBe expectedUrl
 
         verify(mockAuditConnector)
-          .sendExplicitAudit(eqTo("estates"), any[Map[String, String]])(any(), any())
+          .sendExplicitAudit(eqTo("estates"), any[Map[String, String]])(using any(), any())
 
         application.stop()
 
@@ -89,7 +89,7 @@ class LogoutControllerSpec extends SpecBase with Matchers with GuiceOneAppPerSui
         redirectLocation(result).value mustBe expectedUrl
 
         verify(mockAuditConnector, never)
-          .sendExplicitAudit(eqTo("estates"), any[Map[String, String]])(any(), any())
+          .sendExplicitAudit(eqTo("estates"), any[Map[String, String]])(using any(), any())
 
         application.stop()
 

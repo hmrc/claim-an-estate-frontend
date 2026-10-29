@@ -22,10 +22,10 @@
     govUkErrorSummary: GovukErrorSummary
 )
 
-@(errors: Seq[FormError], radioOptions: Seq[RadioOption] = Nil)(implicit messages: Messages)
+@(errors: Seq[FormError], radioOptions: Seq[RadioOption] = Nil)(using messages: Messages)
 
 @if(errors.nonEmpty) {
-    @govUkErrorSummary(ErrorSummary(
+    @govUkErrorSummary(uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.ErrorSummary(
         errorList = errors
             .map(err => err.copy(key = errorHref(err, radioOptions), args = formatArgs(err.args)))
             .asTextErrorLinks,

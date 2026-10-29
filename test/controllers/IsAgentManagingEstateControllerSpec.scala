@@ -71,7 +71,7 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, utr)(request, messages).toString
+        view(form, NormalMode, utr)(using request, messages).toString
 
       application.stop()
     }
@@ -99,7 +99,7 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, utr)(request, messages).toString
+        view(form.fill(true), NormalMode, utr)(using request, messages).toString
 
       application.stop()
     }
@@ -108,7 +108,7 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
 
       val mockSessionRepository = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder(
@@ -158,7 +158,7 @@ class IsAgentManagingEstateControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, utr)(request, messages).toString
+        view(boundForm, NormalMode, utr)(using request, messages).toString
 
       application.stop()
     }

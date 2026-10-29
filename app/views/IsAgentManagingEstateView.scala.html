@@ -26,14 +26,14 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], mode: Mode, utr: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[?], mode: Mode, utr: String)(using request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)}${messages("isAgentManagingEstateYesNo.title")}",
     showBackLink = true
     ) {
 
-    @formHelper(action = IsAgentManagingEstateController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.IsAgentManagingEstateController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

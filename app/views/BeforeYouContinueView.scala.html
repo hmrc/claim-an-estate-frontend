@@ -23,14 +23,14 @@
     submitButton: SubmitButton
 )
 
-@(utr: String)(implicit request: RequestHeader, messages: Messages)
+@(utr: String)(using request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("beforeYouContinue.title"),
     showBackLink = true
     ) {
 
-    @formHelper(action = BeforeYouContinueController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.BeforeYouContinueController.onSubmit(), Symbol("autoComplete") -> "off") {
 
     @heading(
         messagePrefix = "beforeYouContinue",

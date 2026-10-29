@@ -15,10 +15,10 @@
  *@
 
 @this(
- subHeading: SubHeading
+ //subHeading: SubHeading
 )
 
-@(messagePrefix: String, optionalParam: Option[String] = None, caption: String)(implicit messages: Messages)
+@(messagePrefix: String, optionalParam: Option[String] = None, caption: String)(using messages: Messages)
 
 <h1 class="govuk-heading-l">
  <span class="govuk-caption-l">@caption</span>
