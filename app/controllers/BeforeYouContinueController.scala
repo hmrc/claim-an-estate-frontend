@@ -42,8 +42,8 @@ class BeforeYouContinueController @Inject() (
 )(using ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
-  def onPageLoad: Action[AnyContent] = actions.authWithData.async { request =>
-    given request.type = request
+  def onPageLoad: Action[AnyContent] = actions.authWithData.async { implicit request =>
+
     request.userAnswers.get(UTRPage) map { utr =>
       def body =
         Future.successful(Ok(view(utr)))
@@ -66,8 +66,7 @@ class BeforeYouContinueController @Inject() (
     }
   }
 
-  def onSubmit: Action[AnyContent] = actions.authWithData.async { request =>
-    given request.type = request
+  def onSubmit: Action[AnyContent] = actions.authWithData.async { implicit request =>
     (for {
       utr              <- request.userAnswers.get(UTRPage)
       isManagedByAgent <- request.userAnswers.get(IsAgentManagingEstatePage)

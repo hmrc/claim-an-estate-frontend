@@ -33,8 +33,7 @@ class FallbackFailureController @Inject() (
 )(using val ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = actions.authWithSession.async { request =>
-    given request.type = request
+  def onPageLoad: Action[AnyContent] = actions.authWithSession.async { implicit request =>
     logger.error(
       s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}]" +
         s"Claim an Estate encountered a problem that could not be recovered from"

@@ -49,8 +49,7 @@ class IvSuccessController @Inject() (
 )(using ec: ExecutionContext, val config: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
-  def onPageLoad(): Action[AnyContent] = actions.authWithSession.async { request =>
-    given request.type = request
+  def onPageLoad(): Action[AnyContent] = actions.authWithSession.async { implicit request =>
     request.userAnswers match {
       case Some(userAnswers) =>
         userAnswers.get(UTRPage).map { utr =>

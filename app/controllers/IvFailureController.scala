@@ -77,8 +77,7 @@ class IvFailureController @Inject() (
         Redirect(routes.FallbackFailureController.onPageLoad)
     }
 
-  def onEstateIvFailure: Action[AnyContent] = actions.authWithData.async { request =>
-    given request.type = request
+  def onEstateIvFailure: Action[AnyContent] = actions.authWithData.async { implicit request =>
     request.userAnswers.get(UTRPage) match {
       case Some(utr) =>
         val queryString = request.getQueryString("journeyId")

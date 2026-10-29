@@ -49,8 +49,7 @@ class IsAgentManagingEstateController @Inject() (
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = actions.authWithData.async { request =>
-    given request.type = request
+  def onPageLoad(mode: Mode): Action[AnyContent] = actions.authWithData.async { implicit request =>
     request.userAnswers.get(UTRPage) map { utr =>
       lazy val body = {
         val preparedForm = request.userAnswers.get(IsAgentManagingEstatePage) match {

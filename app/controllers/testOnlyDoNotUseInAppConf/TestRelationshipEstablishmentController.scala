@@ -95,8 +95,7 @@ class TestRelationshipEstablishmentController @Inject() (
 )(using ec: ExecutionContext)
     extends FrontendBaseController with Logging {
 
-  def check(utr: String): Action[AnyContent] = identify.async { request =>
-    given request.type = request
+  def check(utr: String): Action[AnyContent] = identify.async { implicit request =>
     logger.warn(
       s"[Session ID: ${Session.id(hc)}][UTR: $utr]" +
         s" EstateIV is using a test route, you don't want this in production."
