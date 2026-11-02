@@ -44,7 +44,7 @@ class SaveUTRController @Inject() (
 
   def save(utr: String): Action[AnyContent] = actions.authWithSession.async { implicit request =>
 
-    val utrPattern     = """^\d{10}$""".r
+    val utrPattern = """^\d{10}$""".r
     utr match {
       case utrPattern() =>
 

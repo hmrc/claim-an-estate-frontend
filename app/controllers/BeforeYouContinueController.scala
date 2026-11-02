@@ -43,7 +43,6 @@ class BeforeYouContinueController @Inject() (
     extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
   def onPageLoad: Action[AnyContent] = actions.authWithData.async { implicit request =>
-
     request.userAnswers.get(UTRPage) map { utr =>
       def body =
         Future.successful(Ok(view(utr)))
