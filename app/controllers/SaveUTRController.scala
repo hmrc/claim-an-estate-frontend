@@ -43,7 +43,6 @@ class SaveUTRController @Inject() (
     extends FrontendBaseController with I18nSupport with Logging {
 
   def save(utr: String): Action[AnyContent] = actions.authWithSession.async { implicit request =>
-
     val utrPattern = """^\d{10}$""".r
     utr match {
       case utrPattern() =>
