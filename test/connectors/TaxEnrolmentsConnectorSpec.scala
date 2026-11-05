@@ -16,7 +16,7 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import config.FrontendAppConfig
 import models.{EnrolmentCreated, EnrolmentFailed, TaxEnrolmentRequest}
 import org.scalatest.RecoverMethods
@@ -24,7 +24,7 @@ import org.scalatest.wordspec.AsyncWordSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 

@@ -21,14 +21,14 @@ import connectors.TaxEnrolmentsConnector
 import models.{EnrolmentCreated, TaxEnrolmentRequest, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{HasEnrolled, IsAgentManagingEstatePage, UTRPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound}
 import uk.gov.hmrc.http.BadRequestException

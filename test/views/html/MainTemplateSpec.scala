@@ -19,7 +19,7 @@ package views.html
 import play.twirl.api.Html
 import views.ViewSpecBase
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 class MainTemplateSpec extends ViewSpecBase {
 

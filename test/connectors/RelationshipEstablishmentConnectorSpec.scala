@@ -16,7 +16,7 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import config.FrontendAppConfig
 import models.RelationshipEstablishmentStatus
 import org.scalatest.RecoverMethods
@@ -30,7 +30,7 @@ import utils.WireMockHelper
 class RelationshipEstablishmentConnectorSpec
     extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   lazy val config: FrontendAppConfig                     = app.injector.instanceOf[FrontendAppConfig]
   lazy val connector: RelationshipEstablishmentConnector = app.injector.instanceOf[RelationshipEstablishmentConnector]

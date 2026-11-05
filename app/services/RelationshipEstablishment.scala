@@ -19,8 +19,8 @@ package services
 import config.FrontendAppConfig
 import javax.inject.Inject
 import play.api.Logging
-import play.api.mvc._
-import uk.gov.hmrc.auth.core._
+import play.api.mvc.*
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Session
@@ -68,7 +68,7 @@ class RelationshipEstablishmentService @Inject() (
         s"[Claiming][Session ID: ${Session.id(hc)}][UTR: $utr]" +
           s" Relationship established in Estate IV for user $internalId"
       )
-      // $COVERAGE-ON$
+
       Future.successful(RelationshipFound)
     } recoverWith
       failedRelationshipPF

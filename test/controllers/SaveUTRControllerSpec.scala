@@ -26,7 +26,7 @@ import pages.UTRPage
 import play.api.Logger
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.tools.LogCapturing

@@ -25,7 +25,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.mongo.test.MongoSupport
 import repositories.DefaultSessionRepository
 import org.mongodb.scala.SingleObservableFuture
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.should.Matchers.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps

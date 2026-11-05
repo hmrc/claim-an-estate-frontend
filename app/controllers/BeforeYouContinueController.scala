@@ -18,7 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.EstatesStoreConnector
-import controllers.actions._
+import controllers.actions.*
 import javax.inject.Inject
 import models.EstatesStoreRequest
 import pages.{IsAgentManagingEstatePage, UTRPage}

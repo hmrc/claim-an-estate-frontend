@@ -21,13 +21,13 @@ import connectors.EstatesStoreConnector
 import models.EstatesStoreRequest
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{IsAgentManagingEstatePage, UTRPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.http.HttpResponse
 import views.html.BeforeYouContinueView

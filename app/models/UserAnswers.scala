@@ -18,8 +18,8 @@ package models
 
 import java.time.LocalDateTime
 
-import pages._
-import play.api.libs.json._
+import pages.*
+import play.api.libs.json.*
 
 import scala.util.{Failure, Success, Try}
 
@@ -68,9 +68,9 @@ object UserAnswers {
 
   lazy val format: Format[UserAnswers] = Format.apply(reads, writes)
 
-  implicit lazy val reads: Reads[UserAnswers] = {
+  given reads: Reads[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").read[String] and
@@ -79,9 +79,9 @@ object UserAnswers {
     )(UserAnswers.apply)
   }
 
-  implicit lazy val writes: OWrites[UserAnswers] = {
+  given writes: OWrites[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").write[String] and

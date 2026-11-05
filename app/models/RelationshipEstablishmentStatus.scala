@@ -29,9 +29,9 @@ object RelationshipEstablishmentStatus {
   case object NoRelationshipStatus extends RelationshipEstablishmentStatus
   case class UpstreamRelationshipError(reason: String) extends RelationshipEstablishmentStatus
 
-  import play.api.http.Status._
+  import play.api.http.Status.*
 
-  implicit lazy val httpReads: HttpReads[RelationshipEstablishmentStatus] =
+  given httpReads: HttpReads[RelationshipEstablishmentStatus] =
     new HttpReads[RelationshipEstablishmentStatus] {
       override def read(method: String, url: String, response: HttpResponse): RelationshipEstablishmentStatus =
         response.status match {
