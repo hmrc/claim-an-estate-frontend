@@ -11,7 +11,7 @@ lazy val microservice = Project("claim-an-estate-frontend", file("."))
     Test / javaOptions ++= Seq(
       "-Dconfig.resource=test.application.conf"
     ),
-    routesImport += "models._",
+    routesImport += "models.*",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat.*",

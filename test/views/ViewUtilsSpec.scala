@@ -16,6 +16,10 @@
 
 package views
 
+import org.scalatest.matchers.should.Matchers.*
+import play.api.data.FormError
+import viewmodels.RadioOption
+
 class ViewUtilsSpec extends ViewSpecBase {
 
   "View utils" must {
@@ -32,6 +36,51 @@ class ViewUtilsSpec extends ViewSpecBase {
       val heading = ViewUtils.breadcrumbTitle("1234567890")
       heading mustBe "1234567890 - Manage an estate - GOV.UK"
     }
+  }
+
+  "errorHref" should {
+    "return the correct field identifier for single date fields" in {
+      val error  = FormError("startDate", "error.date.yesno")
+      val result = ViewUtils.errorHref(error, Nil)
+      result shouldBe "startDate-yes"
+    }
+
+    "handle errorHref  with default radioOptions parameter" in {
+      val error  = FormError("startDate", "some.error")
+      val result = ViewUtils.errorHref(error)
+      result shouldBe "startDate.day"
+    }
+
+    "handle non-empty radio options correctly" in {
+      val error        = FormError("someField", "some.error")
+      val radioOptions = Seq(RadioOption("id", "value"))
+      val result       = ViewUtils.errorHref(error, radioOptions)
+      result shouldBe "id.value"
+    }
+    "handle error args containing day or month or year correctly" in {
+      val error  = FormError("startDate", "some.error", Seq("day"))
+      val result = ViewUtils.errorHref(error, Nil)
+      result shouldBe "startDate.day"
+    }
+
+    "handle single date field errors correctly" in {
+      val error  = FormError("startDate", "error.date")
+      val result = ViewUtils.errorHref(error, Nil)
+      result shouldBe "startDate.day"
+    }
+
+    "handle single date field errors correctly with out yes no correctly" in {
+      val error  = FormError("startDate", "error.date.invalid")
+      val result = ViewUtils.errorHref(error, Nil)
+      result shouldBe "startDate.day"
+    }
+
+    "handle general wildcard fallback error correctly" in {
+      val error  = FormError("startDate", "some.other.error")
+      val result = ViewUtils.errorHref(error, Nil)
+      result shouldBe "startDate.day"
+    }
+
   }
 
 }
