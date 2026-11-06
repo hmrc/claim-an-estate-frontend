@@ -22,7 +22,7 @@ final case class TaxEnrolmentRequest(utr: String)
 
 object TaxEnrolmentRequest {
 
-  implicit val writes: Writes[TaxEnrolmentRequest] = Writes { request =>
+  given writes: Writes[TaxEnrolmentRequest] = Writes { request =>
     Json.obj(
       "identifiers" -> Json.arr(
         Json.obj(

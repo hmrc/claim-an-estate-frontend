@@ -46,7 +46,7 @@ class IvSuccessController @Inject() (
   errorHandler: ErrorHandler,
   auditService: AuditService,
   sessionRepository: SessionRepository
-)(implicit ec: ExecutionContext, val config: FrontendAppConfig)
+)(using ec: ExecutionContext, val config: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
   def onPageLoad(): Action[AnyContent] = actions.authWithSession.async { implicit request =>
@@ -83,8 +83,8 @@ class IvSuccessController @Inject() (
     }
   }
 
-  private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(implicit
-    request: OptionalDataRequest[_]
+  private def onRelationshipFound(utr: String, userAnswers: UserAnswers)(using
+    request: OptionalDataRequest[?]
   ): Future[Result] = {
 
     val hasEnrolled: Boolean = userAnswers.get(HasEnrolled).getOrElse(false)
@@ -122,7 +122,7 @@ class IvSuccessController @Inject() (
     }
   }
 
-  private def noUtrOnSuccess(request: OptionalDataRequest[AnyContent])(implicit hc: HeaderCarrier) = {
+  private def noUtrOnSuccess(request: OptionalDataRequest[AnyContent])(using hc: HeaderCarrier) = {
     auditService.auditEstateClaimError("Unknown", request.internalId, "No UTR available on success")
     Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
   }

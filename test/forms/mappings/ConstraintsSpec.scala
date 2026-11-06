@@ -184,4 +184,15 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
     }
   }
 
+  "nonEmptySet" must {
+    "return Valid for a non-empty set" in {
+      val result = nonEmptySet("error.nonempty set ")(Set("nonEmpty"))
+      result mustEqual Valid
+    }
+    "return Invalid for a non-empty set" in {
+      val result = nonEmptySet("error.nonempty set ")(Set())
+      result mustEqual Invalid("error.nonempty set ")
+    }
+  }
+
 }

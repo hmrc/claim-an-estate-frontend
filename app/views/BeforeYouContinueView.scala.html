@@ -23,14 +23,14 @@
     submitButton: SubmitButton
 )
 
-@(utr: String)(implicit request: RequestHeader, messages: Messages)
+@(utr: String)(using request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("beforeYouContinue.title"),
     showBackLink = true
     ) {
 
-    @formHelper(action = BeforeYouContinueController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.BeforeYouContinueController.onSubmit(), Symbol("autoComplete") -> "off") {
 
     @heading(
         messagePrefix = "beforeYouContinue",
@@ -42,7 +42,7 @@
         <p class="govuk-body">@messages("beforeYouContinue.p3")</p>
         <p class="govuk-body">
             @messages("beforeYouContinue.p4")
-            <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate" target="_blank" rel="noopener noreferrer">@messages("beforeYouContinue.a")</a>.
+            <a class="govuk-link" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate" target="_blank" rel="noopener noreferrer">@messages("beforeYouContinue.a")</a>.
         </p>
 
         @submitButton()

@@ -18,8 +18,8 @@ package navigation
 
 import controllers.routes
 import javax.inject.{Inject, Singleton}
-import models._
-import pages._
+import models.*
+import pages.*
 import play.api.mvc.Call
 
 @Singleton

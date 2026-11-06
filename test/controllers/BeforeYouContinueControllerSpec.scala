@@ -21,13 +21,13 @@ import connectors.EstatesStoreConnector
 import models.EstatesStoreRequest
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{IsAgentManagingEstatePage, UTRPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.http.HttpResponse
 import views.html.BeforeYouContinueView
@@ -60,7 +60,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(utr)(request, messages).toString
+        view(utr)(using request, messages).toString
 
       application.stop()
     }
@@ -86,7 +86,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad.url
+      redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad().url
 
       application.stop()
     }
@@ -98,7 +98,11 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       val connector = mock[EstatesStoreConnector]
 
       when(
-        connector.lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
+        connector.lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(using
+          any(),
+          any(),
+          any()
+        )
       )
         .thenReturn(Future.successful(HttpResponse(CREATED, "")))
 
@@ -124,7 +128,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       redirectLocation(result).value must include("0987654321")
 
       verify(connector)
-        .lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(any(), any(), any())
+        .lock(eqTo(EstatesStoreRequest(userAnswersId, utr, managedByAgent, estateLocked)))(using any(), any(), any())
 
       application.stop()
 

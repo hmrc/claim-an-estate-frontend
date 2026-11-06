@@ -22,6 +22,6 @@ final case class EstatesStoreRequest(internalId: String, utr: String, managedByA
 
 object EstatesStoreRequest {
 
-  implicit val writes: Writes[EstatesStoreRequest] = Json.writes[EstatesStoreRequest]
+  given writes: Writes[EstatesStoreRequest] = Json.writes[EstatesStoreRequest]
 
 }

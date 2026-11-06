@@ -19,8 +19,8 @@ package controllers.actions
 import base.SpecBase
 import controllers.routes
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
-import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

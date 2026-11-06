@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,29 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.html.helper.CSPNonce
+package pages
 
-@this()
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
+import scala.language.implicitConversions
 
-@()(implicit request: RequestHeader)
+class PageSpec extends AnyFunSpec with Matchers {
 
-<link @{CSPNonce.attr} href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" />
-<script @{CSPNonce.attr} src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  class TestPage(val title: String) extends Page {
+    override def toString: String = title
+  }
+
+  describe("Page Companion Object") {
+
+    it("should implicitly convert a Page instance into a String") {
+      val page: Page = new TestPage("Settings")
+
+      val text: String = page
+
+      text shouldBe "Settings"
+    }
+  }
+
+}

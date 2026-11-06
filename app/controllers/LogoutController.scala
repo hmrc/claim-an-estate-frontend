@@ -35,11 +35,11 @@ class LogoutController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   identify: IdentifierAction,
   auditConnector: AuditConnector
-)(implicit val executionContext: ExecutionContext)
+)(using val executionContext: ExecutionContext)
     extends FrontendBaseController with Logging {
 
-  def logout: Action[AnyContent] = identify { implicit request =>
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+  def logout: Action[AnyContent] = identify { request =>
+    given hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     logger.info(s"[Claiming][Session ID: Session ID: ${Session.id(hc)}] user signed out from the service")
 

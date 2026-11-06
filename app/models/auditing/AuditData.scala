@@ -22,6 +22,6 @@ case class AuditData(request: JsValue, internalAuthId: String, response: Option[
 
 object AuditData {
 
-  implicit val formats: Format[AuditData] = Json.format[AuditData]
+  given formats: Format[AuditData] = Json.format[AuditData]
 
 }

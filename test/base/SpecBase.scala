@@ -16,15 +16,15 @@
 
 package base
 
-import config.FrontendAppConfig
-import controllers.actions._
+import config.{FrontendAppConfig, MongoConfig}
+import controllers.actions.*
 import models.UserAnswers
 import org.scalatest.TryValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.mockito.Mockito.reset
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice._
+import org.scalatestplus.play.guice.*
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
@@ -44,6 +44,8 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
   def injector: Injector = app.injector
 
   implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
+  implicit def MongoConfig: MongoConfig = injector.instanceOf[MongoConfig]
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 

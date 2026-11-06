@@ -16,7 +16,9 @@
 
 package pages
 
+import org.scalatest.matchers.should.Matchers.shouldBe
 import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
 
 class IsAgentManagingEstatePageSpec extends PageBehaviours {
 
@@ -27,6 +29,15 @@ class IsAgentManagingEstatePageSpec extends PageBehaviours {
     beSettable[Boolean](IsAgentManagingEstatePage)
 
     beRemovable[Boolean](IsAgentManagingEstatePage)
+  }
+
+  "should evaluate to the correct string representation" in {
+    IsAgentManagingEstatePage.toString shouldBe "isAgentManagingEstate"
+
+  }
+
+  "should point to the correct JSON path root element" in {
+    IsAgentManagingEstatePage.path shouldBe JsPath \ "isAgentManagingEstate"
   }
 
 }

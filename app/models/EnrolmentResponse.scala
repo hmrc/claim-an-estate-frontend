@@ -25,14 +25,14 @@ case object EnrolmentCreated extends EnrolmentResponse
 case class EnrolmentFailed(status: Int, body: String) extends EnrolmentResponse
 
 object EnrolmentFailed {
-  implicit val format: Format[EnrolmentFailed] = Json.format[EnrolmentFailed]
+  given format: Format[EnrolmentFailed] = Json.format[EnrolmentFailed]
 }
 
 object EnrolmentResponse {
 
-  import play.api.http.Status._
+  import play.api.http.Status.*
 
-  implicit lazy val httpReads: HttpReads[EnrolmentResponse] = new HttpReads[EnrolmentResponse] {
+  given httpReads: HttpReads[EnrolmentResponse] = new HttpReads[EnrolmentResponse] {
     override def read(method: String, url: String, response: HttpResponse): EnrolmentResponse =
       response.status match {
         case NO_CONTENT => EnrolmentCreated

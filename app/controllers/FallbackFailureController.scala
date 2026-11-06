@@ -30,7 +30,7 @@ class FallbackFailureController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
   errorHandler: ErrorHandler
-)(implicit val ec: ExecutionContext)
+)(using val ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad: Action[AnyContent] = actions.authWithSession.async { implicit request =>

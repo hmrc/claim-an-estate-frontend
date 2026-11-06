@@ -34,8 +34,8 @@ class IsAgentManagingEstateViewSpec extends YesNoViewBehaviours {
 
     val view = viewFor[IsAgentManagingEstateView](Some(emptyUserAnswers))
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, utr)(fakeRequest, messages)
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
+      view.apply(form, NormalMode, utr)(using fakeRequest, messages)
 
     behave like normalPageWithCaption(applyView(form), messageKeyPrefix, "utr", utr)
 

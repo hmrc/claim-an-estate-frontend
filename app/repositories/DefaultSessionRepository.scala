@@ -20,7 +20,7 @@ import com.google.inject.Singleton
 import config.MongoConfig
 import models.UserAnswers
 import org.mongodb.scala.model.Indexes.ascending
-import org.mongodb.scala.model._
+import org.mongodb.scala.model.*
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DefaultSessionRepository @Inject() (
   val mongoComponent: MongoComponent,
   val config: MongoConfig
-)(implicit val ec: ExecutionContext)
+)(using val ec: ExecutionContext)
     extends PlayMongoRepository[UserAnswers](
       collectionName = "user-answers",
       mongoComponent = mongoComponent,
@@ -43,7 +43,7 @@ class DefaultSessionRepository @Inject() (
           IndexOptions()
             .unique(false)
             .name("user-answers-last-updated-index")
-            .expireAfter(config.ttlInSeconds, TimeUnit.SECONDS)
+            .expireAfter(config.ttlInSeconds.toLong, TimeUnit.SECONDS)
         )
       ),
       replaceIndexes = config.dropIndexes

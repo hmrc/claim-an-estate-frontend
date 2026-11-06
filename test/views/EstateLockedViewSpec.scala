@@ -27,7 +27,7 @@ class EstateLockedViewSpec extends ViewBehaviours {
 
     val view = viewFor[EstateLocked](Some(emptyUserAnswers))
 
-    val applyView = view.apply(utr)(fakeRequest, messages)
+    val applyView = view.apply(utr)(using fakeRequest, messages)
 
     behave like normalPageWithCaption(
       applyView,

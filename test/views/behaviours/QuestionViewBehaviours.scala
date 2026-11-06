@@ -32,7 +32,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     form: Form[A],
     createView: Form[A] => HtmlFormat.Appendable,
     messageKeyPrefix: String,
-    expectedFormAction: String,
+    // expectedFormAction: String,
     fields: String*
   ) =
 

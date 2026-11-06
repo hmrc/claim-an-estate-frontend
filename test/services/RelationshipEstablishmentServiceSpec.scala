@@ -23,7 +23,7 @@ import controllers.actions.{FakeAuthConnector, FakeFailingAuthConnector}
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.auth.core.{FailedRelationship, MissingBearerToken}
 
-import scala.concurrent.ExecutionContext.Implicits._
+import scala.concurrent.ExecutionContext.Implicits.*
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
