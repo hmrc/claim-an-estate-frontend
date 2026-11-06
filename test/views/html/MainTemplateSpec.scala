@@ -36,6 +36,17 @@ class MainTemplateSpec extends ViewSpecBase {
       assertRenderedByCssSelector(doc, ".govuk-service-navigation")
     }
 
+    "link only the hmrc-frontend stylesheet" in {
+      val doc = asDocument(view(title)(mainContent)(using fakeRequest, messages))
+
+      val stylesheets = doc.select("link[rel=stylesheet]").eachAttr("href").asScala.toSeq
+
+      stylesheets must not be empty
+      stylesheets.foreach { href =>
+        href must include("/hmrc-frontend/assets/")
+      }
+    }
+
     "request the service navigation component on every generated link to a shared PlatUI page" in {
       val doc = asDocument(view(title)(mainContent)(using fakeRequest, messages))
 

@@ -42,7 +42,9 @@ class FrontendAppConfigSpec extends SpecBase {
       appConfig.loginContinueUrl mustBe "http://localhost:9000/claim-an-estate-frontend"
     }
 
-    "return the correct logoutUrl" in {}
+    "return the correct logoutUrl" in {
+      appConfig.logoutUrl mustBe "/gg/sign-out"
+    }
 
     "return the real relationship establishment URL when stubbing is disabled" in {
 

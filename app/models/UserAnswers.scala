@@ -16,17 +16,17 @@
 
 package models
 
-import java.time.LocalDateTime
-
 import pages.*
 import play.api.libs.json.*
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
+import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
   id: String,
   data: JsObject = Json.obj(),
-  lastUpdated: LocalDateTime = LocalDateTime.now
+  lastUpdated: Instant = Instant.now
 ) {
 
   def get[A](page: QuestionPage[A])(using rds: Reads[A]): Option[A] =
@@ -75,7 +75,7 @@ object UserAnswers {
     (
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
-        (__ \ "lastUpdated").read(using MongoDateTimeFormats.localDateTimeRead)
+        (__ \ "lastUpdated").read(using MongoJavatimeFormats.instantFormat)
     )(UserAnswers.apply)
   }
 
@@ -86,7 +86,7 @@ object UserAnswers {
     (
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
-        (__ \ "lastUpdated").write(using MongoDateTimeFormats.localDateTimeWrite)
+        (__ \ "lastUpdated").write(using MongoJavatimeFormats.instantFormat)
     )(ua => (ua.id, ua.data, ua.lastUpdated))
   }
 

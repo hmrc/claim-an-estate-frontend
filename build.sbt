@@ -1,4 +1,5 @@
 import uk.gov.hmrc.DefaultBuildSettings.targetJvm
+
 ThisBuild / scalaVersion := "3.9.0"
 ThisBuild / targetJvm := "jvm-21"
 ThisBuild / majorVersion := 1
@@ -10,7 +11,7 @@ lazy val microservice = Project("claim-an-estate-frontend", file("."))
     Test / javaOptions ++= Seq(
       "-Dconfig.resource=test.application.conf"
     ),
-    routesImport += "models                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ._",
+    routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat.*",
