@@ -23,7 +23,7 @@
  submitButton: SubmitButton
 )
 
-@()(implicit request: RequestHeader, messages: Messages)
+@()(using request: RequestHeader, messages: Messages)
 
 @mainTemplate(
  title = messages("notFound.title"),
@@ -36,7 +36,7 @@
  <p class="govuk-body">@messages("notFound.p2")</p>
  <p class="govuk-body">@messages("notFound.p3") <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("notFound.link1")</a>.</p>
 
- @formHelper(action = SessionExpiredController.onSubmit, Symbol("autoComplete") -> "off") {
+ @formHelper(action = routes.SessionExpiredController.onSubmit, Symbol("autoComplete") -> "off") {
   @submitButton(Some(messages("notFound.button")))
  }
 }

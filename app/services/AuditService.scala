@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext
 
-class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext) {
+class AuditService @Inject() (auditConnector: AuditConnector)(using ec: ExecutionContext) {
 
   private object AuditEvent {
     val ESTATE_CLAIMED      = "EstateClaimed"
@@ -33,7 +33,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
     val ESTATE_CLAIM_ERROR  = "EstateClaimError"
   }
 
-  def auditEstateClaimed(utr: String, internalId: String)(implicit hc: HeaderCarrier): Unit =
+  def auditEstateClaimed(utr: String, internalId: String)(using hc: HeaderCarrier): Unit =
     audit(
       AuditEvent.ESTATE_CLAIMED,
       Json.obj("utr" -> utr),
@@ -41,7 +41,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
       Json.obj()
     )
 
-  def auditEstateClaimFailed(utr: String, internalId: String, failed: EnrolmentFailed)(implicit
+  def auditEstateClaimFailed(utr: String, internalId: String, failed: EnrolmentFailed)(using
     hc: HeaderCarrier
   ): Unit =
     audit(
@@ -51,7 +51,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
       Json.toJson(failed)
     )
 
-  def auditEstateClaimError(utr: String, internalId: String, errorReason: String)(implicit hc: HeaderCarrier): Unit =
+  def auditEstateClaimError(utr: String, internalId: String, errorReason: String)(using hc: HeaderCarrier): Unit =
     audit(
       AuditEvent.ESTATE_CLAIM_ERROR,
       Json.obj("utr"         -> utr),
@@ -59,7 +59,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
       Json.obj("errorReason" -> errorReason)
     )
 
-  private def audit(event: String, request: JsValue, internalId: String, response: JsValue)(implicit
+  private def audit(event: String, request: JsValue, internalId: String, response: JsValue)(using
     hc: HeaderCarrier
   ): Unit = {
 

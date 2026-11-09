@@ -27,7 +27,7 @@ class EstateStillProcessingViewSpec extends ViewBehaviours {
 
     val view = viewFor[EstateStillProcessing](Some(emptyUserAnswers))
 
-    val applyView = view.apply(utr)(fakeRequest, messages)
+    val applyView = view.apply(utr)(using fakeRequest, messages)
 
     behave like normalPageWithCaption(applyView, "stillProcessing", "utr", utr, "p2")
 

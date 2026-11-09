@@ -17,11 +17,11 @@
 package generators
 
 import org.scalacheck.Arbitrary
-import pages._
+import pages.*
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryIsAgentManagingEstatePage: Arbitrary[IsAgentManagingEstatePage.type] =
+  given arbitraryIsAgentManagingEstatePage: Arbitrary[IsAgentManagingEstatePage.type] =
     Arbitrary(IsAgentManagingEstatePage)
 
 }

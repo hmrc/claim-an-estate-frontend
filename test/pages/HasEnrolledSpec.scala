@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
+import play.api.libs.json.JsPath
 
-class WithNameSpec extends AnyWordSpec with Matchers {
+class HasEnrolledSpec extends AnyFunSpec with Matchers {
 
-  object Foo extends WithName("bar")
+  describe("HasEnrolled") {
 
-  ".toString" must {
-    "return the correct string" in {
-      Foo.toString mustEqual "bar"
+    it("should have 'hasEnrolled' as its string representation") {
+      HasEnrolled.toString shouldBe "hasEnrolled"
+    }
+
+    it("should build a JsPath matching its name node") {
+      HasEnrolled.path shouldBe JsPath \ "hasEnrolled"
     }
   }
 

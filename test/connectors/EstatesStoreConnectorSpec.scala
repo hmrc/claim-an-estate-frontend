@@ -16,7 +16,7 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.EstatesStoreRequest
 import org.scalatest.RecoverMethods
 import org.scalatest.matchers.must.Matchers
@@ -24,16 +24,16 @@ import org.scalatest.wordspec.AsyncWordSpec
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
 class EstatesStoreConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   lazy val app = new GuiceApplicationBuilder()
-    .configure(Seq("microservice.services.estates-store.port" -> server.port(), "auditing.enabled" -> false): _*)
+    .configure(Seq("microservice.services.estates-store.port" -> server.port(), "auditing.enabled" -> false)*)
     .build()
 
   lazy val connector: EstatesStoreConnector = app.injector.instanceOf[EstatesStoreConnector]

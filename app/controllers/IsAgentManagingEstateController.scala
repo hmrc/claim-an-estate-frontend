@@ -16,13 +16,15 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.IsAgentManagingEstateFormProvider
+
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.{IsAgentManagingEstatePage, UTRPage}
 import play.api.Logging
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -42,10 +44,10 @@ class IsAgentManagingEstateController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: IsAgentManagingEstateView,
   relationship: RelationshipEstablishment
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = actions.authWithData.async { implicit request =>
     request.userAnswers.get(UTRPage) map { utr =>
@@ -64,7 +66,7 @@ class IsAgentManagingEstateController @Inject() (
             s"[Claiming][Estates IV][Session ID: ${Session.id(hc)}]" +
               s" user has recently passed IV for utr $utr, sending user to successfully claimed"
           )
-          Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
+          Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
         case RelationshipNotFound =>
           body
       }

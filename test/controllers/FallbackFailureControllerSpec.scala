@@ -18,11 +18,11 @@ package controllers
 
 import base.SpecBase
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 class FallbackFailureControllerSpec extends SpecBase {
 
-  def onFailureRoute = routes.FallbackFailureController.onPageLoad.url
+  def onFailureRoute: String = routes.FallbackFailureController.onPageLoad.url
 
   "FallbackFailure Controller" must {
 

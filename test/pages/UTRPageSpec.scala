@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package pages
 
-@(key: String, param: String)(implicit messages: Messages)
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
+import play.api.libs.json.JsPath
 
-<span class="govuk-caption-l">@messages(key, param)</span>
+class UTRPageSpec extends AnyFunSpec with Matchers {
+
+  describe("UTRPage Configuration") {
+
+    it("should evaluate to the correct string representation") {
+      UTRPage.toString shouldBe "utr"
+    }
+
+    it("should point to the correct JSON path root element") {
+      UTRPage.path shouldBe JsPath \ "utr"
+    }
+  }
+
+}

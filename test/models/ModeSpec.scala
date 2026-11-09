@@ -16,6 +16,18 @@
 
 package models
 
-class WithName(string: String) {
-  override val toString: String = string
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+class ModeSpec extends AnyWordSpec with Matchers {
+
+  "Mode" must {
+    "return a NormalMode type" in {
+      Mode.jsLiteral.to(NormalMode) mustBe "NormalMode"
+    }
+    "return a CheckMode type" in {
+      Mode.jsLiteral.to(CheckMode) mustBe "CheckMode"
+    }
+  }
+
 }

@@ -26,7 +26,7 @@ import pages.UTRPage
 import play.api.Logger
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
@@ -107,7 +107,7 @@ class SaveUTRControllerSpec extends SpecBase with LogCapturing with BeforeAndAft
           val result = route(appWithPassingRelationship, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad.url
+          redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad().url
 
           logs.size mustEqual 1
           logs.head.toString must include(

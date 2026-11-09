@@ -34,22 +34,19 @@ class SessionTimeoutController @Inject() (
 ) extends FrontendController(mcc) with Logging {
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
-    // $COVERAGE-OFF$
     logger.info(
       s"[Claiming][Session ID: Session ID: ${Session.id(hc)}]" +
         s" user requested to extend the time remaining to complete Estates IV, user has not been signed out"
     )
-    // $COVERAGE-ON$
+
     Future.successful(Ok.withSession(request.session))
   }
 
   val timeout: Action[AnyContent] = Action.async { implicit request =>
-    // $COVERAGE-OFF$
     logger.info(
       s"[Claiming][Session ID: ${Session.id(hc)}]" +
         s" user remained inactive on the service, user has been signed out"
     )
-    // $COVERAGE-ON$
 
     Future.successful(
       Redirect(
