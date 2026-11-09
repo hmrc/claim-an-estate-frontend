@@ -173,6 +173,34 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       }
 
     }
+
+    "must redirect to IvSuccessController when relationship is not found" in {
+
+      val answers = emptyUserAnswers
+        .set(UTRPage, "0987654321")
+        .success
+        .value
+        .set(IsAgentManagingEstatePage, true)
+        .success
+        .value
+
+      val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
+
+      val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceSuccess)
+        .overrides(bind[Navigator].toInstance(fakeNavigator))
+        .build()
+
+      val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad().url
+
+      application.stop()
+
+    }
   }
 
 }
